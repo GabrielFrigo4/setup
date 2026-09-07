@@ -6,10 +6,10 @@
 
 ### 🏛️ O Quarteto de Produtividade
 
-[![Setup](https://img.shields.io/badge/📦_Setup-Sistema_%26_Cookbook-blue)](https://github.com/GabrielFrigo4/Setup)
-[![Profile](https://img.shields.io/badge/🎨_Profile-Dotfiles_%26_IA-green)](https://github.com/GabrielFrigo4/Profile)
-[![Shell](https://img.shields.io/badge/🐚_Shell-Terminal_Runtime-purple)](https://github.com/GabrielFrigo4/Shell)
-[![Vault](https://img.shields.io/badge/🔐_Vault-Cofre_Privado-red)](https://github.com/GabrielFrigo4/Vault)
+[![Setup](https://img.shields.io/badge/📦_Setup-Sistema_%26_Cookbook-blue)](https://github.com/GabrielFrigo4/setup)
+[![Shell](https://img.shields.io/badge/🐚_Shell-Terminal_Runtime-purple)](https://github.com/GabrielFrigo4/shell)
+[![Vault](https://img.shields.io/badge/🔐_Vault-Cofre_Privado-red)](https://github.com/GabrielFrigo4/vault)
+[![Profile](https://img.shields.io/badge/🎨_Profile-Dotfiles_%26_IA-green)](https://github.com/GabrielFrigo4/profile)
 
 > 📖 **Arquitetura Unificada do Ecossistema:** Conheça a matriz completa de responsabilidades, ciclo de boot e segregação de privilégios em [ENVIRONMENT.md](ENVIRONMENT.md).
 > 📜 **Princípios de Engenharia & Infraestrutura:** Conheça os 18 princípios e as 14 regras de Clean Code em [PRINCIPLES.md](PRINCIPLES.md).
@@ -55,17 +55,20 @@ O **Setup** provê a fundação do sistema operacional com privilégios administ
 
 ```sh
 # Exemplo 1: Executar receita do Fedora Desktop diretamente via curl
-curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/Setup/main/bootstrap/linux/desktop/fedora/desktop/gnome.sh" | sh
+curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap/linux/desktop/fedora/desktop/gnome.sh" | sh
 
 # Exemplo 2: Executar receita de fontes universais
-curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/Setup/main/bootstrap/common/fonts/fonts.sh" | sh
+curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap/common/fonts/fonts.sh" | sh
+
+# Exemplo 3: Executar o orquestrador interativo local (se clonado)
+./setup.sh
 ```
 
 ---
 
 ## 🔗 Integração com o Quarteto de Produtividade
 
-Após provisionar a máquina com o **Setup**:
-1. Clone e sincronize seus dotfiles e assistentes de IA com o **[Profile](https://github.com/GabrielFrigo4/Profile)**.
-2. Instale o ambiente interativo de terminal com o **[Shell](https://github.com/GabrielFrigo4/Shell)**.
-3. Clone seu cofre de credenciais e chaves criptográficas com o **[Vault](https://github.com/GabrielFrigo4/Vault)**.
+Após provisionar a máquina hospedeira com o **Setup**:
+1. Instale o motor interativo de linha de comando com o **[Shell](https://github.com/GabrielFrigo4/shell)**.
+2. Clone seu cofre de credenciais e chaves criptográficas com o **[Vault](https://github.com/GabrielFrigo4/vault)**.
+3. Clone e sincronize seus dotfiles e assistentes de IA com o **[Profile](https://github.com/GabrielFrigo4/profile)**.

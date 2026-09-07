@@ -9,7 +9,7 @@
 | Camada                                   | Papel Central                        | Tipo de Conteúdo                                                  | Escopo                                                                                                        |
 | :--------------------------------------- | :----------------------------------- | :---------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------ |
 | **`bootstrap/`** _(esta pasta)_          | **O "COMO" (Provisionamento Ativo)** | Receitas de automação executáveis (`.sh`, `.cmd` e `.ps1`).       | Nível de sistema e máquina (`sudo`/`doas`, `dnf`, `apt`, `pkg`, `winget`, drivers, containers, fontes do SO). |
-| **[Profile](https://github.com/GabrielFrigo4/Profile)** | **O "O QUÊ" (Estado Declarativo)**   | Arquivos estáticos puros (`.json`, `.toml`, `.yaml`, `.profile`). | Espaço do usuário (`$HOME` / `~/.config`). Zero privilégios de sistema.                                       |
+| **[Profile](https://github.com/GabrielFrigo4/profile)** | **O "O QUÊ" (Estado Declarativo)**   | Arquivos estáticos puros (`.json`, `.toml`, `.yaml`, `.profile`). | Espaço do usuário (`$HOME` / `~/.config`). Zero privilégios de sistema.                                       |
 
 ---
 

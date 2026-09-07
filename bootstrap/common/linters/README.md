@@ -6,7 +6,7 @@
 
 ## 🎯 Finalidade
 
-Esta pasta fornece scripts de provisionamento para implantar as configurações globais de formatadores e linters no diretório de configuração do usuário (**Clangd**, **Clang-Format**, **Prettier** e **StyLua**), sincronizando diretamente dos dotfiles estáticos do repositório [Profile](https://github.com/GabrielFrigo4/Profile/tree/main/software/tools).
+Esta pasta fornece scripts de provisionamento para implantar as configurações globais de formatadores e linters no diretório de configuração do usuário (**Clangd**, **Clang-Format**, **Prettier** e **StyLua**), sincronizando diretamente dos dotfiles estáticos do repositório [Profile](https://github.com/GabrielFrigo4/profile/tree/main/software/tools).
 
 > ℹ️ **Automações Windows (CMD):** A receita equivalente para Windows reside em [`../../windows/native/linters/linters.cmd`](../../windows/native/linters/linters.cmd).
 

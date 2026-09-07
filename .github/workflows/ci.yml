@@ -1,0 +1,32 @@
+name: Universal Setup CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: 🔍 Static Audit & Recipe Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run Setup Audit Suite
+        run: |
+          python3 scripts/audit/all.py
+
+      - name: Validate Recipe Syntax (POSIX sh -n)
+        run: |
+          find bootstrap scripts setup.sh -name "*.sh" -exec sh -n {} +

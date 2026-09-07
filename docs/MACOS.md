@@ -23,7 +23,7 @@ Graças à adesão rigorosa aos padrões POSIX e ao shebang universal `#!/usr/bi
 
 ---
 
-## ⚙️ 2. Dotfiles Declarativos ([Profile](https://github.com/GabrielFrigo4/Profile))
+## ⚙️ 2. Dotfiles Declarativos ([Profile](https://github.com/GabrielFrigo4/profile))
 
 Os arquivos estáticos puros no repositório **Profile** operam no macOS no espaço do usuário:
 

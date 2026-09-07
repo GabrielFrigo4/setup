@@ -10,7 +10,7 @@ No nosso ecossistema dual (**Fedora com GNOME** e **FreeBSD com KDE Plasma**), o
 
 1. **Wayland Nativo:** Sessão Wayland pura iniciada via `startplasma-wayland`, isolando processos gráficos sem a insegurança do X11 legado.
 2. **Desempenho Direto no Host:** Aceleração de hardware (GPU) sem overhead, proporcionando fluidez para gerenciar Bastille Jails, bhyve e volumes ZFS.
-3. **Konsole Moderno:** O emulador de terminal nativo do KDE oferece excelente renderização, perfis unificados para shells (`software/terminals/konsole/`) e suporte integral ao ecossistema [Shell](https://github.com/GabrielFrigo4/Shell).
+3. **Konsole Moderno:** O emulador de terminal nativo do KDE oferece excelente renderização, perfis unificados para shells (`software/terminals/konsole/`) e suporte integral ao ecossistema [Shell](https://github.com/GabrielFrigo4/shell).
 
 ---
 
@@ -29,7 +29,7 @@ Como limitamos ao máximo o uso de comandos administrativos diretos no host grá
 
 ## 🔗 Integração com o Universal Shell
 
-O repositório **[Shell](https://github.com/GabrielFrigo4/Shell)** traz integrações nativas para o KDE:
+O repositório **[Shell](https://github.com/GabrielFrigo4/shell)** traz integrações nativas para o KDE:
 
 1. **Detecção e Tema Unificado:** Detecta o tema escuro via `kreadconfig6` e exporta automaticamente `QT_STYLE_OVERRIDE=Breeze-Dark` e `GTK_THEME=Breeze-Dark`, mantendo coerência absoluta entre apps Qt e GTK.
 2. **Dispositivos Móveis (`~/Device`):** As funções de terminal `mount-device` e `umount-device` utilizam o **KDE Connect** (`kdeconnect-cli --mount`) e KIO-Fuse, permitindo acessar o celular Android diretamente em `~/Device` ou via Dolphin.

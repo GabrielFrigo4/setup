@@ -32,7 +32,7 @@ O script de provisionamento [`bootstrap/linux/desktop/fedora/desktop/gnome.sh`](
 
 ## 🔗 Integração com o Universal Shell
 
-O repositório **[Shell](https://github.com/GabrielFrigo4/Shell)** atua em profunda sinergia com o GNOME:
+O repositório **[Shell](https://github.com/GabrielFrigo4/shell)** atua em profunda sinergia com o GNOME:
 
 1. **Ponte Visual GTK ⟷ Qt6:** O Shell detecta o ambiente GNOME em tempo de execução via `detect_desktop_environment` e injeta automaticamente `QT_QPA_PLATFORMTHEME=qt6ct` e `GTK_THEME=adw-gtk3-dark`, assegurando que aplicativos Qt e GTK rodem com o mesmo tema escuro sem falhas visuais.
 2. **Wayland & Electron:** Configura `ELECTRON_OZONE_PLATFORM_HINT="auto"` e `_JAVA_AWT_WM_NONREPARENTING=1` para garantir escalonamento nítido e responsivo em editores gráficos como Antigravity, VS Code e IDEs JetBrains.

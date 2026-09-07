@@ -8,7 +8,7 @@
 
 Esta pasta contém utilitários de suporte focados em automações de compilação local (build), conversões de arquivos, análise estática de código e modificações no registro do Windows.
 
-> ℹ️ **Scripts Interativos de Terminal:** Aliases, prompts e funções interativas pertencem ao repositório **[Shell](https://github.com/GabrielFrigo4/Shell)**.
+> ℹ️ **Scripts Interativos de Terminal:** Aliases, prompts e funções interativas pertencem ao repositório **[Shell](https://github.com/GabrielFrigo4/shell)**.
 
 ---
 
