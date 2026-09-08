@@ -16,10 +16,11 @@ Os scripts aplicam boas práticas recomendadas (branch padrão `main`, autocrlf 
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo            | Plataforma                            | Descrição                                                 |
-| :----------------- | :------------------------------------ | :-------------------------------------------------------- |
-| [`git.sh`](git.sh) | Linux / FreeBSD / macOS / WSL / MSYS2 | Configura Git globalmente com variáveis do ambiente/Vault |
-| [`got.sh`](got.sh) | FreeBSD / OpenBSD / Linux             | Gera `~/.gotconfig` com dados do autor do Vault           |
+| Arquivo                        | Plataforma                            | Descrição                                                 |
+| :----------------------------- | :------------------------------------ | :-------------------------------------------------------- |
+| [`git.sh`](git.sh)             | Linux / FreeBSD / macOS / WSL / MSYS2 | Configura Git globalmente com variáveis do ambiente/Vault |
+| [`got.sh`](got.sh)             | FreeBSD / OpenBSD / Linux             | Gera `~/.gotconfig` com dados do autor do Vault           |
+| [`git-crypt.sh`](git-crypt.sh) | Linux / FreeBSD / macOS / Windows     | Instalação multiplataforma da ferramenta de criptografia  |
 
 ---
 
@@ -33,4 +34,7 @@ curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs
 
 # Configurar Got no UNIX
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/got.sh | sh
+
+# Instalar git-crypt no UNIX
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git-crypt.sh | sh
 ```
