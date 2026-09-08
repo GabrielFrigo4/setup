@@ -36,6 +36,7 @@ echo "✅ [Nome]: Configurado com sucesso!"
 ```
 
 ### 🔍 Mecânica da Resolução de Elevação (`ELEVATE`)
+
 - **Isolamento via Subshell:** A expressão `$( ... )` avalia o ambiente sem vazar variáveis auxiliares ou poluir o escopo do script.
 - **Detecção Imediata de Root:** Se `id -u` for `0` (`root`), a primeira cláusula encerra em curto-circuito e `ELEVATE` torna-se `""`.
 - **Precedência POSIX com Chaves (`{ ...; }`):** Evita que o fallback para `sudo` seja executado indevidamente caso `doas` esteja presente (ambos os operadores `&&` e `||` têm a mesma precedência em POSIX).

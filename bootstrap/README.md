@@ -6,9 +6,9 @@
 
 ## 🎯 A Fronteira: `bootstrap/` vs `software/`
 
-| Camada                                   | Papel Central                        | Tipo de Conteúdo                                                  | Escopo                                                                                                        |
-| :--------------------------------------- | :----------------------------------- | :---------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------ |
-| **`bootstrap/`** _(esta pasta)_          | **O "COMO" (Provisionamento Ativo)** | Receitas de automação executáveis (`.sh`, `.cmd` e `.ps1`).       | Nível de sistema e máquina (`sudo`/`doas`, `dnf`, `apt`, `pkg`, `winget`, drivers, containers, fontes do SO). |
+| Camada                                                  | Papel Central                        | Tipo de Conteúdo                                                  | Escopo                                                                                                        |
+| :------------------------------------------------------ | :----------------------------------- | :---------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------ |
+| **`bootstrap/`** _(esta pasta)_                         | **O "COMO" (Provisionamento Ativo)** | Receitas de automação executáveis (`.sh`, `.cmd` e `.ps1`).       | Nível de sistema e máquina (`sudo`/`doas`, `dnf`, `apt`, `pkg`, `winget`, drivers, containers, fontes do SO). |
 | **[Profile](https://github.com/GabrielFrigo4/profile)** | **O "O QUÊ" (Estado Declarativo)**   | Arquivos estáticos puros (`.json`, `.toml`, `.yaml`, `.profile`). | Espaço do usuário (`$HOME` / `~/.config`). Zero privilégios de sistema.                                       |
 
 ---
@@ -80,25 +80,25 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 ### Como ela funciona passo a passo:
 
 1. **Subshell & Captura Atômica (`$( ... )`):**
-   - Executa a validação em um subshell isolado via substituição de comando (*command substitution*).
-   - A saída gerada (`doas`, `sudo` ou nada) é capturada e atribuída diretamente a `ELEVATE`. Se nenhum comando for emitido, a variável recebe valor vazio `""`.
-   - Nenhuma variável intermediária ou código de retorno vaza para a sessão principal.
+    - Executa a validação em um subshell isolado via substituição de comando (_command substitution_).
+    - A saída gerada (`doas`, `sudo` ou nada) é capturada e atribuída diretamente a `ELEVATE`. Se nenhum comando for emitido, a variável recebe valor vazio `""`.
+    - Nenhuma variável intermediária ou código de retorno vaza para a sessão principal.
 
 2. **Detecção Antecipada de Root (`[ "$(id -u)" -ne 0 ]`):**
-   - Verifica se o identificador de usuário efetivo (UID) é diferente de 0.
-   - Se o script já estiver executando como `root` (UID 0), a expressão retorna falso (código 1).
-   - O operador `&&` entra imediatamente em curto-circuito, pulando todas as etapas subsequentes e deixando `ELEVATE=""` sem desperdício de ciclos de CPU.
+    - Verifica se o identificador de usuário efetivo (UID) é diferente de 0.
+    - Se o script já estiver executando como `root` (UID 0), a expressão retorna falso (código 1).
+    - O operador `&&` entra imediatamente em curto-circuito, pulando todas as etapas subsequentes e deixando `ELEVATE=""` sem desperdício de ciclos de CPU.
 
 3. **Precedência POSIX & Agrupamento de Chaves (`{ ...; }`):**
-   - No padrão POSIX Shell, os operadores lógicos `&&` e `||` possuem a mesma precedência e são avaliados estritamente da esquerda para a direita.
-   - Um encadeamento ingênuo `cmd1 && echo "doas" || cmd2 && echo "sudo"` falha na armadilha de precedência: se `doas` existir, `echo "doas"` é bem-sucedido (código 0), ignorando o `|| cmd2`, mas executando o posterior `&& echo "sudo"` — gerando `doas\nsudo`.
-   - O uso rigoroso dos blocos `{ command -v doas ... && echo "doas" || { command -v sudo ... && echo "sudo"; }; }` garante que o fallback para `sudo` seja avaliado estritamente quando `doas` estiver ausente.
+    - No padrão POSIX Shell, os operadores lógicos `&&` e `||` possuem a mesma precedência e são avaliados estritamente da esquerda para a direita.
+    - Um encadeamento ingênuo `cmd1 && echo "doas" || cmd2 && echo "sudo"` falha na armadilha de precedência: se `doas` existir, `echo "doas"` é bem-sucedido (código 0), ignorando o `|| cmd2`, mas executando o posterior `&& echo "sudo"` — gerando `doas\nsudo`.
+    - O uso rigoroso dos blocos `{ command -v doas ... && echo "doas" || { command -v sudo ... && echo "sudo"; }; }` garante que o fallback para `sudo` seja avaliado estritamente quando `doas` estiver ausente.
 
 4. **Detecção Portável e Silenciosa (`command -v` com Redirecionamentos Citados):**
-   - Em conformidade com o padrão POSIX, utiliza `command -v` em vez do binário externo `which` (não padronizado e ausente em instalações mínimas de FreeBSD e containers).
-   - Os redirecionamentos `> "/dev/null" 2>&1` são citados com aspas duplas, silenciando completamente tanto a saída padrão quanto eventuais erros no descritor 2.
+    - Em conformidade com o padrão POSIX, utiliza `command -v` em vez do binário externo `which` (não padronizado e ausente em instalações mínimas de FreeBSD e containers).
+    - Os redirecionamentos `> "/dev/null" 2>&1` são citados com aspas duplas, silenciando completamente tanto a saída padrão quanto eventuais erros no descritor 2.
 
 5. **Hierarquia e Soberania do Usuário (`doas` > `sudo`):**
-   - Honra o **Princípio 18 (Soberania do Usuário)**: se o usuário optou por utilizar `doas` (mais enxuto, seguro e preferido em ambientes BSD/Linux avançados), ele é priorizado.
-   - Caso `doas` não esteja presente, faz o fallback gracioso para o clássico `sudo`.
-   - Caso o sistema não possua nenhum dos dois ou o usuário execute a receita sem privilégios pré-configurados, `ELEVATE` torna-se `""` e o comando subsequente `${ELEVATE} comando` executa nativamente como usuário comum sem abortar a inicialização.
+    - Honra o **Princípio 18 (Soberania do Usuário)**: se o usuário optou por utilizar `doas` (mais enxuto, seguro e preferido em ambientes BSD/Linux avançados), ele é priorizado.
+    - Caso `doas` não esteja presente, faz o fallback gracioso para o clássico `sudo`.
+    - Caso o sistema não possua nenhum dos dois ou o usuário execute a receita sem privilégios pré-configurados, `ELEVATE` torna-se `""` e o comando subsequente `${ELEVATE} comando` executa nativamente como usuário comum sem abortar a inicialização.

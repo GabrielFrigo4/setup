@@ -1,6 +1,6 @@
 # 📦 Universal Setup Environment
 
-> Repositório público de provisionamento de sistema operacional, receitas atômicas de infraestrutura, drivers de hardware, containers e estações de trabalho limpas (*Clean Host*). Componente de sistema do **Quarteto de Produtividade**.
+> Repositório público de provisionamento de sistema operacional, receitas atômicas de infraestrutura, drivers de hardware, containers e estações de trabalho limpas (_Clean Host_). Componente de sistema do **Quarteto de Produtividade**.
 
 ---
 
@@ -33,7 +33,7 @@
 
 O **Setup** provê a fundação do sistema operacional com privilégios administrativos (`root` / `sudo` / `ELEVATE`):
 
-1. **"Clean Host" (Isolamento Extremo):** O sistema nativo (o *host*) permanece o mais puro possível. Ele provê apenas a interface gráfica Wayland, drivers de hardware, utilitários essenciais e a camada de virtualização/containers. Bancos de dados e runtimes de projetos vivem em Containers (Incus, Podman, Docker) ou Jails (FreeBSD).
+1. **"Clean Host" (Isolamento Extremo):** O sistema nativo (o _host_) permanece o mais puro possível. Ele provê apenas a interface gráfica Wayland, drivers de hardware, utilitários essenciais e a camada de virtualização/containers. Bancos de dados e runtimes de projetos vivem em Containers (Incus, Podman, Docker) ou Jails (FreeBSD).
 2. **Zero Dependência de Clone:** Concebido como um **Catálogo de Receitas Modular (Cookbook)**. Você não precisa clonar este repositório para utilizá-lo. Navegue pelos arquivos diretamente na interface web do GitHub ou execute receitas pontuais via terminal.
 3. **Idempotência Rigorosa:** Cada receita pode ser executada uma, duas ou dez vezes seguidas produzindo o mesmo estado estável.
 
@@ -42,10 +42,10 @@ O **Setup** provê a fundação do sistema operacional com privilégios administ
 ## 📂 Estrutura do Projeto
 
 - **[`bootstrap/`](bootstrap/README.md)** — **Catálogo Modular de Receitas de Sistema (O "COMO"):**
-  - **`freebsd/`** — Infraestrutura base (`common/`), Containers (Jails & Bastille), Workstation Desktop (KDE Plasma) e Servidores.
-  - **`linux/`** — Infraestrutura base (`common/`), Containers (Incus & Podman), Workstations Desktop (Fedora, Arch, Debian), Servidores Cloud e WSL2 (`wsl/`).
-  - **`windows/`** — Ferramentas nativas (`native/`) e subsistema MSYS2 (`msys2/` UCRT64).
-  - **`common/`** — Receitas universais compartilhadas entre Linux, FreeBSD e Windows (fontes, linters, editores, vcs).
+    - **`freebsd/`** — Infraestrutura base (`common/`), Containers (Jails & Bastille), Workstation Desktop (KDE Plasma) e Servidores.
+    - **`linux/`** — Infraestrutura base (`common/`), Containers (Incus & Podman), Workstations Desktop (Fedora, Arch, Debian), Servidores Cloud e WSL2 (`wsl/`).
+    - **`windows/`** — Ferramentas nativas (`native/`) e subsistema MSYS2 (`msys2/` UCRT64).
+    - **`common/`** — Receitas universais compartilhadas entre Linux, FreeBSD e Windows (fontes, linters, editores, vcs).
 - **[`scripts/`](scripts/README.md)** — Utilitários de compilação local (`build/`), conversão de arquivos (`convert/`), automações de registro do Windows (`windows/`) e auditoria contínua (`audit/`).
 - **[`docs/`](docs/README.md)** — Documentação técnica da infraestrutura do host (`BOOTSTRAP.md`, `CONTAINERS.md`, `HYPERVISORS.md`, `BSD.md`, `LINUX.md`, `WINDOWS.md`).
 
@@ -63,9 +63,27 @@ curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap
 
 ---
 
+## 🧪 Quality Gates & Ganchos Git (.githooks)
+
+Para habilitar a validação de arquitetura e verificação de Markdown antes de cada commit:
+
+```sh
+chmod 0755 .githooks/pre-commit
+git config core.hooksPath .githooks
+```
+
+Para executar a validação estática e qualidade manualmente:
+
+```sh
+python3 scripts/audit/all.py
+```
+
+---
+
 ## 🔗 Integração com o Quarteto de Produtividade
 
 Após provisionar a máquina hospedeira com o **Setup**:
+
 1. Instale o motor interativo de linha de comando com o **[Shell](https://github.com/GabrielFrigo4/shell)**.
 2. Clone seu cofre de credenciais e chaves criptográficas com o **[Vault](https://github.com/GabrielFrigo4/vault)**.
 3. Clone e sincronize seus dotfiles e assistentes de IA com o **[Profile](https://github.com/GabrielFrigo4/profile)**.

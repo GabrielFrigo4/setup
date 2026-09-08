@@ -1,9 +1,9 @@
 ---
 name: deep-investigation
 description: >-
-  Deep root-cause technical investigation and primary sources research for Universal Setup.
-  Use when diagnosing package manager failures, kernel/sysctl configurations,
-  FreeBSD Jail isolation, container runtimes (Incus, Podman), and hardware driver setup.
+    Deep root-cause technical investigation and primary sources research for Universal Setup.
+    Use when diagnosing package manager failures, kernel/sysctl configurations,
+    FreeBSD Jail isolation, container runtimes (Incus, Podman), and hardware driver setup.
 ---
 
 # Deep Investigation — Upstream Sources & Infrastructure Diagnostics

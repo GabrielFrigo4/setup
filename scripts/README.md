@@ -14,12 +14,12 @@ Esta pasta contém utilitários de suporte focados em automações de compilaç�
 
 ## 📂 Catálogo de Categorias
 
-| Categoria                                 | Tipo               | Descrição                                                                               |
-| :---------------------------------------- | :----------------- | :-------------------------------------------------------------------------------------- |
-| **[`audit/`](audit/README.md)**           | Análise Estática   | Auditores de código (`monoliths.py` e `nanos.py`) para manter o equilíbrio arquitetural |
-| **[`build/`](build/README.md)**           | Compilação         | Compilação a partir do código-fonte (Aseprite e LibreSprite)                            |
-| **[`convert/`](convert/README.md)**       | Conversores        | Conversão unificada de quebras de linha (`line-endings`) e Markdown para PDF (`md2pdf`) |
-| **[`windows/`](windows/README.md)**       | Sistema & Registro | Injeções seguras de registro (`.reg`) para UTF-8, AltGr, Emacs e Hyper-V                |
+| Categoria                           | Tipo               | Descrição                                                                               |
+| :---------------------------------- | :----------------- | :-------------------------------------------------------------------------------------- |
+| **[`audit/`](audit/README.md)**     | Análise Estática   | Auditores de código (`monoliths.py` e `nanos.py`) para manter o equilíbrio arquitetural |
+| **[`build/`](build/README.md)**     | Compilação         | Compilação a partir do código-fonte (Aseprite e LibreSprite)                            |
+| **[`convert/`](convert/README.md)** | Conversores        | Conversão unificada de quebras de linha (`line-endings`) e Markdown para PDF (`md2pdf`) |
+| **[`windows/`](windows/README.md)** | Sistema & Registro | Injeções seguras de registro (`.reg`) para UTF-8, AltGr, Emacs e Hyper-V                |
 
 ---
 
