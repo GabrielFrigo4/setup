@@ -4,11 +4,12 @@
 # ------------------------------------------------------------------------------
 set -eu
 
+echo "📦 [LazyVim]: Instalando e configurando LazyVim starter..."
+
 rm -rf "${HOME}/.config/nvim" 2> "/dev/null" || true
 
 git clone "https://github.com/LazyVim/starter" "${HOME}/.config/nvim"
 rm -rf "${HOME}/.config/nvim/.git"
-
 
 mkdir -p "${HOME}/.config/nvim/lua/config"
 
@@ -26,3 +27,5 @@ vim.api.nvim_create_autocmd({ 'VimLeave', 'VimSuspend' }, {
 	command = 'set guicursor='
 })
 EOF
+
+echo "✅ [LazyVim]: LazyVim configurado com sucesso!"

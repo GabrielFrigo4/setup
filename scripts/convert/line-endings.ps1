@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Tool: Line Endings Converter (PowerShell)
+# Recipe: Line Endings Converter (PowerShell)
 # ------------------------------------------------------------------------------
 [CmdletBinding()]
 param (

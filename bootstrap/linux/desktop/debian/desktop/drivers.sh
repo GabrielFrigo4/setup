@@ -4,6 +4,8 @@
 # ------------------------------------------------------------------------------
 set -eu
 
+echo "📦 [Debian Drivers]: Instalando drivers de vídeo Mesa e Nvidia..."
+
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
 ${ELEVATE} apt update
@@ -13,3 +15,5 @@ ${ELEVATE} apt install --yes \
 	libgl1-mesa-dev \
 	nvidia-driver \
 	firmware-misc-nonfree
+
+echo "✅ [Debian Drivers]: Drivers de vídeo configurados com sucesso!"

@@ -4,6 +4,8 @@
 # ------------------------------------------------------------------------------
 set -eu
 
+echo "📦 [Doom Emacs]: Instalando e configurando framework..."
+
 rm -rf "${HOME}/.emacs" "${HOME}/.emacs.d" "${HOME}/.config/emacs" "${HOME}/.config/doom" 2> "/dev/null" || true
 
 git clone --depth 1 "https://github.com/doomemacs/doomemacs" "${HOME}/.config/emacs"
@@ -47,3 +49,5 @@ EOF
 
 "${HOME}/.config/emacs/bin/doom" sync
 "${HOME}/.config/emacs/bin/doom" upgrade
+
+echo "✅ [Doom Emacs]: Doom Emacs configurado com sucesso!"

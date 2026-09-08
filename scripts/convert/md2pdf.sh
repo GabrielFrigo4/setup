@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ------------------------------------------------------------------------------
-# Tool: Markdown to PDF Batch Converter (POSIX)
+# Recipe: Markdown to PDF Batch Converter (POSIX)
 # ------------------------------------------------------------------------------
 set -eu
 
@@ -12,6 +12,8 @@ fi
 INPUT_DIR="$(cd "${1}" && pwd)"
 BASE_NAME="$(basename "$INPUT_DIR")"
 OUTPUT_ROOT="$(dirname "$INPUT_DIR")/${BASE_NAME}.pdf"
+
+echo "📦 [Markdown PDF]: Iniciando conversão de Markdown para PDF..."
 
 mkdir -p "$OUTPUT_ROOT"
 
@@ -32,4 +34,4 @@ find "$INPUT_DIR" -type f -name "*.md" -not -path "$OUTPUT_ROOT/*" | while read 
 		-V margin-left=15mm -V margin-right=15mm
 done
 
-printf "\n\033[32mSucesso: %s\033[0m\n" "$OUTPUT_ROOT"
+echo "✅ [Markdown PDF]: Documentos PDF gerados com sucesso em ${OUTPUT_ROOT}!"

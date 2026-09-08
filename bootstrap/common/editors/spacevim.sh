@@ -4,6 +4,8 @@
 # ------------------------------------------------------------------------------
 set -eu
 
+echo "📦 [SpaceVim]: Instalando e configurando SpaceVim..."
+
 rm -rf "${HOME}/.vim" "${HOME}/.vimrc" "${HOME}/.SpaceVim" "${HOME}/.SpaceVim.d" 2> "/dev/null" || true
 
 git clone "https://github.com/SpaceVim/SpaceVim.git" "${HOME}/.SpaceVim"
@@ -46,3 +48,5 @@ function! myspacevim#before() abort
    set guicursor+=i-ci:ver25-blinkon1
 endfunction
 EOF
+
+echo "✅ [SpaceVim]: SpaceVim configurado com sucesso!"

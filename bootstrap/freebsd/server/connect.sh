@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ------------------------------------------------------------------------------
-# Tool: FreeBSD Server Dynamic Connect (SSH / SCP via virsh)
+# Recipe: FreeBSD Server Dynamic Connect (SSH / SCP via virsh)
 # ------------------------------------------------------------------------------
 set -eu
 

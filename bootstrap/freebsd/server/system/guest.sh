@@ -6,17 +6,19 @@ set -eu
 
 echo "📦 [FreeBSD Guest]: Configurando agente QEMU e console..."
 
-pw groupmod wheel -m "$(id -un)"
+ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
-pkg bootstrap --yes
-pkg update
-pkg upgrade --yes
+${ELEVATE} pw groupmod wheel -m "$(id -un)"
 
-pkg install --yes qemu-guest-agent
-sysrc qemu_guest_agent_enable="YES"
-sysrc qemu_guest_agent_flags="-d -m virtio-serial -p /dev/ttyV0.1"
-service qemu-guest-agent start 2> "/dev/null" || true
+${ELEVATE} pkg bootstrap --yes
+${ELEVATE} pkg update
+${ELEVATE} pkg upgrade --yes
 
-sysrc allscreens_flags="-f spleen-16x32"
+${ELEVATE} pkg install --yes qemu-guest-agent
+${ELEVATE} sysrc qemu_guest_agent_enable="YES"
+${ELEVATE} sysrc qemu_guest_agent_flags="-d -m virtio-serial -p /dev/ttyV0.1"
+${ELEVATE} service qemu-guest-agent start 2> "/dev/null" || true
+
+${ELEVATE} sysrc allscreens_flags="-f spleen-16x32"
 
 echo "✅ [FreeBSD Guest]: Agente QEMU ativo e console spleen configurado!"

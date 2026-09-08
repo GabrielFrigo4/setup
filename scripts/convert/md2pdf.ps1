@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Tool: Markdown to PDF Batch Converter (PowerShell)
+# Recipe: Markdown to PDF Batch Converter (PowerShell)
 # ------------------------------------------------------------------------------
 param (
 	[Parameter(Mandatory=$false)]

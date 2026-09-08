@@ -4,6 +4,8 @@
 # ------------------------------------------------------------------------------
 set -eu
 
+echo "📦 [Arch Base]: Configurando sistema base, SDDM e journald..."
+
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
 ${ELEVATE} pacman-mirrors --fasttrack 5 2> "/dev/null" || true
@@ -20,3 +22,5 @@ cat << 'EOF' | ${ELEVATE} tee "/etc/systemd/journald.conf.d/00-size-limit.conf" 
 SystemMaxUse=256M
 EOF
 ${ELEVATE} systemctl restart systemd-journald 2> "/dev/null" || true
+
+echo "✅ [Arch Base]: Sistema base configurado com sucesso!"

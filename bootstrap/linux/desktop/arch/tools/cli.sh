@@ -4,6 +4,8 @@
 # ------------------------------------------------------------------------------
 set -eu
 
+echo "📦 [Arch CLI]: Instalando ferramentas de linha de comando e análise..."
+
 yay -S --needed --noconfirm \
 	fd \
 	bat \
@@ -35,3 +37,5 @@ yay -S --needed --noconfirm \
 	strace \
 	ltrace \
 	radare2
+
+echo "✅ [Arch CLI]: Ferramentas CLI instaladas com sucesso!"

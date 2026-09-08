@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ------------------------------------------------------------------------------
-# Tool: Linux Cloud Server Dynamic Connect (SSH / SCP via Vault)
+# Recipe: Linux Cloud Server Dynamic Connect (SSH / SCP via Vault)
 # ------------------------------------------------------------------------------
 set -eu
 
