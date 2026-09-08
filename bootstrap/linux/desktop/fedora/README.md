@@ -28,9 +28,7 @@ Esta pasta concentra o provisionamento da estação de trabalho primária Linux 
 Execute qualquer receita individualmente via terminal:
 
 ```sh
-# Aplicar atalhos e tema escuro no GNOME
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/desktop/fedora/desktop/gnome.sh | sh
 
-# Configurar sistema base
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/desktop/fedora/system/base.sh | sh
 ```

@@ -25,12 +25,9 @@ Esta pasta organiza a configuração de distribuições Linux no WSL2: ativaçã
 Abra o terminal da sua distribuição no WSL2 e execute diretamente:
 
 ```sh
-# Provisionar Fedora / Rocky Linux no WSL2 (DNF)
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/wsl/fedora.sh | sh
 
-# Provisionar Arch Linux no WSL2 (Pacman)
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/wsl/arch.sh | sh
 
-# Provisionar Debian no WSL2 (APT)
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/wsl/debian.sh | sh
 ```

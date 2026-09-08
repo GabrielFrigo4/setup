@@ -113,23 +113,22 @@ Os scripts de provisionamento adotam um cabeçalho compacto de 3 linhas com modo
 
 ```sh
 #!/usr/bin/env sh
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------
 # Recipe: [Nome do Software / Funcionalidade]
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------
 set -eu
 
 echo "📦 [Nome]: Iniciando configuração..."
 
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
-# Execução atômica e idempotente
-
 echo "✅ [Nome]: Configurado com sucesso!"
 ```
 
 ### 6. Padrão Exclusivo de Comentários Estruturais (Regra do Não-Vazamento)
-- Comentários narrativos inline são proibidos.
-- Seções estruturais usam blocos com 32 `=` ou 32 `-` e títulos contidos no limite.
+- **Zero Comentários Narrativos:** Comentários explicativos inline são estritamente proibidos em código, scripts, templates e exemplos. O código expressa sua intenção através de separação por linhas em branco e nomenclatura semântica.
+- **Cabeçalho de Topo (Header Banner):** Exclusivo para as linhas 2 a 4 do arquivo, delimitado por exatamente 64 hífens (`# ----------------------------------------------------------------`).
+- **Corpo do Script:** Seções estruturais internas usam estritamente réguas de 32 caracteres (`### ================================` ou `### --------------------------------`), com o título estritamente contido no limite de 32 caracteres (não-vazamento).
 
 ### 7. Ordem Canônica de Priorização de Pacotes (Dispatch Universal)
 1. **Receitas Multi-OS (`FreeBSD` + `Linux`):**

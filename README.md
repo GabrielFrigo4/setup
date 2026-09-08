@@ -54,13 +54,10 @@ O **Setup** provê a fundação do sistema operacional com privilégios administ
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
 ```sh
-# Exemplo 1: Executar receita do Fedora Desktop diretamente via curl
 curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap/linux/desktop/fedora/desktop/gnome.sh" | sh
 
-# Exemplo 2: Executar receita de fontes universais
 curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap/common/fonts/fonts.sh" | sh
 
-# Exemplo 3: Executar o orquestrador interativo local (se clonado)
 ./setup.sh
 ```
 

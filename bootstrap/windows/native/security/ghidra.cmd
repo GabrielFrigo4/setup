@@ -1,8 +1,8 @@
 @echo off
 setlocal
-rem ----------------------------------------------------------------------------
+rem ----------------------------------------------------------------
 rem Recipe: Ghidra SRE (NSA)
-rem ----------------------------------------------------------------------------
+rem ----------------------------------------------------------------
 
 echo [*] Baixando Ghidra...
 for /f "tokens=1,2" %%i in ('curl -sL "https://api.github.com/repos/NationalSecurityAgency/ghidra/releases/latest" ^| findstr "browser_download_url.*ghidra_.*_PUBLIC_.*\.zip" ^| sed "s/.*ghidra_\([0-9.]*\)_PUBLIC_\([0-9]*\)\.zip.*/\1 \2/"') do (

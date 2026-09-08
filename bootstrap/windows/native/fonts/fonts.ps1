@@ -1,6 +1,6 @@
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------
 # Recipe: Windows System & Nerd Fonts Installation
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------
 
 $fonts = @("Carlito-Regular.ttf", "Carlito-Bold.ttf", "Carlito-Italic.ttf", "Carlito-BoldItalic.ttf")
 $baseUrl = "https://github.com/google/fonts/raw/main/ofl/carlito/"

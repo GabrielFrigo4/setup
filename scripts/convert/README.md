@@ -29,16 +29,13 @@ Esta pasta centraliza ferramentas para sanear e converter formatos de arquivos e
 ### Conversão de Quebras de Linha
 
 ```sh
-# Converter para LF (UNIX)
 sh scripts/convert/line-endings.sh --to-unix
 
-# Converter para CRLF (Windows)
 sh scripts/convert/line-endings.sh --to-dos
 ```
 
 ### Markdown para PDF
 
 ```sh
-# Converte todos os arquivos .md dentro da pasta docs/:
 sh scripts/convert/md2pdf.sh ./docs
 ```

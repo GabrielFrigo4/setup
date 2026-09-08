@@ -1,8 +1,8 @@
 @echo off
 setlocal
-rem ----------------------------------------------------------------------------
+rem ----------------------------------------------------------------
 rem Recipe: Common Developer Tools & Linters Configuration (Windows)
-rem ----------------------------------------------------------------------------
+rem ----------------------------------------------------------------
 
 echo [*] Configurando formatadores e linters globais no Windows...
 

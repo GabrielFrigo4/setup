@@ -29,9 +29,7 @@ Esta pasta centraliza as receitas de provisionamento para o ambiente **MSYS2 UCR
 Abra o terminal do MSYS2 (UCRT64) e execute qualquer receita diretamente:
 
 ```sh
-# Instalar toolchains de compilação
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/windows/msys2/toolchains.sh | sh
 
-# Instalar linguagens (Python, Lua, Rust)
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/windows/msys2/languages.sh | sh
 ```

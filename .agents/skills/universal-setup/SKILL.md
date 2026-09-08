@@ -47,12 +47,9 @@ Antes de escrever qualquer código, posicione a receita no diretório correto:
 ## 3. Checklist de Validação Obrigatório
 
 ```sh
-# 1. Verificar espaços e quebras de linha
 git diff --check
 
-# 2. Executar suíte completa de auditoria
 python3 scripts/audit/all.py
 
-# 3. Executar o pre-commit hook oficial
 ./.githooks/pre-commit
 ```

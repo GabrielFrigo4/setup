@@ -55,16 +55,14 @@ Para criar ou editar scripts mantendo a consistência do ecossistema, use o cabe
 
 ```sh
 #!/usr/bin/env sh
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------
 # Recipe: [Nome do Software / Funcionalidade]
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------
 set -eu
 
 echo "📦 [Nome]: Iniciando configuração..."
 
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
-
-# Execução atômica e idempotente
 
 echo "✅ [Nome]: Configurado com sucesso!"
 ```

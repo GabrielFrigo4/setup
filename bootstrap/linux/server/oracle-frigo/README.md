@@ -27,9 +27,7 @@ Esta pasta organiza as aplicações e configurações específicas do servidor p
 Execute a receita desejada diretamente no terminal do servidor:
 
 ```sh
-# Configurar Proxy Caddy
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/server/oracle-frigo/caddy.sh | sh
 
-# Configurar Serviço Resume
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/server/oracle-frigo/resume.sh | sh
 ```

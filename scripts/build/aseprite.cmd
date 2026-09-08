@@ -1,8 +1,8 @@
 @echo off
 setlocal
-rem ----------------------------------------------------------------------------
+rem ----------------------------------------------------------------
 rem Recipe: Aseprite Build from Source
-rem ----------------------------------------------------------------------------
+rem ----------------------------------------------------------------
 
 curl -fsSL -o "Skia-Windows-Release-x64.zip" "https://github.com/aseprite/skia/releases/download/m102-861e4743af/Skia-Windows-Release-x64.zip"
 if %errorlevel% neq 0 exit /b %errorlevel%
