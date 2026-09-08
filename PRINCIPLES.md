@@ -120,13 +120,7 @@ set -eu
 
 echo "📦 [Nome]: Iniciando configuração..."
 
-if [ "$(id -u)" -ne 0 ] && command -v doas > "/dev/null" 2>&1; then
-	ELEVATE="doas"
-elif [ "$(id -u)" -ne 0 ] && command -v sudo > "/dev/null" 2>&1; then
-	ELEVATE="sudo"
-else
-	ELEVATE=""
-fi
+ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
 # Execução atômica e idempotente
 
@@ -150,3 +144,7 @@ echo "✅ [Nome]: Configurado com sucesso!"
 - Coleções contáveis $\rightarrow$ PLURAL (`scripts/`, `docs/`, `fonts/`, `linters/`).
 - Áreas de sistema & processos $\rightarrow$ SINGULAR (`bootstrap/`, `system/`, `desktop/`, `server/`, `container/`, `security/`).
 - Nomes próprios $\rightarrow$ CANÔNICO (`linux/`, `freebsd/`, `windows/`, `fedora/`, `arch/`, `debian/`).
+
+### 10. Orçamento de Linhas (Regra 8 - 128)
+- **Piso:** Nenhum script isolado deve possuir menos de 8 linhas úteis.
+- **Teto:** Nenhum script deve ultrapassar 128 linhas úteis (evitar monólitos e manter coesão temática).

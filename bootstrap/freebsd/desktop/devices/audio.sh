@@ -6,13 +6,7 @@ set -eu
 
 echo "📦 [FreeBSD Audio]: Iniciando roteamento de áudio..."
 
-if [ "$(id -u)" -ne 0 ] && command -v doas > "/dev/null" 2>&1; then
-	ELEVATE="doas"
-elif [ "$(id -u)" -ne 0 ] && command -v sudo > "/dev/null" 2>&1; then
-	ELEVATE="sudo"
-else
-	ELEVATE=""
-fi
+ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
 if ! ifconfig ue0 > "/dev/null" 2>&1; then
 	echo "❌ [FreeBSD Audio]: Interface 'ue0' não encontrada! Conecte o USB com tethering ativo."

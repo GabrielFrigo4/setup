@@ -6,13 +6,7 @@ set -eu
 
 echo "📦 [Debian Apps]: Instalando navegadores e aplicativos desktop..."
 
-if [ "$(id -u)" -ne 0 ] && command -v doas > "/dev/null" 2>&1; then
-	ELEVATE="doas"
-elif [ "$(id -u)" -ne 0 ] && command -v sudo > "/dev/null" 2>&1; then
-	ELEVATE="sudo"
-else
-	ELEVATE=""
-fi
+ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
 ${ELEVATE} mkdir -p "/usr/share/keyrings"
 

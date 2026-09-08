@@ -17,13 +17,7 @@ set -eu
 
 echo "📦 [Nome]: Iniciando configuração..."
 
-if [ "$(id -u)" -ne 0 ] && command -v doas > "/dev/null" 2>&1; then
-	ELEVATE="doas"
-elif [ "$(id -u)" -ne 0 ] && command -v sudo > "/dev/null" 2>&1; then
-	ELEVATE="sudo"
-else
-	ELEVATE=""
-fi
+ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
 # Execução atômica e idempotente
 
@@ -47,7 +41,7 @@ echo "✅ [Nome]: Configurado com sucesso!"
   - `usermod --append --groups`
 
 ## 5. Limites de Linhas & Clean Code
-- **Piso:** Nenhum script isolado deve ter menos de 16 linhas.
+- **Piso:** Nenhum script isolado deve ter menos de 8 linhas.
 - **Teto:** Nenhum script deve ultrapassar 128 linhas (evitar monólitos).
 - Comentários inline narrativos são estritamente proibidos; utilize linhas em branco para separar blocos lógicos.
 

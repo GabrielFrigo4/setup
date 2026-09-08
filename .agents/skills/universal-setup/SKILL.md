@@ -39,7 +39,7 @@ Antes de escrever qualquer código, posicione a receita no diretório correto:
 5. **Zero Comentários Narrativos:**
    - O código deve ser autoexplicativo. Separe blocos lógicos com linhas em branco.
 6. **Limites de Tamanho de Script:**
-   - Piso: >= 16 linhas.
+   - Piso: >= 8 linhas.
    - Teto: <= 128 linhas.
 
 ---

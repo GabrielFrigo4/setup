@@ -19,7 +19,7 @@ O `Configuration` adota o modelo de **Livro de Receitas (Cookbook)**:
 
 ## 📐 Template Canônico de Receitas (`RECIPE TEMPLATE`)
 
-Para garantir uniformidade e previsibilidade, todo script de configuração segue rigorosamente esta estrutura:
+Para garantir uniformidade e previsibilidade, todo script de configuração segue rigorosamente esta estrutura com a resolução atômica de `ELEVATE`:
 
 ```sh
 #!/usr/bin/env sh
@@ -30,18 +30,19 @@ set -eu
 
 echo "📦 [Nome]: Iniciando configuração..."
 
-if [ "$(id -u)" -ne 0 ] && command -v doas > "/dev/null" 2>&1; then
-	ELEVATE="doas"
-elif [ "$(id -u)" -ne 0 ] && command -v sudo > "/dev/null" 2>&1; then
-	ELEVATE="sudo"
-else
-	ELEVATE=""
-fi
+ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
 # Execução atômica e idempotente
 
 echo "✅ [Nome]: Configurado com sucesso!"
 ```
+
+### 🔍 Mecânica da Resolução de Elevação (`ELEVATE`)
+- **Isolamento via Subshell:** A expressão `$( ... )` avalia o ambiente sem vazar variáveis auxiliares ou poluir o escopo do script.
+- **Detecção Imediata de Root:** Se `id -u` for `0` (`root`), a primeira cláusula encerra em curto-circuito e `ELEVATE` torna-se `""`.
+- **Precedência POSIX com Chaves (`{ ...; }`):** Evita que o fallback para `sudo` seja executado indevidamente caso `doas` esteja presente (ambos os operadores `&&` e `||` têm a mesma precedência em POSIX).
+- **Detecção Silenciosa:** Utiliza `command -v` com redirecionamento citado `> "/dev/null" 2>&1`.
+- **Soberania do Usuário:** Prioriza `doas` sobre `sudo`, mas degrada para execução sem privilégios caso nenhum esteja instalado.
 
 ---
 

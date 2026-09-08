@@ -6,7 +6,18 @@ set -eu
 
 echo "📦 [Workspace]: Provisionando o ecossistema do Quarteto de Produtividade..."
 
-_env_dir="${1:-${HOME}/Documentos/Environment}"
+if [ -n "${1:-}" ]; then
+	_env_dir="$1"
+elif command -v xdg-user-dir > "/dev/null" 2>&1 && [ -n "$(xdg-user-dir DOCUMENTS 2> "/dev/null")" ]; then
+	_env_dir="$(xdg-user-dir DOCUMENTS)/Environment"
+elif [ -d "${HOME}/Documentos" ]; then
+	_env_dir="${HOME}/Documentos/Environment"
+elif [ -d "${HOME}/Documents" ]; then
+	_env_dir="${HOME}/Documents/Environment"
+else
+	_env_dir="${HOME}/Documents/Environment"
+fi
+
 [ ! -d "${_env_dir}" ] && mkdir -p "${_env_dir}"
 
 echo "  ↳ Diretório de trabalho: ${_env_dir}"
