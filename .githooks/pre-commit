@@ -28,13 +28,13 @@ fi
 ### Shell Syntax Check (sh -n / bash -n)
 ### --------------------------------
 echo "  ↳ Validating shell script syntax (sh -n & bash -n)..."
-if ! find bootstrap scripts -name "*.sh" -not -path "./.git/*" -exec sh -n {} +; then
+if ! find common freebsd linux windows scripts setup.sh -name "*.sh" -not -path "./.git/*" -exec sh -n {} +; then
 	echo "❌ [pre-commit] Syntax error detected by 'sh -n'!" >&2
 	exit 1
 fi
 
 if command -v bash > "/dev/null" 2>&1; then
-	if ! find bootstrap scripts -name "*.sh" -not -path "./.git/*" -exec bash -n {} +; then
+	if ! find common freebsd linux windows scripts setup.sh -name "*.sh" -not -path "./.git/*" -exec bash -n {} +; then
 		echo "❌ [pre-commit] Syntax error detected by 'bash -n'!" >&2
 		exit 1
 	fi

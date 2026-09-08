@@ -37,5 +37,5 @@ Esta pasta reúne scripts especializados para a estação de trabalho gráfica F
 Execute qualquer receita individualmente copiando o link RAW diretamente para o terminal do FreeBSD:
 
 ```sh
-fetch -o - https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/freebsd/desktop/gui/kde.sh | sh
+fetch -o - https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/desktop/gui/kde.sh | sh
 ```

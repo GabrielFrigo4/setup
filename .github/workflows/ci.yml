@@ -29,4 +29,4 @@ jobs:
 
       - name: Validate Recipe Syntax (POSIX sh -n)
         run: |
-          find bootstrap scripts setup.sh -name "*.sh" -exec sh -n {} +
+          find common freebsd linux windows scripts setup.sh -name "*.sh" -exec sh -n {} +

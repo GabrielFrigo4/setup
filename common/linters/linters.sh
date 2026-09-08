@@ -7,8 +7,8 @@ set -eu
 echo "📦 [Common Tools]: Configurando formatadores e linters globais..."
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-LOCAL_TOOLS_DIR="${SCRIPT_DIR}/../../../../Profile/software/tools"
-RAW_BASE_URL="https://raw.githubusercontent.com/GabrielFrigo4/profile/main/software/tools"
+LOCAL_TOOLS_DIR="${SCRIPT_DIR}/../../../Profile/tools"
+RAW_BASE_URL="https://raw.githubusercontent.com/GabrielFrigo4/profile/main/tools"
 
 mkdir -p "${HOME}/.config/clangd"
 

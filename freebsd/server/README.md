@@ -28,8 +28,8 @@ Inicie a VM FreeBSD e conecte-se com `connect.sh`:
 
 ```sh
 # Conectar via SSH
-sh bootstrap/freebsd/server/connect.sh
+sh freebsd/server/connect.sh
 
 # Copiar arquivos via SCP
-sh bootstrap/freebsd/server/connect.sh scp ./meu_arquivo freebsd@vm:/tmp/
+sh freebsd/server/connect.sh scp ./meu_arquivo freebsd@vm:/tmp/
 ```

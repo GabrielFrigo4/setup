@@ -16,12 +16,12 @@ Este guia detalha o fluxo operacional para estender, refatorar e auditar o repos
 
 Antes de escrever qualquer código, posicione a receita no diretório correto:
 
-| Camada                    | Diretório            | Papel & Responsabilidade                                                  | Exemplos                                          |
-| :------------------------ | :------------------- | :------------------------------------------------------------------------ | :------------------------------------------------ |
-| **Multiplataforma**       | `bootstrap/common/`  | Receitas universais compartilhadas entre Linux, FreeBSD, macOS e Windows. | Fontes, linters, extensões                        |
-| **Linux Base & Server**   | `bootstrap/linux/`   | Receitas para Fedora, Arch, Debian, WSL2, servidores e containers.        | `fedora/desktop/gnome.sh`, `container/podman.sh`  |
-| **FreeBSD Base & Server** | `bootstrap/freebsd/` | Receitas para FreeBSD nativo, KDE Plasma 6 Wayland, Jails e BastilleBSD.  | `desktop/system/system.sh`, `container/jails.sh`  |
-| **Windows & MSYS2**       | `bootstrap/windows/` | Ferramentas nativas do Windows (Winget, registry) e toolchains MSYS2.     | `native/reverse-engineering.cmd`, `msys2/base.sh` |
+| Camada                    | Diretório  | Papel & Responsabilidade                                                  | Exemplos                                          |
+| :------------------------ | :--------- | :------------------------------------------------------------------------ | :------------------------------------------------ |
+| **Multiplataforma**       | `common/`  | Receitas universais compartilhadas entre Linux, FreeBSD, macOS e Windows. | Fontes, linters, extensões                        |
+| **Linux Base & Server**   | `linux/`   | Receitas para Fedora, Arch, Debian, WSL2, servidores e containers.        | `fedora/desktop/gnome.sh`, `container/podman.sh`  |
+| **FreeBSD Base & Server** | `freebsd/` | Receitas para FreeBSD nativo, KDE Plasma 6 Wayland, Jails e BastilleBSD.  | `desktop/system/system.sh`, `container/jails.sh`  |
+| **Windows & MSYS2**       | `windows/` | Ferramentas nativas do Windows (Winget, registry) e toolchains MSYS2.     | `native/reverse-engineering.cmd`, `msys2/base.sh` |
 
 ---
 

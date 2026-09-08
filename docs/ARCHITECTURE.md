@@ -48,13 +48,13 @@ flowchart TD
 
 ## 🔄 Fluxo de Boot e Integração
 
-1. **Instalação do SO e Aplicação de Receitas (`Configuration`):**
+1. **Instalação do SO e Aplicação de Receitas (`Setup`):**
     - O usuário instala o sistema base (Fedora, FreeBSD ou Windows).
-    - Acessa o repositório pelo GitHub e executa as receitas atômicas desejadas em `bootstrap/` (ex: `bootstrap/linux/desktop/fedora/desktop/gnome.sh`, `bootstrap/freebsd/desktop/system/system.sh`).
+    - Acessa o repositório pelo GitHub e executa as receitas atômicas desejadas (ex: `linux/desktop/fedora/desktop/gnome.sh`, `freebsd/desktop/system/system.sh`).
     - O sistema ganha utilitários essenciais, drivers, ZFS, interface gráfica e containers.
 
-2. **Instalação dos Dotfiles de Softwares (`Configuration`):**
-    - Os arquivos declarativos de editores e ferramentas (`software/editors/`, `software/tools/`) são aplicados no host.
+2. **Instalação dos Dotfiles de Softwares (`Profile`):**
+    - Os arquivos declarativos de editores e ferramentas (`editors/`, `tools/`) são aplicados no host.
 
 3. **Clonagem dos Repositórios Ativos:**
     - O `Shell` é clonado para `/usr/local/share/shell` e instalado via `sh install.sh --context desktop`.

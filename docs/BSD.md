@@ -35,11 +35,11 @@ Para executar código que exige um kernel Linux ou para virtualizar outras inst�
 
 ### 4. Perfis Unificados do Konsole (Linux & FreeBSD)
 
-Os perfis do Konsole em `software/terminals/konsole/` são **100% compartilhados** entre Linux e FreeBSD:
+Os perfis do Konsole no repositório [Profile](https://github.com/GabrielFrigo4/profile) (`terminals/konsole/`) são **100% compartilhados** entre Linux e FreeBSD:
 
 - **Resolução Dinâmica via `/usr/bin/env`:** Os perfis apontam para `Command=/usr/bin/env bash`, `Command=/usr/bin/env zsh` e `Command=/usr/bin/env sh`. Isso resolve dinamicamente o executável tanto em `/bin/` (Linux) quanto em `/usr/local/bin/` (FreeBSD), eliminando duplicações de configuração.
 - **Shell.profile:** Configura `Environment=SHELL_INIT=1` e `Command=/usr/bin/env sh`, utilizado pelo ecossistema Shell para inicialização controlada e leve.
-- **Instalação:** Basta linkar os perfis de `software/terminals/konsole/` para `~/.local/share/konsole/`.
+- **Instalação:** Basta linkar os perfis de `Profile/terminals/konsole/` para `~/.local/share/konsole/`.
 
 ### 5. Hardware e Periféricos no FreeBSD
 
@@ -48,9 +48,9 @@ Os perfis do Konsole em `software/terminals/konsole/` são **100% compartilhados
 
 ### 6. Catálogo de Receitas Modulares do FreeBSD
 
-Seguindo a simetria em 4 pilares do repositório, as receitas do FreeBSD residem em [`bootstrap/freebsd/`](../bootstrap/freebsd/README.md):
+Seguindo a simetria do repositório, as receitas do FreeBSD residem em [`freebsd/`](../freebsd/README.md):
 
-- **[`common/`](../bootstrap/freebsd/common/README.md):** `system/nopass.sh` (permissões `0440`), `system/sysctl.sh` e `tools/cli.sh`.
-- **[`container/`](../bootstrap/freebsd/container/README.md):** `jails.sh` (Jails nativas), `bastille.sh` (BastilleBSD) e `podman.sh` (Podman OCI nativo).
-- **[`desktop/`](../bootstrap/freebsd/desktop/README.md):** `gui/kde.sh` (KDE Plasma 6), `apps/epub.sh`, `ports/ports.sh`, `emulation/linuxlator.sh`, `security/wireshark.sh` e `devices/audio.sh`.
-- **[`server/`](../bootstrap/freebsd/server/README.md):** `system/guest.sh` (QEMU Guest Agent para VM KVM) e `connect.sh` (conexão dinâmica SSH/SCP).
+- **[`common/`](../freebsd/common/README.md):** `system/nopass.sh` (permissões `0440`), `system/sysctl.sh` e `tools/cli.sh`.
+- **[`container/`](../freebsd/container/README.md):** `jails.sh` (Jails nativas), `bastille.sh` (BastilleBSD) e `podman.sh` (Podman OCI nativo).
+- **[`desktop/`](../freebsd/desktop/README.md):** `gui/kde.sh` (KDE Plasma 6), `apps/epub.sh`, `ports/ports.sh`, `emulation/linuxlator.sh`, `security/wireshark.sh` e `devices/audio.sh`.
+- **[`server/`](../freebsd/server/README.md):** `system/guest.sh` (QEMU Guest Agent para VM KVM) e `connect.sh` (conexão dinâmica SSH/SCP).

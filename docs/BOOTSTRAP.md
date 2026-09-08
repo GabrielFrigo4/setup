@@ -47,7 +47,7 @@ echo "✅ [Nome]: Configurado com sucesso!"
 
 ## 📂 Organização das Receitas por Categorias
 
-As receitas dentro de `bootstrap/` são categorizadas por funcionalidade:
+As receitas em `common/`, `freebsd/`, `linux/` e `windows/` são categorizadas por funcionalidade:
 
 - **`system/`**: Configurações essenciais de usuário, privilégios (`doas`, `sudo`), kernel e sysctl.
 - **`desktop/`**: Ambientes de interface gráfica (GNOME no Fedora, KDE Plasma no FreeBSD) e fontes.

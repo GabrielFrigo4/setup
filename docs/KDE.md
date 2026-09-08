@@ -42,5 +42,5 @@ O reposit√≥rio **[Shell](https://github.com/GabrielFrigo4/shell)** traz integra√
 Para instalar e configurar o ambiente KDE Plasma no FreeBSD:
 
 ```sh
-sh bootstrap/freebsd/desktop/gui/kde.sh
+sh freebsd/desktop/gui/kde.sh
 ```

@@ -28,7 +28,7 @@ Esta pasta concentra o provisionamento da estação de trabalho primária Linux 
 Execute qualquer receita individualmente via terminal:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/desktop/fedora/desktop/gnome.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/desktop/fedora/desktop/gnome.sh | sh
 
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/desktop/fedora/system/base.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/desktop/fedora/system/base.sh | sh
 ```

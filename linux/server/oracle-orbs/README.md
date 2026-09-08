@@ -26,5 +26,5 @@ Esta pasta organiza as aplicações e configurações específicas do servidor d
 Execute a receita desejada diretamente no terminal do servidor:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/server/oracle-orbs/catalogo.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/server/oracle-orbs/catalogo.sh | sh
 ```

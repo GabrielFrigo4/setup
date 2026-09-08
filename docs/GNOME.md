@@ -14,7 +14,7 @@ O ambiente gráfico é o componente visual que roda diretamente no _Host_ (confo
 
 ## ⚙️ Configurações e Atalhos Automatizados
 
-O script de provisionamento [`bootstrap/linux/desktop/fedora/desktop/gnome.sh`](../bootstrap/linux/desktop/fedora/desktop/gnome.sh) configura automaticamente via `gsettings`:
+O script de provisionamento [`linux/desktop/fedora/desktop/gnome.sh`](../linux/desktop/fedora/desktop/gnome.sh) configura automaticamente via `gsettings`:
 
 ### 1. Janelas e Controles
 
@@ -45,7 +45,7 @@ O repositório **[Shell](https://github.com/GabrielFrigo4/shell)** atua em profu
 Para aplicar ou reconfigurar o ambiente GNOME no Fedora:
 
 ```sh
-sh bootstrap/linux/desktop/fedora/desktop/gnome.sh
+sh linux/desktop/fedora/desktop/gnome.sh
 ```
 
 Ou copie e cole os blocos de comandos diretamente no terminal caso esteja consultando pelo GitHub.

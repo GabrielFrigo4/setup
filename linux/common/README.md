@@ -31,8 +31,8 @@ Execute qualquer receita diretamente via terminal:
 
 ```sh
 # Configurar Flatpak + Flathub
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/common/system/flatpak.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/system/flatpak.sh | sh
 
 # Configurar Antigravity IDE & CLI
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/common/tools/antigravity.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/tools/antigravity.sh | sh
 ```

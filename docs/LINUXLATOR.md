@@ -14,11 +14,11 @@ Para respeitar a filosofia de **Clean Host**, o Linuxlator no host do FreeBSD at
 
 ### Ativação no Host (FreeBSD 14+)
 
-O kernel ativa o suporte nativo via `linux_enable="YES"` na receita [`bootstrap/freebsd/desktop/emulation/linuxlator.sh`](../bootstrap/freebsd/desktop/emulation/linuxlator.sh). No FreeBSD moderno, a base de userland padrão é o **Rocky Linux 9** (`linux_base-rl9`) ou Ubuntu:
+O kernel ativa o suporte nativo via `linux_enable="YES"` na receita [`freebsd/desktop/emulation/linuxlator.sh`](../freebsd/desktop/emulation/linuxlator.sh). No FreeBSD moderno, a base de userland padrão é o **Rocky Linux 9** (`linux_base-rl9`) ou Ubuntu:
 
 ```sh
 # Ativação via receita do Cookbook:
-sh bootstrap/freebsd/desktop/emulation/linuxlator.sh
+sh freebsd/desktop/emulation/linuxlator.sh
 
 # Userland moderna do Linux (Rocky Linux 9):
 sudo pkg install emulators/linux_base-rl9

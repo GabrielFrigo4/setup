@@ -26,11 +26,11 @@ Esta pasta fornece scripts de provisionamento para implantar as configurações 
 ### 1. Implantar Dotfiles de Linters & Formatadores:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/linters/linters.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/linters/linters.sh | sh
 ```
 
 ### 2. Instalar Prettier CLI Global:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/linters/prettier.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/linters/prettier.sh | sh
 ```

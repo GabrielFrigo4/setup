@@ -29,14 +29,14 @@ Esta pasta reúne scripts autônomos em POSIX Shell para provisionar editores de
 ### 1. Clonar Todos os Perfis Pessoais de Editores:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/editors/editors.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/editors.sh | sh
 ```
 
 ### 2. Sincronizar Extensões no VS Code / Antigravity / VSCodium:
 
 ```sh
 # Instala todas as extensões declaradas
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/editors/sync-extensions.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/sync-extensions.sh | sh
 
 # Exporta extensões atuais para o arquivo
 sh sync-extensions.sh export
@@ -46,8 +46,8 @@ sh sync-extensions.sh export
 
 ```sh
 # Instalar LazyVim
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/editors/lazyvim.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/lazyvim.sh | sh
 
 # Instalar Doom Emacs
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/editors/doom-emacs.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/doom-emacs.sh | sh
 ```

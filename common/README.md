@@ -32,20 +32,20 @@ Execute qualquer receita diretamente via terminal:
 
 ```sh
 # Configurar privilégios sem senha (Desktop)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/system/nopass.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/nopass.sh | sh
 
 # Configurar privilégios com sessão salva (Servidor / VPS)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/system/persist.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/persist.sh | sh
 
 # Configurar privilégios com senha sempre (Servidor Crítico / Estrito)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/system/strict.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/strict.sh | sh
 
 # Instalar fontes universais
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/fonts/fonts.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/fonts/fonts.sh | sh
 
 # Configurar formatadores e linters globais
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/linters/linters.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/linters/linters.sh | sh
 
 # Configurar Git
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/vcs/git.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git.sh | sh
 ```

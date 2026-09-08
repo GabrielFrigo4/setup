@@ -7,8 +7,8 @@ rem ----------------------------------------------------------------
 echo [*] Configurando formatadores e linters globais no Windows...
 
 set "SCRIPT_DIR=%~dp0"
-set "LOCAL_TOOLS_DIR=%SCRIPT_DIR%..\..\..\..\software\tools"
-set "RAW_BASE_URL=https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/software/tools"
+set "LOCAL_TOOLS_DIR=%SCRIPT_DIR%..\..\..\..\Profile\tools"
+set "RAW_BASE_URL=https://raw.githubusercontent.com/GabrielFrigo4/profile/main/tools"
 
 mkdir "%LOCALAPPDATA%\clangd" 2>nul
 

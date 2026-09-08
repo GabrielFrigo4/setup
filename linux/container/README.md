@@ -29,8 +29,8 @@ Execute qualquer receita diretamente via terminal no Linux:
 
 ```sh
 # Provisionar Incus (Containers de Sistema)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/container/incus.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/incus.sh | sh
 
 # Provisionar Podman (Containers de Aplicação)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/container/podman.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/podman.sh | sh
 ```

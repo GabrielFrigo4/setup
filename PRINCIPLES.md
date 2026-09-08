@@ -15,20 +15,20 @@ Para garantir longevidade, idempotência e excelência técnica, toda contribui�
 
 > _Escreva partes simples conectadas por interfaces limpas._
 
-- O provisionamento de SO em `bootstrap/` é quebrado em receitas atômicas, autocontidas e independentes por ecossistema (`freebsd/`, `linux/`, `windows/`, `common/`).
+- O provisionamento de SO é quebrado em receitas atômicas, autocontidas e independentes por ecossistema (`freebsd/`, `linux/`, `windows/`, `common/`).
 
 ### 2. Regra da Clareza (_Rule of Clarity_)
 
 > _Clareza é melhor que esperteza._
 
-- Scripts de bootstrap priorizam legibilidade absoluta sobre "one-liners" crípticos ou truques de regex obscuros.
+- Scripts de provisionamento priorizam legibilidade absoluta sobre "one-liners" crípticos ou truques de regex obscuros.
 - Nomes de variáveis são autoexplicativos (`TARGET_CONFIG_DIR`, `BACKUP_TIMESTAMP`).
 
 ### 3. Regra da Composição (_Rule of Composition_)
 
 > _Projete programas para serem conectados a outros programas._
 
-- As receitas do `bootstrap/` são atômicas e podem ser executadas isoladamente ou encadeadas sequencialmente em pipelines de automação.
+- As receitas de provisionamento são atômicas e podem ser executadas isoladamente ou encadeadas sequencialmente em pipelines de automação.
 
 ### 4. Regra da Separação (_Rule of Separation_)
 
@@ -117,7 +117,7 @@ Para garantir longevidade, idempotência e excelência técnica, toda contribui�
 
 > _Projete para o futuro, porque ele chegará antes do que você imagina._
 
-- A estrutura de pastas permite plugar um novo sistema operacional em `bootstrap/linux/` (ex: Arch, Rocky) sem alterar as receitas existentes.
+- A estrutura de pastas permite plugar um novo sistema operacional em `linux/` (ex: Arch, Rocky) sem alterar as receitas existentes.
 
 ### 18. Regra da Soberania do Usuário (_Rule of User Sovereignty_)
 
@@ -132,7 +132,7 @@ Para garantir longevidade, idempotência e excelência técnica, toda contribui�
 
 ### 1. Princípio da Responsabilidade Única (SRP)
 
-- Cada receita de bootstrap deve ter **uma única razão para mudar**. A receita `fonts.sh` apenas instala fontes; não configura atalhos de teclado nem instala editores.
+- Cada receita de provisionamento deve ter **uma única razão para mudar**. A receita `fonts.sh` apenas instala fontes; não configura atalhos de teclado nem instala editores.
 
 ### 2. Idempotência Rigorosa
 
@@ -144,7 +144,7 @@ Para garantir longevidade, idempotência e excelência técnica, toda contribui�
 
 ### 4. Permissões Canônicas em 4 Dígitos Octais
 
-- `chmod 0755` para diretórios e receitas de bootstrap executáveis.
+- `chmod 0755` para diretórios e receitas de provisionamento executáveis.
 - `chmod 0644` para arquivos de configuração e documentações.
 - `chmod 0440` para arquivos de autorização do sistema (ex: `/etc/sudoers.d/*`, `doas.conf`).
 
@@ -176,7 +176,7 @@ echo "✅ [Nome]: Configurado com sucesso!"
 
 1. **Receitas Multi-OS (`FreeBSD` + `Linux`):**
    `pkg` _(FreeBSD)_ $\rightarrow$ `dnf` _(Fedora)_ $\rightarrow$ `apt` _(Debian)_ $\rightarrow$ `pacman` _(Arch)_
-2. **Receitas Exclusivas de Linux (`bootstrap/linux/`):**
+2. **Receitas Exclusivas de Linux (`linux/`):**
    `dnf` _(Fedora)_ $\rightarrow$ `apt` _(Debian)_ $\rightarrow$ `pacman` _(Arch)_
 
 ### 8. Preferência Absoluta por Flags Longas Autoexplicativas
@@ -186,7 +186,7 @@ echo "✅ [Nome]: Configurado com sucesso!"
 ### 9. Nomenclatura Semântica de Diretórios
 
 - Coleções contáveis $\rightarrow$ PLURAL (`scripts/`, `docs/`, `fonts/`, `linters/`).
-- Áreas de sistema & processos $\rightarrow$ SINGULAR (`bootstrap/`, `system/`, `desktop/`, `server/`, `container/`, `security/`).
+- Áreas de sistema & processos $\rightarrow$ SINGULAR (`system/`, `desktop/`, `server/`, `container/`, `security/`).
 - Nomes próprios $\rightarrow$ CANÔNICO (`linux/`, `freebsd/`, `windows/`, `fedora/`, `arch/`, `debian/`).
 
 ### 10. Orçamento de Linhas (Regra 8 - 128)

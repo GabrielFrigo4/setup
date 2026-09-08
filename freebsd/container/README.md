@@ -26,8 +26,8 @@ Execute a receita desejada copiando o link RAW para o terminal:
 
 ```sh
 # Provisionar Jails
-fetch -o - https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/freebsd/container/jails.sh | sh
+fetch -o - https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/container/jails.sh | sh
 
 # Instalar Podman nativo
-fetch -o - https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/freebsd/container/podman.sh | sh
+fetch -o - https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/container/podman.sh | sh
 ```

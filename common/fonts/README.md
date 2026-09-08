@@ -25,5 +25,5 @@ Esta pasta fornece o script para instalar as fontes de programação essenciais 
 Execute diretamente no terminal:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/fonts/fonts.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/fonts/fonts.sh | sh
 ```

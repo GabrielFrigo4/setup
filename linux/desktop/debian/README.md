@@ -29,5 +29,5 @@ Organiza a configuração do Debian em módulos atômicos: repositórios non-fre
 Copie os comandos da receita desejada e execute no terminal do Debian:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/desktop/debian/desktop/drivers.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/desktop/debian/desktop/drivers.sh | sh
 ```

@@ -25,9 +25,9 @@ Esta pasta organiza a configuração de distribuições Linux no WSL2: ativaçã
 Abra o terminal da sua distribuição no WSL2 e execute diretamente:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/wsl/fedora.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/wsl/fedora.sh | sh
 
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/wsl/arch.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/wsl/arch.sh | sh
 
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/wsl/debian.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/wsl/debian.sh | sh
 ```

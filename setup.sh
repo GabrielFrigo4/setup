@@ -77,32 +77,32 @@ case "${_choice}" in
 	1)
 		echo "↳ Provisionando Desktop para ${_os}/${_distro}..."
 		if [ "${_os}" = "FreeBSD" ]; then
-			_run_recipe "${_repo_root}/bootstrap/freebsd/desktop/all.sh"
+			_run_recipe "${_repo_root}/freebsd/desktop/all.sh"
 		elif [ "${_distro}" = "fedora" ]; then
-			_run_recipe "${_repo_root}/bootstrap/linux/desktop/fedora/all.sh"
+			_run_recipe "${_repo_root}/linux/desktop/fedora/all.sh"
 		elif [ "${_distro}" = "arch" ]; then
-			_run_recipe "${_repo_root}/bootstrap/linux/desktop/arch/all.sh"
+			_run_recipe "${_repo_root}/linux/desktop/arch/all.sh"
 		else
 			echo "Distribuição '${_distro}' não possui bundle automatizado 'all.sh'."
 		fi
 		;;
 	2)
 		echo "↳ Provisionando Servidor..."
-		_run_recipe "${_repo_root}/bootstrap/linux/server/connect.sh"
+		_run_recipe "${_repo_root}/linux/server/connect.sh"
 		;;
 	3)
 		echo "↳ Provisionando Containers..."
 		if [ "${_os}" = "FreeBSD" ]; then
-			_run_recipe "${_repo_root}/bootstrap/freebsd/container/jails.sh"
+			_run_recipe "${_repo_root}/freebsd/container/jails.sh"
 		else
-			_run_recipe "${_repo_root}/bootstrap/linux/container/incus.sh"
-			_run_recipe "${_repo_root}/bootstrap/linux/container/podman.sh"
+			_run_recipe "${_repo_root}/linux/container/incus.sh"
+			_run_recipe "${_repo_root}/linux/container/podman.sh"
 		fi
 		;;
 	4)
 		echo "↳ Instalando Fontes e Linters comuns..."
-		_run_recipe "${_repo_root}/bootstrap/common/fonts/fonts.sh"
-		_run_recipe "${_repo_root}/bootstrap/common/linters/linters.sh"
+		_run_recipe "${_repo_root}/common/fonts/fonts.sh"
+		_run_recipe "${_repo_root}/common/linters/linters.sh"
 		;;
 	5)
 		echo "↳ Executando diagnóstico..."

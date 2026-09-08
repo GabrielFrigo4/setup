@@ -33,5 +33,5 @@ Copie os comandos da receita desejada e execute no terminal do Arch Linux:
 
 ```sh
 # Configurar aceleração de hardware
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/linux/desktop/arch/desktop/hardware.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/desktop/arch/desktop/hardware.sh | sh
 ```

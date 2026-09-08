@@ -1,4 +1,4 @@
-# 💼 bootstrap/common/workspace/ — Provisionamento do Ecossistema
+# 💼 common/workspace/ — Provisionamento do Ecossistema
 
 Esta pasta contém a receita atômica de bootstrapping para inicializar e clonar todo o **Quarteto de Produtividade** em uma estação de trabalho nova ou limpa.
 
@@ -18,7 +18,7 @@ Esta pasta contém a receita atômica de bootstrapping para inicializar e clonar
 Em qualquer computador novo com `git` e `curl` instalados:
 
 ```sh
-curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap/common/workspace/workspace.sh" | sh
+curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/workspace/workspace.sh" | sh
 ```
 
 Após o término, acesse o diretório e opere via `make`:

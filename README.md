@@ -41,11 +41,10 @@ O **Setup** provê a fundação do sistema operacional com privilégios administ
 
 ## 📂 Estrutura do Projeto
 
-- **[`bootstrap/`](bootstrap/README.md)** — **Catálogo Modular de Receitas de Sistema (O "COMO"):**
-    - **`freebsd/`** — Infraestrutura base (`common/`), Containers (Jails & Bastille), Workstation Desktop (KDE Plasma) e Servidores.
-    - **`linux/`** — Infraestrutura base (`common/`), Containers (Incus & Podman), Workstations Desktop (Fedora, Arch, Debian), Servidores Cloud e WSL2 (`wsl/`).
-    - **`windows/`** — Ferramentas nativas (`native/`) e subsistema MSYS2 (`msys2/` UCRT64).
-    - **`common/`** — Receitas universais compartilhadas entre Linux, FreeBSD e Windows (fontes, linters, editores, vcs).
+- **[`common/`](common/README.md)** — **Receitas Universais:** Fontes, linters, editores, git e provisionamento do ecossistema compartilhados entre Linux, FreeBSD e Windows.
+- **[`freebsd/`](freebsd/README.md)** — **FreeBSD Nativo:** Ferramentas comuns (`common/`), containers (Jails & Bastille), desktop Wayland (KDE Plasma 6) e servidores.
+- **[`linux/`](linux/README.md)** — **Distribuições Linux & Cloud:** Workstations (Fedora, Arch, Debian), servidores, containers (Incus & Podman) e WSL2.
+- **[`windows/`](windows/README.md)** — **Windows & MSYS2:** Ferramentas e engenharia reversa nativas (`native/`) e ambiente MSYS2 (`msys2/` UCRT64).
 - **[`scripts/`](scripts/README.md)** — Utilitários de compilação local (`build/`), conversão de arquivos (`convert/`), automações de registro do Windows (`windows/`) e auditoria contínua (`audit/`).
 - **[`docs/`](docs/README.md)** — Documentação técnica da infraestrutura do host (`BOOTSTRAP.md`, `CONTAINERS.md`, `HYPERVISORS.md`, `BSD.md`, `LINUX.md`, `WINDOWS.md`).
 
@@ -54,9 +53,9 @@ O **Setup** provê a fundação do sistema operacional com privilégios administ
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
 ```sh
-curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap/linux/desktop/fedora/desktop/gnome.sh" | sh
+curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/desktop/fedora/desktop/gnome.sh" | sh
 
-curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap/common/fonts/fonts.sh" | sh
+curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/fonts/fonts.sh" | sh
 
 ./setup.sh
 ```

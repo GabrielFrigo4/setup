@@ -29,8 +29,8 @@ Execute diretamente via terminal:
 
 ```sh
 # Configurar Git no UNIX
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/vcs/git.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git.sh | sh
 
 # Configurar Got no UNIX
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/vcs/got.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/got.sh | sh
 ```

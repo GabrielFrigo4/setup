@@ -26,9 +26,9 @@ Execute qualquer receita diretamente via terminal no FreeBSD:
 
 ```sh
 # Configurar elevação de privilégios sem senha (doas + sudo)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/common/system/nopass.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/nopass.sh | sh
 
 
 # Instalar utilitários CLI
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/bootstrap/freebsd/common/tools/cli.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/tools/cli.sh | sh
 ```
