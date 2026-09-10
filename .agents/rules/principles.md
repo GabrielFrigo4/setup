@@ -2,6 +2,8 @@
 
 Essas diretrizes são de aplicação obrigatória para qualquer modificação ou extensão neste repositório (`Setup`).
 
+> 🏛️ **Hub Orquestrador:** Este repositório faz parte do [Quarteto de Produtividade](https://github.com/GabrielFrigo4/environment), orquestrado pelo repositório **Environment**. Consulte o `ENVIRONMENT.md` e `PRINCIPLES.md` canônicos na raiz do Environment para a arquitetura completa.
+
 ## 1. Modelo Cookbook (Zero-Clone) & Idempotência
 
 - Todas as receitas devem ser autocontidas, atômicas e executáveis diretamente via GitHub (`curl ... | sh`).
