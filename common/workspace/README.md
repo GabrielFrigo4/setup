@@ -8,8 +8,9 @@ Esta pasta contém a receita atômica de bootstrapping para inicializar e clonar
 
 - **`workspace.sh`**:
     - Cria o diretório de trabalho `${HOME}/Documentos/Environment` (ou o caminho passado por argumento).
-    - Gera o **Makefile** global de orquestração multirepo na raiz do ambiente.
-    - Clona os 4 repositórios federados (`Setup`, `Shell`, `Vault`, `Profile`) em uma única invocação.
+    - Clona o repositório central **Environment** com submódulos recursivos (Core + Editores).
+    - Inicializa defensivamente o cofre **Vault** via SSH caso haja credenciais.
+    - Configura automaticamente os ganchos git (`make hooks`) de todo o ecossistema.
 
 ---
 
