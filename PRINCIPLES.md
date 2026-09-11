@@ -1,11 +1,11 @@
-# 📜 Princípios de Engenharia & Filosofia do Repositório (Setup)
+# 📜 Princípios de Engenharia & Filosofia do Ecossistema
 
 > _"Rule of Separation: Separate policy from mechanism; separate engine from interface."_<br>
 > — Eric S. Raymond, _The Art of UNIX Programming_ (2003)
 
-O repositório **Universal Setup Environment** é o pilar de provisionamento de sistema operacional e infraestrutura do **Quarteto de Produtividade** (`Setup`, `Profile`, `Shell`, `Vault`). Ele é responsável por provisionar a base do sistema hospedeiro (_Clean Host_), configurar drivers de hardware, ambientes gráficos (Wayland nativo com GNOME ou KDE Plasma), containers (Incus, Podman, Jails) e hipervisores com privilégios de sistema (`root`/`sudo`/`ELEVATE`).
+O **Quarteto de Produtividade** (`Setup`, `Shell`, `Vault`, `Profile`) é um ecossistema federado de 4 repositórios complementares e desacoplados, orquestrado pelo repositório **[Environment](https://github.com/GabrielFrigo4/environment)**. Cada componente é responsável por um domínio distinto: provisionamento de sistema operacional (_Setup_), motor interativo de terminal (_Shell_), cofre criptográfico de segredos (_Vault_) e dotfiles declarativos e skills de IA (_Profile_).
 
-Para garantir longevidade, idempotência e excelência técnica, toda contribuição deve obedecer aos **18 Princípios de Engenharia** (17 Princípios UNIX + Regra da Soberania do Usuário), às práticas de **Clean Code** adaptadas a scripts de infraestrutura, e às diretrizes do modelo Cookbook.
+Para garantir longevidade, idempotência e excelência técnica, toda contribuição a qualquer repositório do ecossistema deve obedecer aos **18 Princípios de Engenharia** (17 Princípios UNIX + Regra da Soberania do Usuário), às práticas de **Clean Code** adaptadas a scripts de infraestrutura, e às diretrizes arquiteturais unificadas.
 
 ---
 
