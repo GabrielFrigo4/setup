@@ -1,9 +1,7 @@
 #!/usr/bin/env sh
-
-### ================================
-### SYSTEM & PROVISIONING DOCTOR
-### ================================
-
+# ----------------------------------------------------------------
+# Utility: System and Provisioning Doctor
+# ----------------------------------------------------------------
 set -eu
 
 echo "🩺 [Setup Doctor] Iniciando diagnóstico de integridade do sistema..."
@@ -22,7 +20,7 @@ _check_cmd() {
 }
 
 ### --------------------------------
-### 1. Ferramentas Essenciais
+### Ferramentas Essenciais
 ### --------------------------------
 echo "↳ 1. Ferramentas essenciais do ecossistema..."
 _check_cmd "git" "Controle de Versão"
@@ -30,7 +28,7 @@ _check_cmd "curl" "Download & API"
 _check_cmd "python3" "Auditorias & Scripts"
 
 ### --------------------------------
-### 2. Privilégios & Elevação
+### Privilégios & Elevação
 ### --------------------------------
 echo "↳ 2. Mecanismo de elevação de privilégios..."
 if command -v doas > "/dev/null" 2>&1; then
@@ -45,7 +43,7 @@ else
 fi
 
 ### --------------------------------
-### 3. Protocolo Gráfico & Wayland
+### Protocolo Gráfico & Wayland
 ### --------------------------------
 echo "↳ 3. Ambiente gráfico & compositor..."
 _session="${XDG_SESSION_TYPE:-unknown}"
@@ -58,7 +56,7 @@ else
 fi
 
 ### --------------------------------
-### 4. Aceleração de Vídeo & Som
+### Aceleração de Vídeo & Som
 ### --------------------------------
 echo "↳ 4. Aceleração gráfica & subsistema de som..."
 if command -v vainfo > "/dev/null" 2>&1; then
