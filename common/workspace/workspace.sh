@@ -21,7 +21,7 @@ fi
 echo "  ↳ Diretório de destino: ${_env_dir}"
 
 ### --------------------------------
-### 1. Clonagem do Hub com Submódulos
+### 1. Clonagem Hub e Submodulos
 ### --------------------------------
 _hub_url="https://github.com/GabrielFrigo4/environment.git"
 
@@ -49,7 +49,7 @@ else
 fi
 
 ### --------------------------------
-### 3. Configuração de Ganchos e Estado
+### 3. Ganchos e Estado Git
 ### --------------------------------
 if [ -f "${_env_dir}/Makefile" ] && command -v make > "/dev/null" 2>&1; then
 	echo "🪝 Configurando ganchos do ecossistema..."
