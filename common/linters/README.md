@@ -14,10 +14,11 @@ Esta pasta fornece scripts de provisionamento para implantar as configurações 
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo                      | Plataforma                    | Descrição                                                                                          |
-| :--------------------------- | :---------------------------- | :------------------------------------------------------------------------------------------------- |
-| [`linters.sh`](linters.sh)   | Linux / FreeBSD / macOS / WSL | Implanta `.clang-format`, `.prettierrc`, `.stylua.toml`, `config.yaml` do Clangd e configs Mermaid |
-| [`prettier.sh`](prettier.sh) | Linux / FreeBSD / macOS / WSL | Instala o runtime Node.js/NPM e o binário global do Prettier CLI                                   |
+| Arquivo                      | Plataforma                    | Descrição                                                                                                       |
+| :--------------------------- | :---------------------------- | :-------------------------------------------------------------------------------------------------------------- |
+| [`linters.sh`](linters.sh)   | Linux / FreeBSD / macOS / WSL | Implanta `.clang-format`, `.prettierrc`, `.stylua.toml`, `config.yaml` do Clangd e configs Mermaid              |
+| [`prettier.sh`](prettier.sh) | Linux / FreeBSD / macOS / WSL | Instala o runtime Node.js/NPM e o binário global do Prettier CLI                                                |
+| [`mermaid.sh`](mermaid.sh)   | Linux / FreeBSD / macOS / WSL | Instala o runtime Node.js/NPM, `mermaid-filter` (para Pandoc) e o CLI global `@mermaid-js/mermaid-cli` (`mmdc`) |
 
 ---
 
@@ -33,4 +34,10 @@ curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/lin
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/linters/prettier.sh | sh
+```
+
+### 3. Instalar Mermaid CLI & Filter Global:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/linters/mermaid.sh | sh
 ```

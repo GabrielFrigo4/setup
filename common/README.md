@@ -21,7 +21,7 @@ Esta pasta abriga receitas de automação que são **100% puras em POSIX Shell (
 | **[`system/strict.sh`](system/strict.sh)**   | Receita     | Elevação de privilégios (`doas` + `sudo`) **estrita (senha sempre / zero cache)** (0440)                                         |
 | **[`editors/`](editors/README.md)**          | Subcatálogo | Perfis pessoais (`editors.sh`), frameworks (`doom-emacs.sh`, `lazyvim.sh`, `spacevim.sh`) e sincronizador (`sync-extensions.sh`) |
 | **[`fonts/`](fonts/README.md)**              | Receita     | Instalação de fontes tipográficas essenciais (`JetBrainsMono`, `RobotoMono`, `MesloLGS NF`)                                      |
-| **[`linters/`](linters/README.md)**          | Receitas    | Implantação de formatadores (`linters.sh`) e instalador global do Prettier (`prettier.sh`)                                       |
+| **[`linters/`](linters/README.md)**          | Receitas    | Implantação de formatadores (`linters.sh`), Prettier (`prettier.sh`) e Mermaid CLI/Filter (`mermaid.sh`)                         |
 | **[`vcs/`](vcs/README.md)**                  | Receitas    | Configuração global do Git (`git.sh`) e Game of Trees (`got.sh`)                                                                 |
 
 ---
