@@ -17,3 +17,9 @@ if [ -n "${GIT_AUTHOR_NAME-}" ] && [ -n "${GIT_AUTHOR_EMAIL-}" ]; then
 else
 	echo "⚠️  [Got]: Variáveis GIT_AUTHOR_NAME ou GIT_AUTHOR_EMAIL não definidas."
 fi
+
+if command -v got > "/dev/null" 2>&1; then
+	echo "✅ [Got]: Binário 'got' disponível no PATH."
+else
+	echo "ℹ️  [Got]: Binário 'got' ainda não instalado (disponível via 'pkg install got' ou 'yay -S got-portable')."
+fi

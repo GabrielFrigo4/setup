@@ -11,6 +11,7 @@ yay -S --needed --noconfirm \
 	bat \
 	eza \
 	grex \
+	got-portable \
 	ripgrep \
 	repgrep \
 	fastfetch \

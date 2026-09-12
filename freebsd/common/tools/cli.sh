@@ -15,6 +15,7 @@ ${ELEVATE} pkg install --yes \
 	wget \
 	wget2 \
 	git \
+	got \
 	git-credential-oauth \
 	gh \
 	mandoc \
