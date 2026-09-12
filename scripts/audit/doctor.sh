@@ -19,17 +19,17 @@ _check_cmd() {
 	fi
 }
 
-### --------------------------------
+### ================================
 ### Ferramentas Essenciais
-### --------------------------------
+### ================================
 echo "↳ 1. Ferramentas essenciais do ecossistema..."
 _check_cmd "git" "Controle de Versão"
 _check_cmd "curl" "Download & API"
 _check_cmd "python3" "Auditorias & Scripts"
 
-### --------------------------------
+### ================================
 ### Privilégios & Elevação
-### --------------------------------
+### ================================
 echo "↳ 2. Mecanismo de elevação de privilégios..."
 if command -v doas > "/dev/null" 2>&1; then
 	echo "  ✅ Mecanismo ativo: doas (Recomendado/Preferencial)"
@@ -42,9 +42,9 @@ else
 	_warn=$((_warn + 1))
 fi
 
-### --------------------------------
+### ================================
 ### Protocolo Gráfico & Wayland
-### --------------------------------
+### ================================
 echo "↳ 3. Ambiente gráfico & compositor..."
 _session="${XDG_SESSION_TYPE:-unknown}"
 if [ "${_session}" = "wayland" ]; then
@@ -55,9 +55,9 @@ else
 	echo "  ℹ️ Sessão TTY / Headless / Desconhecida (${_session})"
 fi
 
-### --------------------------------
+### ================================
 ### Aceleração de Vídeo & Som
-### --------------------------------
+### ================================
 echo "↳ 4. Aceleração gráfica & subsistema de som..."
 if command -v vainfo > "/dev/null" 2>&1; then
 	echo "  ✅ Utilitário VA-API presente (vainfo)"
