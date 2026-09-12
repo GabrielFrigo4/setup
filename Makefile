@@ -13,13 +13,17 @@ MAKEFLAGS += --no-print-directory -s
 ### HELP & DOCUMENTATION
 ### ================================
 help:
-	echo "📦 Universal Setup — Provisionamento Ativo de SO"
-	echo ""
-	echo "Comandos disponíveis:"
-	echo "  make audit    - Executa a suíte de auditoria e quality gates"
-	echo "  make test     - Valida sintaxe POSIX em todas as receitas"
-	echo "  make doctor   - Executa diagnóstico pós-boot do sistema"
-	echo "  make ci       - Executa suite completa de CI local"
+	cmd() { printf "    \033[36mmake %-20s\033[0m %s\n" "$$1" "$$2"; }; \
+	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
+	sub() { printf "  \033[1;34m  ── %s ──\033[0m\n" "$$1"; }; \
+	printf "\n  \033[1;37mUniversal Setup — Provisionamento Ativo de Sistemas Operacionais\033[0m\n"; \
+	printf "  ============================================================\n"; \
+	sec "Auditoria & Qualidade:"; \
+	cmd "test"           "Valida sintaxe POSIX em todas as receitas de provisionamento"; \
+	cmd "audit"          "Executa a suíte de auditoria completa e quality gates"; \
+	cmd "ci"             "Executa suite completa de CI local"; \
+	sec "Diagnóstico:"; \
+	cmd "doctor"         "Executa diagnóstico de saúde e sanity check pós-boot do sistema"; \
 	echo ""
 
 ### ================================
