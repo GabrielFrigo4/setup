@@ -8,20 +8,20 @@ echo "📦 [Common Editors]: Configurando perfis de editores de código..."
 
 if [ ! -d "${HOME}/.emacs.d/.git" ]; then
 	mkdir -p "${HOME}/.emacs.d"
-	git clone "https://github.com/GabrielFrigo4/.emacs.d.git" "${HOME}/.emacs.d"
+	git clone "https://github.com/GabrielFrigo4/emacs.git" "${HOME}/.emacs.d"
 else
 	git -C "${HOME}/.emacs.d" pull || true
 fi
 
 if [ ! -d "${HOME}/.config/nvim/.git" ]; then
 	mkdir -p "${HOME}/.config/nvim"
-	git clone "https://github.com/GabrielFrigo4/nvim.git" "${HOME}/.config/nvim"
+	git clone "https://github.com/GabrielFrigo4/neovim.git" "${HOME}/.config/nvim"
 else
 	git -C "${HOME}/.config/nvim" pull || true
 fi
 
 if [ ! -d "${HOME}/vimfiles/.git" ]; then
-	git clone "https://github.com/GabrielFrigo4/vimfiles.git" "${HOME}/vimfiles"
+	git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/vimfiles"
 else
 	git -C "${HOME}/vimfiles" pull || true
 fi

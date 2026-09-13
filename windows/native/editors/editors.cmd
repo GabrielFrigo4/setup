@@ -7,19 +7,19 @@ rem ----------------------------------------------------------------
 echo [*] Configurando perfis de editores no Windows...
 
 if not exist "%USERPROFILE%\.emacs.d\.git" (
-	git clone "https://github.com/GabrielFrigo4/.emacs.d.git" "%USERPROFILE%\.emacs.d"
+	git clone "https://github.com/GabrielFrigo4/emacs.git" "%USERPROFILE%\.emacs.d"
 ) else (
 	git -C "%USERPROFILE%\.emacs.d" pull 2>nul
 )
 
 if not exist "%LOCALAPPDATA%\nvim\.git" (
-	git clone "https://github.com/GabrielFrigo4/nvim.git" "%LOCALAPPDATA%\nvim"
+	git clone "https://github.com/GabrielFrigo4/neovim.git" "%LOCALAPPDATA%\nvim"
 ) else (
 	git -C "%LOCALAPPDATA%\nvim" pull 2>nul
 )
 
 if not exist "%USERPROFILE%\vimfiles\.git" (
-	git clone "https://github.com/GabrielFrigo4/vimfiles.git" "%USERPROFILE%\vimfiles"
+	git clone "https://github.com/GabrielFrigo4/vim.git" "%USERPROFILE%\vimfiles"
 ) else (
 	git -C "%USERPROFILE%\vimfiles" pull 2>nul
 )
