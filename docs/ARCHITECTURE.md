@@ -64,4 +64,4 @@ flowchart TD
     - O terminal inicia carregando `Shell/core/environment.sh`.
     - O Shell detecta o SO e contexto, e verifica se `~/.vault/vault.sh` existe.
     - O Vault exporta variáveis de ambiente de forma silenciosa.
-    - O tema e o prompt são renderizados em menos de 50ms.
+    - O tema e o prompt são renderizados em menos de 64ms.
