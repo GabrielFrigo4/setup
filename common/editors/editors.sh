@@ -6,6 +6,9 @@ set -eu
 
 echo "📦 [Common Editors]: Configurando perfis de editores de código..."
 
+### --------------------------------
+### Emacs Configuration
+### --------------------------------
 if [ ! -d "${HOME}/.emacs.d/.git" ]; then
 	mkdir -p "${HOME}/.emacs.d"
 	git clone "https://github.com/GabrielFrigo4/emacs.git" "${HOME}/.emacs.d"
@@ -13,6 +16,9 @@ else
 	git -C "${HOME}/.emacs.d" pull || true
 fi
 
+### --------------------------------
+### NeoVim Configuration
+### --------------------------------
 if [ ! -d "${HOME}/.config/nvim/.git" ]; then
 	mkdir -p "${HOME}/.config/nvim"
 	git clone "https://github.com/GabrielFrigo4/neovim.git" "${HOME}/.config/nvim"
@@ -20,6 +26,9 @@ else
 	git -C "${HOME}/.config/nvim" pull || true
 fi
 
+### --------------------------------
+### Vim Configuration
+### --------------------------------
 if [ ! -d "${HOME}/vimfiles/.git" ]; then
 	git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/vimfiles"
 else
@@ -31,6 +40,11 @@ set rtp+=~/vimfiles
 source ~/vimfiles/vimrc
 EOF
 
+[ ! -e "${HOME}/.vim" ] && ln -sf "${HOME}/vimfiles" "${HOME}/.vim"
+
+### --------------------------------
+### Helix Configuration
+### --------------------------------
 if [ ! -d "${HOME}/.config/helix/.git" ]; then
 	mkdir -p "${HOME}/.config/helix"
 	git clone "https://github.com/GabrielFrigo4/helix.git" "${HOME}/.config/helix"
@@ -38,6 +52,9 @@ else
 	git -C "${HOME}/.config/helix" pull || true
 fi
 
+### --------------------------------
+### Micro Configuration
+### --------------------------------
 mkdir -p "${HOME}/.config/micro/colorschemes"
 if [ ! -f "${HOME}/.config/micro/colorschemes/dracula.micro" ]; then
 	_tmp_micro="$(mktemp -d)"
