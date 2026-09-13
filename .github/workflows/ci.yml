@@ -1,32 +1,35 @@
 name: Universal Setup CI
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+env:
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  audit:
-    name: 🔍 Static Audit & Recipe Integrity
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+    audit:
+        name: 🔍 Static Audit & Recipe Integrity
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+            - name: Set up Python
+              uses: actions/setup-python@v7
+              with:
+                  python-version: "3.12"
 
-      - name: Run Setup Audit Suite
-        run: |
-          python3 scripts/audit/all.py
+            - name: Run Setup Audit Suite
+              run: |
+                  python3 scripts/audit/all.py
 
-      - name: Validate Recipe Syntax (POSIX sh -n)
-        run: |
-          find common freebsd linux windows scripts setup.sh -name "*.sh" -exec sh -n {} +
+            - name: Validate Recipe Syntax (POSIX sh -n)
+              run: |
+                  find common freebsd linux windows scripts setup.sh -name "*.sh" -exec sh -n {} +
