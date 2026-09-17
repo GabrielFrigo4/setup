@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: Session Persistent Privilege Setup (Doas & Sudo - Persist)
+# Recipe: Session Persistent Privilege Setup
 # ----------------------------------------------------------------
 set -eu
 

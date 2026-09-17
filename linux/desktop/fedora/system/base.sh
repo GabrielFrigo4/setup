@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: Fedora Base System, Filesystems & Workspace Initialization
+# Recipe: Fedora Base System & Workspace Init
 # ----------------------------------------------------------------
 set -eu
 

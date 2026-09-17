@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: Synchronize IDE Extensions (VS Code / Antigravity / VSCodium)
+# Recipe: Synchronize IDE Extensions
 # ----------------------------------------------------------------
 set -eu
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: MSYS2 GUI Frameworks & Game Development Libraries (UCRT64)
+# Recipe: MSYS2 GUI & Game Development Libraries
 # ----------------------------------------------------------------
 set -eu
 

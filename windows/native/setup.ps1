@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------
-# Recipe: Windows PowerShell Modules & Emacs Daemon Startup Configuration
+# Recipe: Windows PowerShell Modules & Emacs Daemon
 # ----------------------------------------------------------------
 [CmdletBinding()]
 param ()

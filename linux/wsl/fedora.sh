@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: WSL Fedora / Rocky Linux System & Development Environment (DNF)
+# Recipe: WSL Fedora Development Environment (DNF)
 # ----------------------------------------------------------------
 set -eu
 
