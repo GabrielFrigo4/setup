@@ -12,9 +12,16 @@ for _arg in "$@"; do
 	case "${_arg}" in
 		--dry-run) _dry_run=1 ;;
 		--profile=*) _profile="${_arg#*=}" ;;
-		--help|-h)
-			echo "Uso: $0 [--dry-run] [--profile=<nome>]"
-			echo "Perfis disponíveis: fedora-desktop, arch-desktop, freebsd-desktop, doctor"
+		doctor) _profile="doctor" ;;
+		audit) python3 "${_repo_root}/scripts/audit/all.py"; exit 0 ;;
+		test)
+			find "${_repo_root}" -name "*.sh" -not -path "*/.git/*" -exec sh -n {} +
+			echo "✅ [Setup] Todas as receitas POSIX estão válidas!"
+			exit 0
+			;;
+		--help|-h|help)
+			echo "Uso: $0 [doctor|audit|test] [--dry-run] [--profile=<perfil>]"
+			echo "Perfis: fedora-desktop, arch-desktop, freebsd-desktop, server, containers, common, doctor"
 			exit 0
 			;;
 	esac

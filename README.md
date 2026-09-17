@@ -67,6 +67,7 @@ O **Setup** provê a fundação do sistema operacional com privilégios administ
 
 ## 📂 Estrutura do Projeto
 
+- **[`setup.sh`](setup.sh)** — **Orquestrador de Provisionamento:** Entrypoint CLI para receitas interativas (`doctor`, `test`, `audit` e perfis).
 - **[`common/`](common/README.md)** — **Receitas Universais:** Fontes, linters, editores, git e provisionamento do ecossistema compartilhados entre Linux, FreeBSD e Windows.
 - **[`freebsd/`](freebsd/README.md)** — **FreeBSD Nativo:** Ferramentas comuns (`common/`), containers (Jails & Bastille), desktop Wayland (KDE Plasma 6) e servidores.
 - **[`linux/`](linux/README.md)** — **Distribuições Linux & Cloud:** Workstations (Fedora, Arch, Debian), servidores, containers (Incus & Podman) e WSL2.
