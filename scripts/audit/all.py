@@ -11,6 +11,7 @@ SCRIPTS = [
     ("monoliths.py", "scripts/audit/monoliths.py", "Controle de Monólitos (<= 256 linhas)"),
     ("nanos.py", "scripts/audit/nanos.py", "Controle de Micro-scripts (>= 8 linhas)"),
     ("syntax.py", "scripts/audit/syntax.py", "Sintaxe POSIX, Shebangs & Diretrizes Shell"),
+    ("banners.py", "scripts/audit/banners.py", "Geometria de Banners & Réguas (32/64 cols)"),
     ("links.py", "scripts/audit/links.py", "Integridade de Links Relativos (.md)"),
     ("formats.py", "scripts/audit/formats.py", "Validação de Formatos (JSON, YAML, PS1, REG)"),
 ]

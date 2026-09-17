@@ -7,7 +7,7 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Setup Provisioning
 # ----------------------------------------------------------------
 
-.PHONY: help audit test doctor ci
+.PHONY: help audit test fix-banners doctor ci
 
 ### ================================
 ### HELP & DOCUMENTATION
@@ -37,6 +37,11 @@ test:
 	echo "🧪 Validando sintaxe POSIX das receitas de provisionamento..."
 	find . -name "*.sh" -not -path "*/.git/*" -exec sh -n {} +
 	echo "✅ Todas as receitas POSIX estão válidas!"
+
+fix-banners:
+	echo "📏 Normalizando réguas de banners de cabeçalho e seções..."
+	python3 scripts/audit/banners.py --fix
+	echo "✅ Réguas de banners normalizadas com sucesso!"
 
 doctor:
 	sh scripts/audit/doctor.sh

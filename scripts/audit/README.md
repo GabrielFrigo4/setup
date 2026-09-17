@@ -8,21 +8,22 @@
 
 Esta pasta centraliza os scripts de inspeção de código para manter o repositório em conformidade estrita com o [`PRINCIPLES.md`](../../PRINCIPLES.md):
 
-- **Equilíbrio Arquitetural:** Nem monólitos gigantes (> 128 linhas), nem micro-scripts excessivamente fragmentados (< 8 linhas).
+- **Equilíbrio Arquitetural:** Regra de Linhas (Piso < 8 fatal, Aviso <= 16, Sweet Spot 17-128, Aviso 129-255, Teto > 256 fatal).
 - **Legibilidade no GitHub:** Facilitar a consulta direta das receitas no navegador.
 
 ---
 
 ## 📂 Catálogo de Ferramentas
 
-| Ferramenta                     | Linguagem | Descrição                                                                        |
-| :----------------------------- | :-------- | :------------------------------------------------------------------------------- |
-| [`all.py`](all.py)             | Python 3  | **Runner mestre:** executa a suite completa e gera o dashboard consolidado       |
-| [`monoliths.py`](monoliths.py) | Python 3  | Detecta scripts que ultrapassam o limite de 128 linhas (com suporte a whitelist) |
-| [`nanos.py`](nanos.py)         | Python 3  | Detecta micro-scripts com menos de 8 linhas para sugerir consolidações temáticas |
-| [`syntax.py`](syntax.py)       | Python 3  | Valida sintaxe POSIX (`sh -n`), shebangs, modo defensivo `set -eu` e `chmod`     |
-| [`links.py`](links.py)         | Python 3  | Valida integridade de 100% dos links relativos em arquivos Markdown (`.md`)      |
-| [`formats.py`](formats.py)     | Python 3  | Valida sintaxe de JSON, JSONC, YAML (multi-doc), PowerShell (`.ps1`) e `.reg`    |
+| Ferramenta                     | Linguagem | Descrição                                                                     |
+| :----------------------------- | :-------- | :---------------------------------------------------------------------------- |
+| [`all.py`](all.py)             | Python 3  | **Runner mestre:** executa a suite completa e gera o dashboard consolidado    |
+| [`monoliths.py`](monoliths.py) | Python 3  | Detecta scripts acima de 256 linhas (fatal) e entre 129-256 linhas (aviso)    |
+| [`nanos.py`](nanos.py)         | Python 3  | Detecta scripts abaixo de 8 linhas (fatal) e entre 8-16 linhas (aviso)        |
+| [`syntax.py`](syntax.py)       | Python 3  | Valida sintaxe POSIX (`sh -n`), shebangs, modo defensivo `set -eu` e `chmod`  |
+| [`banners.py`](banners.py)     | Python 3  | Valida geometria de réguas (32/64 cols), não-vazamento e suporte a `--fix`    |
+| [`links.py`](links.py)         | Python 3  | Valida integridade de 100% dos links relativos em arquivos Markdown (`.md`)   |
+| [`formats.py`](formats.py)     | Python 3  | Valida sintaxe de JSON, JSONC, YAML (multi-doc), PowerShell (`.ps1`) e `.reg` |
 
 ---
 
@@ -42,6 +43,7 @@ python3 scripts/audit/all.py
 python3 scripts/audit/monoliths.py
 python3 scripts/audit/nanos.py
 python3 scripts/audit/syntax.py
+python3 scripts/audit/banners.py
 python3 scripts/audit/links.py
 python3 scripts/audit/formats.py
 ```
