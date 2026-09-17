@@ -24,8 +24,7 @@ O **Setup** é o pilar de **provisionamento de sistema operacional** do ecossist
 5. **Zero comentários narrativos:** Código autoexplicativo, blocos separados por linhas em branco.
 6. **Orçamento de linhas:** Piso < 8 proibido, aviso <= 16, sweet spot 17-128, aviso 129-255, teto > 256 proibido (salvo Whitelist).
 7. **Hermetismo de Produção & Invariante `rm -rf .agents`:** Repositório 100% autônomo. Zero acoplamento de código de produção a `.agents/` ou `skills/` (o sistema opera plenamente mesmo se `.agents/` for deletado).
-
----
+8. **Bancada de Desenvolvimento vs. Runtimes de Produção:** Setup opera sob demanda via receitas individuais ou bootstrap do sistema hospedeiro. NUNCA faça com que receitas criem dependências ou symlinks que apontem para o diretório de desenvolvimento do Environment (`~/Documents/Environment`).
 
 ---
 
@@ -41,14 +40,16 @@ Se durante a execução de qualquer tarefa (seja criação de novas features, co
     - **Banners Estruturais:** Ajustar réguas para exatamente 64 hífens no topo ou 32 caracteres com `### ` no corpo.
     - **Portabilidade POSIX:** Substituir bashismos (`[[ ]]`, `&>`, arrays, `source`) por sintaxe estrita POSIX `/bin/sh`.
     - **Shebang Universal:** Garantir sempre `#!/usr/bin/env sh` ou `#!/usr/bin/env python3`.
-    - **Sequências ANSI:** Substituir octais crípticos (``) e `printf` desnecessário por `[ -t 1 ] && echo -n $'\e...'`.
+    - **Sequências ANSI:** Substituir octais crípticos (` `) e `printf` desnecessário por `[ -t 1 ] && echo -n $'\e...'`.
     - **Redirecionamento Seguro:** Envolver destinos em aspas duplas (ex: `> "/dev/null" 2>&1`).
     - **Makefiles:** Assegurar cabeçalho `.POSIX: .SILENT:`, `MAKEFLAGS += --no-print-directory -s`, alinhamento estético de variáveis e zero `@` redundante.
     - **Permissões Canônicas:** Aplicar 4 dígitos octais (`chmod 0755`, `chmod 0644`, `chmod 0700`, `chmod 0600`).
 
 ## 📖 Referências Obrigatórias
 
+Antes de qualquer modificação neste ecossistema, consulte:
+
 - **[ENVIRONMENT.md](ENVIRONMENT.md)**: Arquitetura do Quarteto de Produtividade
-- **[PRINCIPLES.md](PRINCIPLES.md)**: 18 Princípios de Engenharia + Clean Code
+- **[PRINCIPLES.md](PRINCIPLES.md)**: Os 21 Princípios de Engenharia UNIX + Clean Code
 - **[.agents/rules/principles.md](.agents/rules/principles.md)**: Regras específicas do Setup
 - **[.agents/skills/](.agents/skills/)**: Runbooks operacionais (`universal-setup`, `proactive-guardian`, `deep-investigation`)
