@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 SCRIPTS = [
-    ("monoliths.py", "scripts/audit/monoliths.py", "Controle de Monólitos (< 128 linhas)"),
+    ("monoliths.py", "scripts/audit/monoliths.py", "Controle de Monólitos (<= 256 linhas)"),
     ("nanos.py", "scripts/audit/nanos.py", "Controle de Micro-scripts (>= 8 linhas)"),
     ("syntax.py", "scripts/audit/syntax.py", "Sintaxe POSIX, Shebangs & Diretrizes Shell"),
     ("links.py", "scripts/audit/links.py", "Integridade de Links Relativos (.md)"),

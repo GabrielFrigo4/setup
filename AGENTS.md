@@ -22,7 +22,8 @@ O **Setup** é o pilar de **provisionamento de sistema operacional** do ecossist
 3. **Ordem de dispatch:** `pkg` → `dnf` → `apt` → `pacman`.
 4. **Flags longas:** `--yes`, `--assumeyes`, `--needed`, `--noconfirm`.
 5. **Zero comentários narrativos:** Código autoexplicativo, blocos separados por linhas em branco.
-6. **Limites de script:** Piso de 8, teto de 128 linhas úteis.
+6. **Orçamento de linhas:** Piso < 8 proibido, aviso <= 16, sweet spot 17-128, aviso 129-255, teto > 256 proibido (salvo Whitelist).
+7. **Hermetismo de Produção & Invariante `rm -rf .agents`:** Repositório 100% autônomo. Zero acoplamento de código de produção a `.agents/` ou `skills/` (o sistema opera plenamente mesmo se `.agents/` for deletado).
 
 ---
 
