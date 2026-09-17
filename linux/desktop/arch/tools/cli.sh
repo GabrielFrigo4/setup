@@ -24,7 +24,13 @@ yay -S --needed --noconfirm \
 	tesseract \
 	tesseract-data-eng \
 	tesseract-data-por \
-	ocrmypdf
+	ocrmypdf \
+	zip \
+	unzip \
+	7zip \
+	unrar \
+	git-lfs \
+	pdftk
 
 yay -S --needed --noconfirm \
 	xelfviewer-bin \

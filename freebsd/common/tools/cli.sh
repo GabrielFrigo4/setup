@@ -27,6 +27,10 @@ ${ELEVATE} pkg install --yes \
 	zip \
 	unzip \
 	7-zip \
+	unrar \
+	git-lfs \
+	pdftk \
+	texlive-full \
 	fastfetch \
 	cpufetch
 

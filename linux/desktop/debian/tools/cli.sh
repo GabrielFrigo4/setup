@@ -22,6 +22,12 @@ ${ELEVATE} apt install --yes \
 	imagemagick \
 	ffmpeg \
 	dos2unix \
+	zip \
+	unzip \
+	p7zip-full \
+	unrar \
+	git-lfs \
+	pdftk \
 	checksec \
 	dirb \
 	wireshark
