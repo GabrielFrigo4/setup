@@ -18,14 +18,40 @@
 
 ### 🖥️ Sistemas Operacionais Suportados
 
-![Linux](https://img.shields.io/badge/🐧_Linux_%28Fedora_/_Arch_/_Debian%29-Supported-blue)
-![FreeBSD](https://img.shields.io/badge/😈_FreeBSD-Supported-red)
-![Windows](https://img.shields.io/badge/🪟_Windows_%28Native_/_MSYS2%29-Supported-purple)
+![Linux](https://img.shields.io/badge/Linux-Supported-blue?logo=linux&logoColor=white)
+![FreeBSD](https://img.shields.io/badge/FreeBSD-Supported-red?logo=freebsd&logoColor=white)
+![Windows](<https://img.shields.io/badge/Windows_(Native_/_MSYS2)-Supported-purple?logo=gitforwindows&logoColor=white>)
 
-### 🎨 Interfaces Gráficas Nativas (Host)
+### 🎨 Interfaces Gráficas & Tecnologias Host
 
-![GNOME](https://img.shields.io/badge/🔵_GNOME_%28Fedora%29-Wayland-blue)
-![KDE Plasma](https://img.shields.io/badge/🟢_KDE_Plasma_%28FreeBSD%29-Wayland-green)
+![GNOME](https://img.shields.io/badge/GNOME-Wayland-blue?logo=gnome&logoColor=white)
+![KDE Plasma](https://img.shields.io/badge/KDE_Plasma-Wayland-green?logo=kde&logoColor=white)
+![Wayland](https://img.shields.io/badge/Wayland-Native-blueviolet?logo=wayland&logoColor=white)
+![Podman](https://img.shields.io/badge/Podman-OCI_Containers-purple?logo=podman&logoColor=white)
+
+```mermaid
+flowchart TD
+    subgraph SO ["🖥️ Sistemas Hospedeiros (Host)"]
+        LNX["🐧 Linux (Fedora / Arch / Debian)"]
+        BSD["😈 FreeBSD (Jails / ZFS)"]
+        WIN["🪟 Windows (Native / MSYS2)"]
+    end
+
+    subgraph PROV ["📦 Camadas de Provisionamento"]
+        COM["🌐 common/ (Fontes, Git, Linters)"]
+        DRV["⚡ Drivers & Gráficos (Wayland / GPU)"]
+        CNT["📦 Containers (Incus / Podman / Jails)"]
+    end
+
+    subgraph PROD ["🎯 Quarteto de Produtividade"]
+        SH["🐚 Shell"]
+        VT["🔐 Vault"]
+        PR["🎨 Profile"]
+    end
+
+    SO --> PROV
+    PROV --> PROD
+```
 
 ---
 
