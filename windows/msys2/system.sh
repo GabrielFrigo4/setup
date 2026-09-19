@@ -18,6 +18,7 @@ pacman --needed --noconfirm -S \
 	mingw-w64-cross-toolchain \
 	mingw-w64-cross \
 	git \
+	git-crypt \
 	make \
 	cmake \
 	openssh \
