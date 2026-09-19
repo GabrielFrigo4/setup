@@ -29,18 +29,18 @@ fi
 ### --------------------------------
 ### Vim Configuration
 ### --------------------------------
-if [ ! -d "${HOME}/vimfiles/.git" ]; then
-	git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/vimfiles"
+if [ ! -d "${HOME}/.vim/.git" ]; then
+	git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/.vim"
 else
-	git -C "${HOME}/vimfiles" pull || true
+	git -C "${HOME}/.vim" pull || true
 fi
 
 cat << 'EOF' | tee "${HOME}/.vimrc" > "/dev/null"
-set rtp+=~/vimfiles
-source ~/vimfiles/vimrc
+set rtp+=~/.vim
+source ~/.vim/vimrc
 EOF
 
-[ ! -e "${HOME}/.vim" ] && ln -sf "${HOME}/vimfiles" "${HOME}/.vim"
+[ ! -e "${HOME}/.vim" ] && ln -sf "${HOME}/.vim" "${HOME}/.vim"
 
 ### --------------------------------
 ### Helix Configuration
