@@ -96,6 +96,7 @@ winget install FireDaemon.OpenSSL
 winget install Insecure.Nmap
 winget install Insecure.Npcap
 winget install GnuPG.Gpg4win
+winget install AGWA.git-crypt
 
 rem --------------------------------
 rem internet

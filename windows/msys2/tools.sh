@@ -11,6 +11,7 @@ pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-git \
 	mingw-w64-ucrt-x86_64-git-credential-wincred \
 	mingw-w64-ucrt-x86_64-github-cli \
+	mingw-w64-ucrt-x86_64-git-crypt \
 	mingw-w64-ucrt-x86_64-fd \
 	mingw-w64-ucrt-x86_64-dust \
 	mingw-w64-ucrt-x86_64-bat \
