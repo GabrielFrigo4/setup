@@ -10,6 +10,7 @@ Reúne todo o ferramental de provisionamento nativo para estações de trabalho 
 
 - **Editores & Frameworks:** Perfis pessoais (`editors.cmd`), frameworks (`doom-emacs.cmd`, `lazyvim.cmd`, `spacevim.cmd`), temas e sincronizador de extensões (`sync-extensions.ps1`).
 - **Fontes do Sistema:** Instalação de Nerd Fonts e fontes tipográficas via PowerShell (`fonts.ps1`).
+- **Shell & Prompt:** Inicialização e integração do Oh-My-Posh com tema `atomic` para PowerShell e Nushell (`shell/`).
 - **Linters & Formatadores:** Implantação de `.clang-format`, `.prettierrc`, `.stylua.toml` e `clangd` (`linters.cmd`).
 - **Controle de Versão:** Configuração global do Git e Got (`vcs/`).
 - **Gerenciadores de Pacotes:** Automações para Winget, Scoop e Chocolatey (`pkg/`).
@@ -29,6 +30,7 @@ Reúne todo o ferramental de provisionamento nativo para estações de trabalho 
 | **`editors/`**         | [`editors/spacevim.cmd`](editors/spacevim.cmd)               | Setup completo do SpaceVim no Windows                                             |
 | **`editors/`**         | [`editors/themes.cmd`](editors/themes.cmd)                   | Temas One Dark (Geany), Dracula (Micro) e Vim-Plug                                |
 | **`fonts/`**           | [`fonts/fonts.ps1`](fonts/fonts.ps1)                         | Baixa e registra Nerd Fonts (`JetBrainsMono`, `MesloLGS`) no Windows              |
+| **`shell/`**           | [`shell/oh-my-posh.cmd`](shell/oh-my-posh.cmd)               | Gera scripts de inicialização do Oh-My-Posh para PowerShell e Nushell             |
 | **`linters/`**         | [`linters/linters.cmd`](linters/linters.cmd)                 | Implanta `.clang-format`, `.prettierrc`, `.stylua.toml` e `config.yaml` do Clangd |
 | **`vcs/`**             | [`vcs/git.cmd`](vcs/git.cmd)                                 | Configuração global do Git com padrões recomendados                               |
 | **`vcs/`**             | [`vcs/got.cmd`](vcs/got.cmd)                                 | Gera `%USERPROFILE%\.gotconfig` no Windows                                        |
