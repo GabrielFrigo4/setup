@@ -14,13 +14,14 @@ Organiza a configuração do Debian em módulos atômicos: repositórios non-fre
 
 ## 📂 Catálogo de Receitas
 
-| Categoria      | Receita                                    | Descrição                                           |
-| :------------- | :----------------------------------------- | :-------------------------------------------------- |
-| **`system/`**  | [`system/base.sh`](system/base.sh)         | Repositórios non-free, usuário e pacotes essenciais |
-| **`desktop/`** | [`desktop/drivers.sh`](desktop/drivers.sh) | Mesa, Nvidia proprietary drivers e firmwares        |
-| **`tools/`**   | [`tools/cli.sh`](tools/cli.sh)             | Utilitários essenciais de build e CLI               |
-| **`editors/`** | [`editors/editors.sh`](editors/editors.sh) | Editores de texto gráficos e de terminal            |
-| **`apps/`**    | [`apps/desktop.sh`](apps/desktop.sh)       | Navegadores e ferramentas de comunicação            |
+| Categoria      | Receita                                    | Descrição                                                |
+| :------------- | :----------------------------------------- | :------------------------------------------------------- |
+| **`system/`**  | [`system/base.sh`](system/base.sh)         | Repositórios non-free, usuário e pacotes essenciais      |
+| **`desktop/`** | [`desktop/drivers.sh`](desktop/drivers.sh) | Mesa, Nvidia proprietary drivers e firmwares             |
+| **`tools/`**   | [`tools/cli.sh`](tools/cli.sh)             | Utilitários essenciais de build e CLI                    |
+| **`tools/`**   | [`tools/gamedev.sh`](tools/gamedev.sh)     | Toolchains e bibliotecas gamedev: Emscripten, GLFW, SDL3 |
+| **`editors/`** | [`editors/editors.sh`](editors/editors.sh) | Editores de texto gráficos e de terminal                 |
+| **`apps/`**    | [`apps/desktop.sh`](apps/desktop.sh)       | Navegadores e ferramentas de comunicação                 |
 
 ---
 

@@ -57,6 +57,7 @@ rem --------------------------------
 rem framework
 rem --------------------------------
 winget install Love2d.Love2d
+winget install Microsoft.Vcpkg
 
 rem --------------------------------
 rem gnuwin32

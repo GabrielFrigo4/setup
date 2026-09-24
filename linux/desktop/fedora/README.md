@@ -20,6 +20,7 @@ Esta pasta concentra o provisionamento da estação de trabalho primária Linux 
 | **`desktop/`** | [`desktop/gnome.sh`](desktop/gnome.sh) | Tema Adwaita escuro, botões da janela (`:minimize,maximize,close`) e atalhos (`Super + T`, `Super + A`) |
 | **`desktop/`** | [`desktop/fonts.sh`](desktop/fonts.sh) | Instalação e mapeamento métrico das fontes Carlito e Caladea em `fonts.conf`                            |
 | **`tools/`**   | [`tools/cli.sh`](tools/cli.sh)         | Bibliotecas gráficas de terminal FTXUI e Notcurses                                                      |
+| **`tools/`**   | [`tools/gamedev.sh`](tools/gamedev.sh) | Toolchains e bibliotecas gamedev: GLFW, SDL3, SDL3_mixer, SPIR-V                                        |
 
 ---
 

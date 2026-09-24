@@ -20,6 +20,8 @@ pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-SDL2_ttf \
 	mingw-w64-ucrt-x86_64-sdl3 \
 	mingw-w64-ucrt-x86_64-sdl3-image \
+	mingw-w64-ucrt-x86_64-sdl3-mixer \
+	mingw-w64-ucrt-x86_64-sdl3-net \
 	mingw-w64-ucrt-x86_64-sdl3-ttf \
 	mingw-w64-ucrt-x86_64-raylib \
 	mingw-w64-ucrt-x86_64-sfml \

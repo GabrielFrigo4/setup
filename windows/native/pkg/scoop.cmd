@@ -14,7 +14,7 @@ scoop bucket add java
 
 scoop install grex pstools innounp winfetch winchecksec explorer-suite resource-hacker
 scoop install coreutils uutils-coreutils binutils
-scoop install stylua gopls nano sed
+scoop install stylua gopls nano sed emscripten
 scoop install openjdk oraclejre8 digital ghidra
 scoop install fasm fasmg fasmarm
 

@@ -14,16 +14,17 @@ Organiza a configuração do Arch Linux em módulos desacoplados: sistema base, 
 
 ## 📂 Catálogo de Receitas
 
-| Categoria             | Receita                                            | Descrição                                                |
-| :-------------------- | :------------------------------------------------- | :------------------------------------------------------- |
-| **`system/`**         | [`system/base.sh`](system/base.sh)                 | Mirrors, SDDM e limite de journald                       |
-| **`system/`**         | [`system/diagnostics.sh`](system/diagnostics.sh)   | Diagnóstico de kernel, firmware e dispositivos           |
-| **`desktop/`**        | [`desktop/hardware.sh`](desktop/hardware.sh)       | Mesa, drivers de aceleração VA-API, Vulkan e regras udev |
-| **`virtualization/`** | [`virtualization/qemu.sh`](virtualization/qemu.sh) | QEMU, Libvirt, Virt-Manager e rede padrão                |
-| **`tools/`**          | [`tools/cli.sh`](tools/cli.sh)                     | Utilitários CLI modernos e análise estática              |
-| **`editors/`**        | [`editors/editors.sh`](editors/editors.sh)         | Instalação de editores gráficos e de terminal            |
-| **`apps/`**           | [`apps/desktop.sh`](apps/desktop.sh)               | Navegadores, comunicação e mídia                         |
-| **`servers/`**        | [`servers/kvm.sh`](servers/kvm.sh)                 | Utilitários de controle da VM FreeBSD                    |
+| Categoria             | Receita                                            | Descrição                                                 |
+| :-------------------- | :------------------------------------------------- | :-------------------------------------------------------- |
+| **`system/`**         | [`system/base.sh`](system/base.sh)                 | Mirrors, SDDM e limite de journald                        |
+| **`system/`**         | [`system/diagnostics.sh`](system/diagnostics.sh)   | Diagnóstico de kernel, firmware e dispositivos            |
+| **`desktop/`**        | [`desktop/hardware.sh`](desktop/hardware.sh)       | Mesa, drivers de aceleração VA-API, Vulkan e regras udev  |
+| **`virtualization/`** | [`virtualization/qemu.sh`](virtualization/qemu.sh) | QEMU, Libvirt, Virt-Manager e rede padrão                 |
+| **`tools/`**          | [`tools/cli.sh`](tools/cli.sh)                     | Utilitários CLI modernos e análise estática               |
+| **`tools/`**          | [`tools/gamedev.sh`](tools/gamedev.sh)             | Toolchains e bibliotecas gamedev (SDL3, GLFW, Emscripten) |
+| **`editors/`**        | [`editors/editors.sh`](editors/editors.sh)         | Instalação de editores gráficos e de terminal             |
+| **`apps/`**           | [`apps/desktop.sh`](apps/desktop.sh)               | Navegadores, comunicação e mídia                          |
+| **`servers/`**        | [`servers/kvm.sh`](servers/kvm.sh)                 | Utilitários de controle da VM FreeBSD                     |
 
 ---
 

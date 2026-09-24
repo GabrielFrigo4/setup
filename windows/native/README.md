@@ -43,6 +43,7 @@ Reúne todo o ferramental de provisionamento nativo para estações de trabalho 
 | **`security/`**        | [`security/assemblers.cmd`](security/assemblers.cmd)         | Flat Assembler Suite (FASM, FASMG, FASMARM)                                       |
 | **`security/`**        | [`security/ropgadget.cmd`](security/ropgadget.cmd)           | Wrapper para chamadas do ROPgadget no Prompt de Comando                           |
 | **`dev-tools.cmd`**    | [`dev-tools.cmd`](dev-tools.cmd)                             | Visual Studio Community, Windows Terminal, PowerToys e Sysinternals               |
+| **`gamedev.cmd`**      | [`gamedev.cmd`](gamedev.cmd)                                 | Bibliotecas gamedev nativas (SDL3, GLFW, Emscripten, Shadercross via vcpkg/scoop) |
 | **`setup.ps1`**        | [`setup.ps1`](setup.ps1)                                     | Módulos para PowerShell e atalhos de inicialização rápida do Emacs Daemon         |
 
 ---

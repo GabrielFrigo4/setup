@@ -18,6 +18,7 @@ pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-clang-tools-extra \
 	mingw-w64-ucrt-x86_64-clang-libs \
 	mingw-w64-ucrt-x86_64-lldb \
+	mingw-w64-ucrt-x86_64-emscripten \
 	mingw-w64-ucrt-x86_64-avr-toolchain \
 	mingw-w64-ucrt-x86_64-avr-binutils \
 	mingw-w64-ucrt-x86_64-avrdude \

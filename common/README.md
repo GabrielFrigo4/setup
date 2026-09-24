@@ -22,6 +22,7 @@ Esta pasta abriga receitas de automação que são **100% puras em POSIX Shell (
 | **[`editors/`](editors/README.md)**          | Subcatálogo | Perfis pessoais (`editors.sh`), frameworks (`doom-emacs.sh`, `lazyvim.sh`, `spacevim.sh`) e sincronizador (`sync-extensions.sh`) |
 | **[`fonts/`](fonts/README.md)**              | Receita     | Instalação de fontes tipográficas essenciais (`JetBrainsMono`, `RobotoMono`, `MesloLGS NF`)                                      |
 | **[`linters/`](linters/README.md)**          | Receitas    | Implantação de formatadores (`linters.sh`), Prettier (`prettier.sh`) e Mermaid CLI/Filter (`mermaid.sh`)                         |
+| **[`graphics/`](graphics/README.md)**        | Receitas    | Toolchains e bibliotecas gamedev: SDL3, GLFW, Emscripten, SPIR-V e shaders                                                       |
 | **[`vcs/`](vcs/README.md)**                  | Receitas    | Configuração global do Git (`git.sh`) e Game of Trees (`got.sh`)                                                                 |
 
 ---
@@ -45,6 +46,9 @@ curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/fon
 
 # Configurar formatadores e linters globais
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/linters/linters.sh | sh
+
+# Instalar toolchains e bibliotecas gamedev (SDL3, GLFW, Emscripten)
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/gamedev.sh | sh
 
 # Configurar Git
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git.sh | sh

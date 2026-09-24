@@ -15,8 +15,9 @@ Esta pasta centraliza as configurações essenciais do FreeBSD que independem de
 | Recurso       | Receita                                                          | Descrição                                                                                       |
 | :------------ | :--------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
 | **`system/`** | [`../../common/system/nopass.sh`](../../common/system/nopass.sh) | Configura `doas` e `sudo` sem senha para Desktop (0440)                                         |
-| **`system/`** | [`system/sysctl.sh`](system/sysctl.sh)                           | Desativa core dumps e aplica parâmetros recomendados no `/etc/sysctl.conf`                      |
+| **`system/`** | [`system/sysctl.sh`](system/sysctl.sh)                           | Desativa core dumps, define áudio USB padrão e parâmetros no `/etc/sysctl.conf`                 |
 | **`tools/`**  | [`tools/cli.sh`](tools/cli.sh)                                   | Instala utilitários CLI modernos (`eza`, `bat`, `ripgrep`, `fd-find`, `git`, `gh`, `fastfetch`) |
+| **`tools/`**  | [`tools/gamedev.sh`](tools/gamedev.sh)                           | Bibliotecas gamedev e toolchains: Emscripten, GLFW, SDL3, SDL3_mixer, SPIR-V                    |
 
 ---
 
@@ -31,4 +32,7 @@ curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/sys
 
 # Instalar utilitários CLI
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/tools/cli.sh | sh
+
+# Instalar toolchains e bibliotecas gamedev (SDL3, GLFW, Emscripten)
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/tools/gamedev.sh | sh
 ```
