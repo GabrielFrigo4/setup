@@ -17,6 +17,7 @@ pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-eza \
 	mingw-w64-ucrt-x86_64-ripgrep \
 	mingw-w64-ucrt-x86_64-repgrep \
+	mingw-w64-ucrt-x86_64-zoxide \
 	mingw-w64-ucrt-x86_64-fastfetch \
 	mingw-w64-ucrt-x86_64-imagemagick \
 	mingw-w64-ucrt-x86_64-ffmpeg

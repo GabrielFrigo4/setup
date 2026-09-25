@@ -15,6 +15,7 @@ ${ELEVATE} apt install --yes \
 	bat \
 	fd-find \
 	ripgrep \
+	zoxide \
 	texlive-latex-extra \
 	texlive-lang-portuguese \
 	pandoc \

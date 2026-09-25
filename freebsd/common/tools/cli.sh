@@ -24,6 +24,7 @@ ${ELEVATE} pkg install --yes \
 	ripgrep \
 	fd-find \
 	grex \
+	zoxide \
 	zip \
 	unzip \
 	7-zip \

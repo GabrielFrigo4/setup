@@ -14,6 +14,7 @@ yay -S --needed --noconfirm \
 	got-portable \
 	ripgrep \
 	repgrep \
+	zoxide \
 	fastfetch \
 	imagemagick \
 	ffmpeg \

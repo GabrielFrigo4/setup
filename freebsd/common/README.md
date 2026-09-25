@@ -12,12 +12,12 @@ Esta pasta centraliza as configurações essenciais do FreeBSD que independem de
 
 ## 📂 Catálogo de Receitas
 
-| Recurso       | Receita                                                          | Descrição                                                                                       |
-| :------------ | :--------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
-| **`system/`** | [`../../common/system/nopass.sh`](../../common/system/nopass.sh) | Configura `doas` e `sudo` sem senha para Desktop (0440)                                         |
-| **`system/`** | [`system/sysctl.sh`](system/sysctl.sh)                           | Desativa core dumps, define áudio USB padrão e parâmetros no `/etc/sysctl.conf`                 |
-| **`tools/`**  | [`tools/cli.sh`](tools/cli.sh)                                   | Instala utilitários CLI modernos (`eza`, `bat`, `ripgrep`, `fd-find`, `git`, `gh`, `fastfetch`) |
-| **`tools/`**  | [`tools/gamedev.sh`](tools/gamedev.sh)                           | Bibliotecas gamedev e toolchains: Emscripten, GLFW, SDL3, SDL3_mixer, SPIR-V                    |
+| Recurso       | Receita                                                          | Descrição                                                                                                 |
+| :------------ | :--------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------- |
+| **`system/`** | [`../../common/system/nopass.sh`](../../common/system/nopass.sh) | Configura `doas` e `sudo` sem senha para Desktop (0440)                                                   |
+| **`system/`** | [`system/sysctl.sh`](system/sysctl.sh)                           | Desativa core dumps, define áudio USB padrão e parâmetros no `/etc/sysctl.conf`                           |
+| **`tools/`**  | [`tools/cli.sh`](tools/cli.sh)                                   | Instala utilitários CLI modernos (`eza`, `bat`, `ripgrep`, `fd-find`, `zoxide`, `git`, `gh`, `fastfetch`) |
+| **`tools/`**  | [`tools/gamedev.sh`](tools/gamedev.sh)                           | Bibliotecas gamedev e toolchains: Emscripten, GLFW, SDL3, SDL3_mixer, SPIR-V                              |
 
 ---
 

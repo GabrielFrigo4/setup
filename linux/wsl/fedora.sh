@@ -39,6 +39,7 @@ ${ELEVATE} dnf install --assumeyes \
 	bat \
 	ripgrep \
 	fd-find \
+	zoxide \
 	fastfetch
 
 cat << 'EOF' | ${ELEVATE} tee "/etc/doas.conf" > "/dev/null"

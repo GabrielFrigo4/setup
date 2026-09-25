@@ -40,6 +40,7 @@ ${ELEVATE} apt install --yes \
 	bat \
 	ripgrep \
 	fd-find \
+	zoxide \
 	fastfetch
 
 cat << 'EOF' | ${ELEVATE} tee "/etc/doas.conf" > "/dev/null"

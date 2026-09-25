@@ -156,6 +156,7 @@ rem --------------------------------
 winget install nushell
 winget install chrisant996.Clink
 winget install JanDeDobbeleer.OhMyPosh
+winget install ajeetdsouza.zoxide
 winget install MSYS2.MSYS2
 
 rem --------------------------------

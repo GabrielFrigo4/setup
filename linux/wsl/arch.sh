@@ -42,6 +42,7 @@ ${ELEVATE} pacman -Syu --needed --noconfirm \
 	bat \
 	ripgrep \
 	fd \
+	zoxide \
 	fastfetch
 
 cat << 'EOF' | ${ELEVATE} tee "/etc/doas.conf" > "/dev/null"
