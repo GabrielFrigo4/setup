@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: Oracle Frigo Resume Service
+# Recipe: Oracle Personal Resume Service
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Frigo Server]: Configurando serviço Resume..."
+echo "📦 [Personal Server]: Configurando serviço Resume..."
 
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
@@ -32,4 +32,4 @@ EOF
 ${ELEVATE} systemctl daemon-reload
 ${ELEVATE} systemctl enable --now resume 2> "/dev/null" || true
 
-echo "✅ [Frigo Server]: Serviço Resume configurado!"
+echo "✅ [Personal Server]: Serviço Resume configurado!"

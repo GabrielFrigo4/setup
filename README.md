@@ -14,6 +14,7 @@
 > 📖 **Arquitetura Unificada do Ecossistema:** Conheça a matriz completa de responsabilidades, ciclo de boot e segregação de privilégios em [ENVIRONMENT.md](ENVIRONMENT.md).
 > 📜 **Princípios de Engenharia & Infraestrutura:** Conheça os 18 princípios e as 14 regras de Clean Code em [PRINCIPLES.md](PRINCIPLES.md).
 > 🗺️ **Roadmap & Status do Projeto:** Acompanhe o planejamento e a matriz de status em [TODO.md](TODO.md).
+> 🤝 **Guia de Contribuição & Setup:** Instruções de bancada, ganchos Git e quality gates em [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
@@ -23,6 +24,7 @@
 ![FreeBSD](https://img.shields.io/badge/FreeBSD-Supported-red?logo=freebsd&logoColor=white)
 ![Windows](<https://img.shields.io/badge/Windows_(Native_/_MSYS2)-Supported-purple?logo=gitforwindows&logoColor=white>)
 [![Roadmap](https://img.shields.io/badge/🗺️_Roadmap-TODO.md-teal)](TODO.md)
+[![Contributing](https://img.shields.io/badge/🤝_Contributing-CONTRIBUTING.md-orange)](CONTRIBUTING.md)
 
 ### 🎨 Interfaces Gráficas & Tecnologias Host
 
@@ -91,20 +93,18 @@ curl -fsSL "https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/fo
 
 ---
 
-## 🧪 Quality Gates & Ganchos Git (.githooks)
+## 🚀 Setup do Projeto & Ganchos Git
 
-Para habilitar a validação de arquitetura e verificação de Markdown antes de cada commit:
-
-```sh
-chmod 0755 .githooks/pre-commit
-git config core.hooksPath .githooks
-```
-
-Para executar a validação estática e qualidade manualmente:
+Para configurar o ambiente de desenvolvimento local, ativar os quality gates automáticos e validar a integridade do repositório:
 
 ```sh
-python3 scripts/audit/all.py
+make hooks   # Configura .githooks e permissões canônicas
+make test    # Valida sintaxe POSIX de todas as receitas
+make audit   # Executa suíte de auditoria estática e arquitetura
+make ci      # Bateria completa de validação local
 ```
+
+> 🤝 **Instruções Detalhadas:** Consulte o [CONTRIBUTING.md](CONTRIBUTING.md) para convenções de commits, invariantes de engenharia, regras de idempotência e diretrizes de desenvolvimento.
 
 ---
 

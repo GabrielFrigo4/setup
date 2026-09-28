@@ -1,12 +1,14 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: Oracle Orbs Caddy Web Server & Reverse Proxy
+# Recipe: Oracle Personal Caddy Web Server & Reverse Proxy
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Orbs Server]: Configurando servidor web Caddy..."
+echo "📦 [Personal Server]: Configurando servidor web Caddy..."
 
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
+TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
+USER_HOME="$(eval echo "~${TARGET_USER}")"
 
 ${ELEVATE} apt install --yes debian-keyring debian-archive-keyring apt-transport-https curl
 
@@ -18,12 +20,20 @@ fi
 
 ${ELEVATE} apt install --yes caddy
 
+${ELEVATE} usermod -aG "${TARGET_USER:-ubuntu}" caddy 2> "/dev/null" || true
+
 cat << 'EOF' | ${ELEVATE} tee "/etc/caddy/Caddyfile" > "/dev/null"
-orbs.gabrielfrigo.dev.br, shop.gabrielfrigo.dev.br {
-	reverse_proxy [::1]:35440
+gabrielfrigo.dev.br, www.gabrielfrigo.dev.br, resume.gabrielfrigo.dev.br {
+	root * /home/ubuntu/gabrielfrigo/build
+	encode zstd gzip
+	file_server
+	try_files {path} {path}/ /404.html
+}
+game.gabrielfrigo.dev.br {
+	reverse_proxy [::1]:35441
 }
 EOF
 
 ${ELEVATE} systemctl restart caddy
 
-echo "✅ [Orbs Server]: Caddy configurado e ativo!"
+echo "✅ [Personal Server]: Caddy configurado e ativo!"

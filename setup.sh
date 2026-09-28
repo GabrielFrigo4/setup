@@ -5,6 +5,18 @@
 set -eu
 
 _repo_root="$(cd "$(dirname "$0")" && pwd)"
+
+_self_heal_perms() {
+	if [ -d "${_repo_root}/.git" ] && command -v git > "/dev/null" 2>&1; then
+		git -C "${_repo_root}" config core.hooksPath .githooks 2> "/dev/null" || true
+	fi
+	if [ -d "${_repo_root}/.githooks" ]; then
+		chmod 0755 "${_repo_root}/.githooks/"* 2> "/dev/null" || true
+	fi
+	[ -f "${_repo_root}/setup.sh" ] && chmod 0755 "${_repo_root}/setup.sh" 2> "/dev/null" || true
+}
+_self_heal_perms
+
 _dry_run=0
 _profile=""
 

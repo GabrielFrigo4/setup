@@ -72,5 +72,5 @@ O Linux implementa a camada de isolamento do **Clean Host** através de três fe
 Para servidores remotos (Oracle Cloud Infrastructure e Magalu Cloud):
 
 - As receitas universais residem em [`linux/common/`](../linux/common/README.md) (Swap agnóstico de 2GB, `doas.conf` com permissões `0440` e regras de firewall).
-- As instâncias dedicadas ([`oracle-frigo`](../linux/server/oracle-frigo/README.md) e [`oracle-orbs`](../linux/server/oracle-orbs/README.md)) contêm os proxies reversos Caddy e os daemons de aplicações (`resume`, `game`, `catalogo`).
+- As instâncias dedicadas ([`oracle-personal`](../linux/server/oracle-personal/README.md) e [`oracle-venture`](../linux/server/oracle-venture/README.md)) contêm os proxies reversos Caddy e os daemons de aplicações (`resume`, `game`, `catalogo`).
 - Conexão unificada via SSH/SCP através do script [`linux/server/connect.sh`](../linux/server/connect.sh) consumindo credenciais do Vault.

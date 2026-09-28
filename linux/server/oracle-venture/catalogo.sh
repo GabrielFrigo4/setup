@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: Oracle Orbs Catalogo Service
+# Recipe: Oracle Venture Catalogo Service
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Orbs Server]: Configurando serviço Catalogo..."
+echo "📦 [Venture Server]: Configurando serviço Catalogo..."
 
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
@@ -17,7 +17,7 @@ mkdir -p "${USER_HOME}/catalogo/pb_data"
 
 cat << EOF | ${ELEVATE} tee "/etc/systemd/system/catalogo.service" > "/dev/null"
 [Unit]
-Description=Orbs Tech Solution - Catalogo Container
+Description=Venture Solution - Catalogo Container
 After=network.target
 
 [Service]
@@ -47,4 +47,4 @@ EOF
 ${ELEVATE} systemctl daemon-reload
 ${ELEVATE} systemctl enable --now catalogo 2> "/dev/null" || true
 
-echo "✅ [Orbs Server]: Serviço Catalogo configurado!"
+echo "✅ [Venture Server]: Serviço Catalogo configurado!"

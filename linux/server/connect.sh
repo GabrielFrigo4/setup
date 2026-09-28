@@ -30,21 +30,21 @@ _resolve_vault_ssh_key() {
 	return 1
 }
 
-SERVER="${1:-frigo}"
+SERVER="${1:-personal}"
 
 case "${SERVER}" in
-	frigo|oracle-frigo)
-		SERVER_IP="${FRIGO_SERVER_IP:-144.22.210.65}"
-		SERVER_USER="${FRIGO_SERVER_USER:-ubuntu}"
-		SERVER_KEY="$(_resolve_vault_ssh_key "${FRIGO_SERVER_KEY:-}" "ssh-key-frigo-server.key" || true)"
+	personal|oracle-personal)
+		SERVER_IP="${PERSONAL_SERVER_IP:-144.22.210.65}"
+		SERVER_USER="${PERSONAL_SERVER_USER:-ubuntu}"
+		SERVER_KEY="$(_resolve_vault_ssh_key "${PERSONAL_SERVER_KEY:-}" "ssh-key-personal-server.key" || true)"
 		;;
-	orbs|oracle-orbs)
-		SERVER_IP="${ORBS_SERVER_IP:-137.131.238.161}"
-		SERVER_USER="${ORBS_SERVER_USER:-ubuntu}"
-		SERVER_KEY="$(_resolve_vault_ssh_key "${ORBS_SERVER_KEY:-}" "ssh-key-orbs-server.key" || true)"
+	venture|oracle-venture)
+		SERVER_IP="${VENTURE_SERVER_IP:-137.131.238.161}"
+		SERVER_USER="${VENTURE_SERVER_USER:-ubuntu}"
+		SERVER_KEY="$(_resolve_vault_ssh_key "${VENTURE_SERVER_KEY:-}" "ssh-key-venture-server.key" || true)"
 		;;
 	*)
-		echo "Uso: $0 [frigo | orbs] [comando/argumentos adicionais]" >&2
+		echo "Uso: $0 [personal | venture] [comando/argumentos adicionais]" >&2
 		exit 1
 		;;
 esac

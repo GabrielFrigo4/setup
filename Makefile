@@ -7,17 +7,20 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Setup Provisioning
 # ----------------------------------------------------------------
 
-.PHONY: help audit test fix-banners doctor ci
+.PHONY: help hooks audit test fix-banners doctor ci
 
 ### ================================
 ### HELP & DOCUMENTATION
 ### ================================
 help:
-	cmd() { printf "    \033[36mmake %-22s\033[0m %s\n" "$$1" "$$2"; }; \
-	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
-	sub() { printf "  \033[1;34m  ── %s ──\033[0m\n" "$$1"; }; \
-	printf "\n  \033[1;37mUniversal Setup — Provisionamento Ativo de Sistemas Operacionais\033[0m\n"; \
+	_e=$$'\e'; \
+	cmd() { printf "    $${_e}[36mmake %-22s$${_e}[0m %s\n" "$$1" "$$2"; }; \
+	sec() { printf "\n  $${_e}[1;33m%s$${_e}[0m\n" "$$1"; }; \
+	sub() { printf "  $${_e}[1;34m  ── %s ──$${_e}[0m\n" "$$1"; }; \
+	printf "\n  $${_e}[1;37mUniversal Setup — Provisionamento Ativo de Sistemas Operacionais$${_e}[0m\n"; \
 	printf "  ============================================================\n"; \
+	sec "Setup & Ganchos:"; \
+	cmd "hooks"          "Configura e aplica permissões canônicas em .githooks"; \
 	sec "Auditoria & Qualidade:"; \
 	cmd "test"           "Valida sintaxe POSIX em todas as receitas de provisionamento"; \
 	cmd "audit"          "Executa a suíte de auditoria completa e quality gates"; \
@@ -25,6 +28,15 @@ help:
 	sec "Diagnóstico:"; \
 	cmd "doctor"         "Executa diagnóstico de saúde e sanity check pós-boot do sistema"; \
 	echo ""
+
+### ================================
+### GIT HOOKS & PERMISSIONS
+### ================================
+hooks:
+	echo "🪝 Configurando ganchos Git (.githooks)..."
+	chmod 0755 .githooks/pre-commit .githooks/commit-msg 2> "/dev/null" || true
+	git config core.hooksPath .githooks 2> "/dev/null" || true
+	echo "  ✅ Setup: core.hooksPath -> .githooks"
 
 ### ================================
 ### AUDIT & QUALITY GATES

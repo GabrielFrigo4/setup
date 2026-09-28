@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: Oracle Frigo Game Service
+# Recipe: Oracle Personal Game Service
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Frigo Server]: Configurando serviço Game..."
+echo "📦 [Personal Server]: Configurando serviço Game..."
 
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
@@ -43,4 +43,4 @@ EOF
 ${ELEVATE} systemctl daemon-reload
 ${ELEVATE} systemctl enable --now game 2> "/dev/null" || true
 
-echo "✅ [Frigo Server]: Serviço Game configurado!"
+echo "✅ [Personal Server]: Serviço Game configurado!"

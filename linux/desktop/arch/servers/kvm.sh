@@ -8,12 +8,12 @@ echo "📦 [Arch Servers]: Instalando scripts de controle da VM FreeBSD..."
 
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
-if [ -n "${FRIGO_SERVER_KEY-}" ] && [ -f "${FRIGO_SERVER_KEY}" ]; then
-	chmod 0600 "${FRIGO_SERVER_KEY}"
+if [ -n "${PERSONAL_SERVER_KEY-}" ] && [ -f "${PERSONAL_SERVER_KEY}" ]; then
+	chmod 0600 "${PERSONAL_SERVER_KEY}"
 fi
 
-if [ -n "${ORBS_SERVER_KEY-}" ] && [ -f "${ORBS_SERVER_KEY}" ]; then
-	chmod 0600 "${ORBS_SERVER_KEY}"
+if [ -n "${VENTURE_SERVER_KEY-}" ] && [ -f "${VENTURE_SERVER_KEY}" ]; then
+	chmod 0600 "${VENTURE_SERVER_KEY}"
 fi
 
 cat << 'EOF' | ${ELEVATE} tee "/usr/local/bin/freebsd-start" > "/dev/null"

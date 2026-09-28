@@ -11,7 +11,7 @@ Reúne o ferramental de provisionamento para a família Linux, organizado por co
 - **`common/`**: Infraestrutura base universal (Swap agnóstico, doas multi-distro, firewall inteligente, Flatpak, Wireshark e Antigravity).
 - **`container/`**: Subsistema de containers de sistema (Incus / LXC) e aplicação (Podman e Docker).
 - **`desktop/`**: Distribuições de estação de trabalho gráfica (Fedora, Arch Linux, Debian).
-- **`server/`**: Instâncias de servidores remotos na nuvem (`oracle-frigo`, `oracle-orbs`, Magalu Cloud / Rocky Linux).
+- **`server/`**: Instâncias de servidores remotos na nuvem (`oracle-personal`, `oracle-venture`, Magalu Cloud / Rocky Linux).
 - **`wsl/`**: Distribuições Linux executando sob o subsistema Windows Subsystem for Linux (WSL2).
 
 ---

@@ -1,12 +1,12 @@
-# ☁️ Oracle Orbs Server — Catálogo de Receitas
+# ☁️ Oracle Venture Server — Catálogo de Receitas
 
-> Receitas modulares e idempotentes para provisionar a instância de nuvem `oracle-orbs` na OCI.
+> Receitas modulares e idempotentes para provisionar a instância de nuvem `oracle-venture` (anteriormente `oracle-orbs`) na OCI.
 
 ---
 
 ## 🎯 Finalidade
 
-Esta pasta organiza as aplicações e configurações específicas do servidor de nuvem comercial `oracle-orbs`.
+Esta pasta organiza as aplicações e configurações específicas do servidor de nuvem comercial `oracle-venture`.
 
 > ℹ️ **Infraestrutura Base Multi-Distro:** As receitas de infraestrutura compartilhada (Swap agnóstico, elevação `doas`, firewall e containers) residem em [`../../common/`](../../common/README.md).
 
@@ -26,5 +26,5 @@ Esta pasta organiza as aplicações e configurações específicas do servidor d
 Execute a receita desejada diretamente no terminal do servidor:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/server/oracle-orbs/catalogo.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/server/oracle-venture/catalogo.sh | sh
 ```

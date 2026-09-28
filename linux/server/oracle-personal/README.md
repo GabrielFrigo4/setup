@@ -1,12 +1,12 @@
-# ☁️ Oracle Frigo Server — Catálogo de Receitas
+# ☁️ Oracle Personal Server — Catálogo de Receitas
 
-> Receitas modulares e idempotentes para provisionar a instância de nuvem `oracle-frigo` na OCI.
+> Receitas modulares e idempotentes para provisionar a instância de nuvem `oracle-personal` na OCI.
 
 ---
 
 ## 🎯 Finalidade
 
-Esta pasta organiza as aplicações e configurações específicas do servidor pessoal de cloud `oracle-frigo`.
+Esta pasta organiza as aplicações e configurações específicas do servidor pessoal de cloud `oracle-personal`.
 
 > ℹ️ **Infraestrutura Base Multi-Distro:** As receitas de infraestrutura compartilhada (Swap agnóstico, elevação `doas`, firewall e containers) residem em [`../../common/`](../../common/README.md).
 
@@ -27,7 +27,7 @@ Esta pasta organiza as aplicações e configurações específicas do servidor p
 Execute a receita desejada diretamente no terminal do servidor:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/server/oracle-frigo/caddy.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/server/oracle-personal/caddy.sh | sh
 
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/server/oracle-frigo/resume.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/server/oracle-personal/resume.sh | sh
 ```
