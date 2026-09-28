@@ -12,9 +12,9 @@ Esta pasta reúne os manuais arquiteturais e técnicos que sustentam o ecossiste
 
 ## 📜 1. Filosofia e Princípios
 
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** — Visão holística da Tríade de Produtividade, fluxos de integração e fronteiras dos repositórios (`Configuration`, `Shell`, `Vault`).
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — Visão holística do Quarteto de Produtividade, fluxos de integração e fronteiras dos repositórios (`Setup`, `Shell`, `Vault`, `Profile`).
 - **[PHILOSOPHY.md](PHILOSOPHY.md)** — A regra de ouro: _Clean Host_, ZFS e a matriz de modularidade.
-- **[../PRINCIPLES.md](../PRINCIPLES.md)** — Os 17 Princípios UNIX (_The Art of UNIX Programming_) e as 12 Regras de Clean Code aplicadas ao repositório.
+- **[../PRINCIPLES.md](../PRINCIPLES.md)** — Os 22 Princípios de Engenharia UNIX + Clean Code aplicados ao repositório.
 
 ---
 
