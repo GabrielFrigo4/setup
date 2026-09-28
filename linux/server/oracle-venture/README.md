@@ -1,6 +1,6 @@
 # ☁️ Oracle Venture Server — Catálogo de Receitas
 
-> Receitas modulares e idempotentes para provisionar a instância de nuvem `oracle-venture` (anteriormente `oracle-orbs`) na OCI.
+> Receitas modulares e idempotentes para provisionar a instância de nuvem `oracle-venture` na OCI.
 
 ---
 
