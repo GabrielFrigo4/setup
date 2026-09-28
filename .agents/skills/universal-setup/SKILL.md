@@ -8,7 +8,7 @@ description: >-
 
 # Universal Setup — Development & Infrastructure Runbook
 
-Este guia detalha o fluxo operacional para estender, refatorar e auditar o repositório **Universal Setup Environment** (`Setup`), garantindo aderência rigorosa aos 18 Princípios de Engenharia e às 14 regras de Clean Code de infraestrutura.
+Este guia detalha o fluxo operacional para estender, refatorar e auditar o repositório **Universal Setup Environment** (`Setup`), garantindo aderência rigorosa aos 22 Princípios de Engenharia UNIX + Clean Code.
 
 ---
 

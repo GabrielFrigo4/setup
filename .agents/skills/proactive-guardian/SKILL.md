@@ -2,7 +2,7 @@
 name: proactive-guardian
 description: >-
     Proactive code health guardian and autonomous quality enforcement for Universal Setup.
-    Use to continuously audit recipes against the 18 Principles, Clean Code rules,
+    Use to continuously audit recipes against the 22 Principles, Clean Code rules,
     dispatch order, long flags, script size limits, and actively suggest or apply fixes.
 ---
 
