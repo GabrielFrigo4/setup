@@ -178,6 +178,7 @@ rem office
 rem --------------------------------
 winget install ONLYOFFICE.DesktopEditors
 winget install TheDocumentFoundation.LibreOffice
+winget install 9P9MRBXJJG0M --accept-package-agreements --accept-source-agreements
 
 rem --------------------------------
 rem browser

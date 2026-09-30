@@ -31,7 +31,8 @@ if command -v flatpak > "/dev/null" 2>&1; then
 	flatpak install --assumeyes flathub \
 		io.github.shiftey.Desktop \
 		org.onlyoffice.desktopeditors \
-		org.pgadmin.pgadmin4 2> "/dev/null" || true
+		org.pgadmin.pgadmin4 \
+		com.collaboraoffice.Office 2> "/dev/null" || true
 fi
 
 echo "✅ [Debian Apps]: Aplicativos instalados com sucesso!"

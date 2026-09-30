@@ -39,6 +39,7 @@
 
 ### 4. 🌐 Paridade Multiplataforma
 
+- [x] Provisionamento da suite de produtividade Collabora Office Desktop para Linux (Flatpak/AUR), Windows (Winget/Store) e FreeBSD (preparação nativa resiliente).
 - [ ] Refinar o suporte às distribuições Linux: Arch Linux, Debian/Ubuntu, Fedora, Void Linux e Alpine Linux.
 - [ ] Expandir receitas nativas para FreeBSD 14+ e modernização com ZFS/Jails.
 - [ ] Aprimorar receitas do Windows (`windows/native/`) com scripts PowerShell limpos e Winget/Scoop.

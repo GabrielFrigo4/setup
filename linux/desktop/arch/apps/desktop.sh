@@ -12,6 +12,7 @@ yay --needed --noconfirm -S \
 	gnome-screenshot \
 	libreoffice-still \
 	onlyoffice-desktopeditors \
+	collabora-office-bin \
 	microsoft-edge-stable \
 	google-chrome \
 	discord \

@@ -24,6 +24,7 @@ Esta pasta abriga receitas de automação que são **100% puras em POSIX Shell (
 | **[`linters/`](linters/README.md)**          | Receitas    | Implantação de formatadores (`linters.sh`), Prettier (`prettier.sh`) e Mermaid CLI/Filter (`mermaid.sh`)                         |
 | **[`graphics/`](graphics/README.md)**        | Receitas    | Toolchains e bibliotecas gamedev: SDL3, GLFW, Emscripten, SPIR-V e shaders                                                       |
 | **[`vcs/`](vcs/README.md)**                  | Receitas    | Configuração global do Git (`git.sh`) e Game of Trees (`got.sh`)                                                                 |
+| **[`office/`](office/README.md)**            | Receita     | Suite de escritório Collabora Office Desktop (`collabora.sh`) com dispatch universal                                             |
 
 ---
 
