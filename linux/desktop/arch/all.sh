@@ -22,12 +22,19 @@ _run() {
 ### --------------------------------
 _run "${_dir}/system/base.sh"
 _run "${_dir}/desktop/hardware.sh"
-_run "${_dir}/tools/cli.sh"
-_run "${_dir}/editors/editors.sh"
-_run "${_dir}/apps/desktop.sh"
-_run "${_dir}/system/diagnostics.sh"
+_run "${_common}/cli/core.sh"
+_run "${_common}/vcs/tools.sh"
+_run "${_common}/editors/install.sh"
+_run "${_common}/editors/editors.sh"
+_run "${_common}/graphics/windowing.sh"
+_run "${_common}/graphics/shaders.sh"
+_run "${_common}/wasm/emscripten.sh"
+_run "${_common}/media/cli.sh"
+_run "${_common}/docs/typesetting.sh"
+_run "${_common}/security/re.sh"
 _run "${_common}/fonts/fonts.sh"
 _run "${_common}/linters/linters.sh"
+_run "${_dir}/system/diagnostics.sh"
 
 echo "✅ [Arch Bundle] Instalação do Arch Linux finalizada com sucesso!"
 exit 0

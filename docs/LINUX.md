@@ -82,10 +82,10 @@ Para execução de scripts, criação de ambientes virtuais efêmeros e gerencia
 
 Para compilação avançada de shaders HLSL/Slang para SPIR-V e pipelines gráficos modernos:
 
-- **Arch Linux:** `pacman -S shader-slang directx-shader-compiler shaderc glslang vulkan-icd-loader vulkan-headers vulkan-tools` via [`linux/desktop/arch/tools/gamedev.sh`](../linux/desktop/arch/tools/gamedev.sh).
-- **Debian / Ubuntu:** `apt install slang-compiler libshaderc-dev glslang-tools libvulkan-dev vulkan-tools` via [`linux/desktop/debian/tools/gamedev.sh`](../linux/desktop/debian/tools/gamedev.sh).
-- **Fedora:** `shader-slang` via COPR `rustyclanker/slang`, `shaderc`, `glslang`, `vulkan-loader-devel` via [`linux/desktop/fedora/tools/gamedev.sh`](../linux/desktop/fedora/tools/gamedev.sh).
-- **Receita Canônica Universal:** [`common/graphics/shaders.sh`](../common/graphics/shaders.sh) provê auto-detecção via gerenciador de pacotes ou fallback dinâmico oficial via GitHub para `~/.local/opt/` com wrappers em `~/.local/bin/`.
+-- **Arch Linux:** `pacman -S shader-slang directx-shader-compiler shaderc glslang vulkan-icd-loader vulkan-headers vulkan-tools spirv-cross`
+-- **Debian / Ubuntu:** `apt install slang-compiler libshaderc-dev glslang-tools libvulkan-dev vulkan-tools spirv-cross`
+-- **Fedora:** `shader-slang` via COPR `rustyclanker/slang`, `shaderc`, `glslang`, `vulkan-loader-devel`, `spirv-cross-devel`
+-- **Receita Canônica Universal:** [`common/graphics/shaders.sh`](../common/graphics/shaders.sh) provê auto-detecção via gerenciador de pacotes ou fallback dinâmico oficial via GitHub para `~/.local/opt/` com wrappers em `~/.local/bin/`.
 
 ---
 

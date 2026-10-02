@@ -14,13 +14,12 @@ Esta pasta reúne scripts autônomos em POSIX Shell para provisionar editores de
 
 ## 📂 Catálogo de Receitas
 
-| Editor / Ferramenta    | Receita                                    | Descrição                                                                                   |
-| :--------------------- | :----------------------------------------- | :------------------------------------------------------------------------------------------ |
-| **All Custom Editors** | [`editors.sh`](editors.sh)                 | Clona e atualiza todos os perfis pessoais de editores (Neovim, Emacs, Vim, Helix, Micro)    |
-| **IDE Extensions**     | [`sync-extensions.sh`](sync-extensions.sh) | Sincroniza em lote a lista declarativa `extensions.txt` no VS Code, Antigravity ou VSCodium |
-| **Doom Emacs**         | [`doom-emacs.sh`](doom-emacs.sh)           | Instala o Doom Emacs completo com módulos Treesitter e Mermaid                              |
-| **LazyVim**            | [`lazyvim.sh`](lazyvim.sh)                 | Instala o starter completo do LazyVim com opções de cursor                                  |
-| **SpaceVim**           | [`spacevim.sh`](spacevim.sh)               | Instala o SpaceVim com camadas de LSP, Git, Autocomplete e Shell                            |
+| **Editor Packages** | [`install.sh`](install.sh) | Instalação de binários de editores (Neovim, Emacs, Vim, Helix, Micro) |
+| **All Custom Editors** | [`editors.sh`](editors.sh) | Clona e atualiza todos os perfis pessoais de editores (Neovim, Emacs, Vim, Helix, Micro) |
+| **IDE Extensions** | [`sync-extensions.sh`](sync-extensions.sh) | Sincroniza em lote a lista declarativa `extensions.txt` no VS Code, Antigravity ou VSCodium |
+| **Doom Emacs** | [`doom-emacs.sh`](doom-emacs.sh) | Instala o Doom Emacs completo com módulos Treesitter e Mermaid |
+| **LazyVim** | [`lazyvim.sh`](lazyvim.sh) | Instala o starter completo do LazyVim com opções de cursor |
+| **SpaceVim** | [`spacevim.sh`](spacevim.sh) | Instala o SpaceVim com camadas de LSP, Git, Autocomplete e Shell |
 
 ---
 

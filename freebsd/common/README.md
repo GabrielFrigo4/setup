@@ -12,12 +12,12 @@ Esta pasta centraliza as configurações essenciais do FreeBSD que independem de
 
 ## 📂 Catálogo de Receitas
 
-| Recurso       | Receita                                                          | Descrição                                                                                                 |
-| :------------ | :--------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------- |
-| **`system/`** | [`../../common/system/nopass.sh`](../../common/system/nopass.sh) | Configura `doas` e `sudo` sem senha para Desktop (0440)                                                   |
-| **`system/`** | [`system/sysctl.sh`](system/sysctl.sh)                           | Desativa core dumps, define áudio USB padrão e parâmetros no `/etc/sysctl.conf`                           |
-| **`tools/`**  | [`tools/cli.sh`](tools/cli.sh)                                   | Instala utilitários CLI modernos (`eza`, `bat`, `ripgrep`, `fd-find`, `zoxide`, `git`, `gh`, `fastfetch`) |
-| **`tools/`**  | [`tools/gamedev.sh`](tools/gamedev.sh)                           | Bibliotecas gamedev e toolchains: Emscripten, GLFW, SDL3, SDL3_mixer, SPIR-V                              |
+| Recurso       | Receita                                                                | Descrição                                                                                    |
+| :------------ | :--------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
+| **`system/`** | [`../../common/system/nopass.sh`](../../common/system/nopass.sh)       | Configura `doas` e `sudo` sem senha para Desktop (0440)                                      |
+| **`system/`** | [`system/sysctl.sh`](system/sysctl.sh)                                 | Desativa core dumps, define áudio USB padrão e parâmetros no `/etc/sysctl.conf`              |
+| **`common/`** | [`../../common/cli/core.sh`](../../common/cli/core.sh)                 | Instala utilitários CLI modernos (`eza`, `bat`, `ripgrep`, `fd-find`, `zoxide`, `fastfetch`) |
+| **`common/`** | [`../../common/graphics/shaders.sh`](../../common/graphics/shaders.sh) | Toolchains de shaders (Vulkan, Slang, DXC, glslang, shaderc, SPIRV-Cross)                    |
 
 ---
 
@@ -29,10 +29,9 @@ Execute qualquer receita diretamente via terminal no FreeBSD:
 # Configurar elevação de privilégios sem senha (doas + sudo)
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/nopass.sh | sh
 
+# Ajustar parâmetros de kernel e áudio no sysctl.conf
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/system/sysctl.sh | sh
 
-# Instalar utilitários CLI
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/tools/cli.sh | sh
-
-# Instalar toolchains e bibliotecas gamedev (SDL3, GLFW, Emscripten)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/tools/gamedev.sh | sh
+# Instalar utilitários CLI universais
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/cli/core.sh | sh
 ```

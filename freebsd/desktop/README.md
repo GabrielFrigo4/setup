@@ -28,8 +28,6 @@ Esta pasta reúne scripts especializados para a estação de trabalho gráfica F
 | **`emulation/`** | [`emulation/linuxlator.sh`](emulation/linuxlator.sh) | Camada de compatibilidade Linux no kernel (`linux_enable="YES"`)                        |
 | **`emulation/`** | [`emulation/wine.sh`](emulation/wine.sh)             | Wine e Winetricks para execução de binários Windows                                     |
 | **`security/`**  | [`security/wireshark.sh`](security/wireshark.sh)     | Wireshark com permissão BPF (`/dev/bpf*`) no devfs para captura sem root                |
-| **`apps/`**      | [`apps/epub.sh`](apps/epub.sh)                       | Leitor de ePub Arianna (KDE) e navegadores TUI (`w3m`, `lynx`)                          |
-| **`apps/`**      | [`apps/office.sh`](apps/office.sh)                   | Suites de produtividade: LibreOffice nativo e preparação para Collabora Office          |
 
 ---
 

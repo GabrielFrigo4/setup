@@ -52,18 +52,18 @@ Para gerenciamento de runtimes Python, ambientes virtuais e ferramentas CLI com 
 
 - **Instalação via Pacotes:** `pkg install py311-uv` (ou `devel/uv`).
 - **Instalação Standalone:** `curl -LsSf https://astral.sh/uv/install.sh | sh`.
-- **Automação:** Integrado na receita canônica [`freebsd/common/tools/cli.sh`](../freebsd/common/tools/cli.sh).
+- **Automação:** Integrado na receita canônica universal [`common/cli/core.sh`](../common/cli/core.sh).
 
 ### 7. Modern Shader Toolchains & Vulkan (FreeBSD & Linuxlator)
 
-- **Vulkan & Shaders Nativos (`pkg`):** `vulkan-loader`, `vulkan-headers`, `vulkan-tools`, `glslang`, `shaderc` integrados via gerenciador de pacotes do sistema.
+- **Vulkan & Shaders Nativos (`pkg`):** `vulkan-loader`, `vulkan-headers`, `vulkan-tools`, `glslang`, `shaderc`, `spirv-cross` integrados via gerenciador de pacotes do sistema.
 - **Slang (`slangc`) & DXC (`dxc`):** Provisionados via Linuxlator com marcação ELF (`brandelf -t Linux`) e wrappers em `~/.local/bin/` através da receita universal [`common/graphics/shaders.sh`](../common/graphics/shaders.sh).
 
 ### 8. Catálogo de Receitas Modulares do FreeBSD
 
 Seguindo a simetria do repositório, as receitas do FreeBSD residem em [`freebsd/`](../freebsd/README.md):
 
-- **[`common/`](../freebsd/common/README.md):** `system/nopass.sh` (permissões `0440`), `system/sysctl.sh` e `tools/cli.sh`.
+- **[`common/`](../freebsd/common/README.md):** `system/sysctl.sh` (parâmetros de kernel e áudio) e elevação `system/nopass.sh`. Ferramentas de terminal e compiladores residem em [`common/`](../common/README.md).
 - **[`container/`](../freebsd/container/README.md):** `jails.sh` (Jails nativas), `bastille.sh` (BastilleBSD) e `podman.sh` (Podman OCI nativo).
-- **[`desktop/`](../freebsd/desktop/README.md):** `gui/kde.sh` (KDE Plasma 6), `apps/epub.sh`, `ports/ports.sh`, `emulation/linuxlator.sh`, `security/wireshark.sh` e `devices/audio.sh`.
+- **[`desktop/`](../freebsd/desktop/README.md):** `gui/kde.sh` (KDE Plasma 6), `ports/ports.sh`, `emulation/linuxlator.sh`, `security/wireshark.sh` e `devices/audio.sh`.
 - **[`server/`](../freebsd/server/README.md):** `system/guest.sh` (QEMU Guest Agent para VM KVM) e `connect.sh` (conexão dinâmica SSH/SCP).

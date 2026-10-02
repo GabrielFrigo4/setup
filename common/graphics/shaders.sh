@@ -14,14 +14,18 @@ if command -v pkg > "/dev/null" 2>&1; then
 		vulkan-headers \
 		vulkan-tools \
 		shaderc \
-		glslang
+		glslang \
+		spirv-cross \
+		spirv-tools
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
 		vulkan-loader-devel \
 		vulkan-headers \
 		vulkan-tools \
 		shaderc \
-		glslang
+		glslang \
+		spirv-cross-devel \
+		spirv-tools
 	${ELEVATE} dnf copr enable --assumeyes rustyclanker/slang 2> "/dev/null" || true
 	${ELEVATE} dnf install --assumeyes shader-slang 2> "/dev/null" || true
 elif command -v apt-get > "/dev/null" 2>&1; then
@@ -30,13 +34,18 @@ elif command -v apt-get > "/dev/null" 2>&1; then
 		libvulkan-dev \
 		vulkan-tools \
 		glslang-tools \
-		libshaderc-dev
+		libshaderc-dev \
+		spirv-cross \
+		spirv-tools
 	${ELEVATE} apt-get install --yes slang-compiler 2> "/dev/null" || true
 elif command -v pacman > "/dev/null" 2>&1; then
 	if [ -n "${MSYSTEM-}" ]; then
 		pacman --needed --noconfirm -S \
+			mingw-w64-ucrt-x86_64-vulkan-devel \
 			mingw-w64-ucrt-x86_64-shaderc \
-			mingw-w64-ucrt-x86_64-glslang
+			mingw-w64-ucrt-x86_64-glslang \
+			mingw-w64-ucrt-x86_64-spirv-cross \
+			mingw-w64-ucrt-x86_64-spirv-tools
 	else
 		${ELEVATE} pacman -S --needed --noconfirm \
 			vulkan-icd-loader \
@@ -44,6 +53,8 @@ elif command -v pacman > "/dev/null" 2>&1; then
 			vulkan-tools \
 			shaderc \
 			glslang \
+			spirv-cross \
+			spirv-tools \
 			shader-slang \
 			directx-shader-compiler
 	fi
@@ -64,7 +75,7 @@ if ! command -v slangc > "/dev/null" 2>&1; then
 	fi
 
 	cat <<- 'WRAPPER' > "${HOME}/.local/bin/slangc"
-		#!/bin/sh
+		#!/usr/bin/env sh
 		export LD_LIBRARY_PATH="$HOME/.local/opt/slang/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 		exec "$HOME/.local/opt/slang/bin/slangc" "$@"
 	WRAPPER
@@ -90,7 +101,7 @@ if ! command -v dxc > "/dev/null" 2>&1; then
 	fi
 
 	cat <<- 'WRAPPER' > "${HOME}/.local/bin/dxc"
-		#!/bin/sh
+		#!/usr/bin/env sh
 		export LD_LIBRARY_PATH="$HOME/.local/opt/dxc/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 		exec "$HOME/.local/opt/dxc/bin/dxc" "$@"
 	WRAPPER

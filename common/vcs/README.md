@@ -18,6 +18,7 @@ Os scripts aplicam boas práticas recomendadas (branch padrão `main`, autocrlf 
 
 | Arquivo                        | Plataforma                            | Descrição                                                 |
 | :----------------------------- | :------------------------------------ | :-------------------------------------------------------- |
+| [`tools.sh`](tools.sh)         | Linux / FreeBSD / macOS / WSL / MSYS2 | Instalação de Git, GitHub CLI (gh), git-lfs e Got         |
 | [`git.sh`](git.sh)             | Linux / FreeBSD / macOS / WSL / MSYS2 | Configura Git globalmente com variáveis do ambiente/Vault |
 | [`got.sh`](got.sh)             | FreeBSD / OpenBSD / Linux             | Gera `~/.gotconfig` com dados do autor do Vault           |
 | [`git-crypt.sh`](git-crypt.sh) | Linux / FreeBSD / macOS / Windows     | Instalação multiplataforma da ferramenta de criptografia  |

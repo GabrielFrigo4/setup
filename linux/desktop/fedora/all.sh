@@ -22,8 +22,15 @@ _run() {
 ### --------------------------------
 _run "${_dir}/system/base.sh"
 _run "${_dir}/desktop/gnome.sh"
-_run "${_dir}/desktop/fonts.sh"
-_run "${_dir}/tools/cli.sh"
+_run "${_common}/cli/core.sh"
+_run "${_common}/vcs/tools.sh"
+_run "${_common}/editors/install.sh"
+_run "${_common}/editors/editors.sh"
+_run "${_common}/graphics/windowing.sh"
+_run "${_common}/graphics/shaders.sh"
+_run "${_common}/wasm/emscripten.sh"
+_run "${_common}/media/cli.sh"
+_run "${_common}/docs/typesetting.sh"
 _run "${_common}/fonts/fonts.sh"
 _run "${_common}/linters/linters.sh"
 
