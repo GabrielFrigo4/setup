@@ -46,7 +46,20 @@ Os perfis do Konsole no repositório [Profile](https://github.com/GabrielFrigo4/
 - **Wi-Fi Nativo:** Graças aos avanços recentes do time do FreeBSD, a maioria dos chipsets Wi-Fi modernos agora é suportada nativamente pelo kernel (`wpa_supplicant`), tornando o uso de ferramentas como o Wifibox um recurso pontual de contingência, e não uma dependência obrigatória.
 - **Áudio & Periféricos:** Fones e microfones USB (headsets) funcionam de forma nativa e estável através do subsistema OSS do FreeBSD (`/dev/dsp*`) e PulseAudio. O script artesanal em `devices/audio.sh` provê uma rota adicional para streaming via Android quando necessário.
 
-### 6. Catálogo de Receitas Modulares do FreeBSD
+### 6. Ecossistema Python de Alta Performance: Astral `uv`
+
+Para gerenciamento de runtimes Python, ambientes virtuais e ferramentas CLI com velocidade nativa em Rust, adotamos o **`uv`**:
+
+- **Instalação via Pacotes:** `pkg install py311-uv` (ou `devel/uv`).
+- **Instalação Standalone:** `curl -LsSf https://astral.sh/uv/install.sh | sh`.
+- **Automação:** Integrado na receita canônica [`freebsd/common/tools/cli.sh`](../freebsd/common/tools/cli.sh).
+
+### 7. Modern Shader Toolchains & Vulkan (FreeBSD & Linuxlator)
+
+- **Vulkan & Shaders Nativos (`pkg`):** `vulkan-loader`, `vulkan-headers`, `vulkan-tools`, `glslang`, `shaderc` integrados via gerenciador de pacotes do sistema.
+- **Slang (`slangc`) & DXC (`dxc`):** Provisionados via Linuxlator com marcação ELF (`brandelf -t Linux`) e wrappers em `~/.local/bin/` através da receita universal [`common/graphics/shaders.sh`](../common/graphics/shaders.sh).
+
+### 8. Catálogo de Receitas Modulares do FreeBSD
 
 Seguindo a simetria do repositório, as receitas do FreeBSD residem em [`freebsd/`](../freebsd/README.md):
 

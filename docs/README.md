@@ -36,6 +36,7 @@ Esta pasta reúne os manuais arquiteturais e técnicos que sustentam o ecossiste
 - **[CONTAINERS.md](CONTAINERS.md)** — Isolamento de desenvolvimento: Incus e Podman no Linux; Bastille Jails e Podman no FreeBSD.
 - **[HYPERVISORS.md](HYPERVISORS.md)** — Virtualização completa Type-1/Type-2 e ZVOLs: KVM (Linux), bhyve (FreeBSD) e Hyper-V (Windows).
 - **[EXTERNAL.md](EXTERNAL.md)** — Catálogo de instaladores manuais, softwares portáteis e ferramentas fora de repositórios oficiais.
+- **[AI.md](AI.md)** — Inteligência Artificial Local: Ollama, llama.cpp, stack Vulkan e integração com editores.
 
 ---
 

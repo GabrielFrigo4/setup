@@ -38,6 +38,21 @@ A pasta [`security/`](../windows/native/security/) concentra ferramentas essenci
 
 - **[`setup.ps1`](../windows/native/setup.ps1):** Instalação de módulos essenciais (`PSWindowsUpdate`, `Terminal-Icons`, `NerdFonts`) e criação de atalhos de inicialização rápida para o **Emacs Daemon** (`emacsclientw.exe`).
 
+### D. Gerenciamento Python Moderno (Astral `uv`)
+
+No Windows nativo, o **`uv`** é instalado como ferramenta central de execução de scripts Python e gerenciador de pacotes ultrarrápido:
+
+- **Instalação via Winget:** `winget install --id=astral-sh.uv --accept-package-agreements --accept-source-agreements`
+- **Instalação via PowerShell:** `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
+- **Automação:** Configurado na receita [`windows/native/dev-tools.cmd`](../windows/native/dev-tools.cmd).
+
+### E. Modern Shader Toolchains & Vulkan SDK
+
+Para compilação de shaders e gamedev no Windows:
+
+- **Receita Canônica Nativa:** [`windows/native/shaders.cmd`](../windows/native/shaders.cmd) instala LunarG.VulkanSDK, DirectXShaderCompiler e Slang via `winget`, com suporte a pacotes vcpkg.
+- **MSYS2:** Bibliotecas de cabeçalhos e compiladores via `pacman -S mingw-w64-ucrt-x86_64-shaderc mingw-w64-ucrt-x86_64-glslang` em [`windows/msys2/graphics.sh`](../windows/msys2/graphics.sh).
+
 ---
 
 ## ⚡ 2. Subsistema MSYS2 UCRT64 (`windows/msys2/`)

@@ -14,9 +14,10 @@ Esta pasta centraliza receitas universais para bibliotecas de desenvolvimento de
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo / Receita          | Descrição                                                                              | Plataforma                            |
-| :------------------------- | :------------------------------------------------------------------------------------- | :------------------------------------ |
-| [`gamedev.sh`](gamedev.sh) | Toolchains e bibliotecas para SDL3, GLFW, Emscripten, SPIR-V e compiladores de shaders | Linux / FreeBSD / macOS / WSL / MSYS2 |
+| Arquivo / Receita          | Descrição                                                                    | Plataforma                            |
+| :------------------------- | :--------------------------------------------------------------------------- | :------------------------------------ |
+| [`gamedev.sh`](gamedev.sh) | Toolchains e bibliotecas para SDL3, GLFW, Emscripten e SPIR-V                | Linux / FreeBSD / macOS / WSL / MSYS2 |
+| [`shaders.sh`](shaders.sh) | Compiladores de shaders modernos (Vulkan SDK, Slang, DXC, glslang e shaderc) | Linux / FreeBSD / MSYS2               |
 
 ---
 

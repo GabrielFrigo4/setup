@@ -67,6 +67,28 @@ O Linux implementa a camada de isolamento do **Clean Host** através de três fe
 
 ---
 
+## ⚡ Gerenciamento Python Moderno: Astral `uv`
+
+Para execução de scripts, criação de ambientes virtuais efêmeros e gerenciamento de ferramentas CLI Python com velocidade compilada em Rust:
+
+- **Fedora Workstation:** `sudo dnf install uv`
+- **Arch Linux:** `sudo pacman -S uv`
+- **Debian / Ubuntu:** `curl -LsSf https://astral.sh/uv/install.sh | sh`
+- **Destaque:** `uv` substitui integralmente a lentidão do `pip` e `virtualenv`, operando com cache unificado em conformidade com o XDG Base Directory (`~/.cache/uv`).
+
+---
+
+## 🎮 Modern Shader Toolchains & Vulkan no Linux
+
+Para compilação avançada de shaders HLSL/Slang para SPIR-V e pipelines gráficos modernos:
+
+- **Arch Linux:** `pacman -S shader-slang directx-shader-compiler shaderc glslang vulkan-icd-loader vulkan-headers vulkan-tools` via [`linux/desktop/arch/tools/gamedev.sh`](../linux/desktop/arch/tools/gamedev.sh).
+- **Debian / Ubuntu:** `apt install slang-compiler libshaderc-dev glslang-tools libvulkan-dev vulkan-tools` via [`linux/desktop/debian/tools/gamedev.sh`](../linux/desktop/debian/tools/gamedev.sh).
+- **Fedora:** `shader-slang` via COPR `rustyclanker/slang`, `shaderc`, `glslang`, `vulkan-loader-devel` via [`linux/desktop/fedora/tools/gamedev.sh`](../linux/desktop/fedora/tools/gamedev.sh).
+- **Receita Canônica Universal:** [`common/graphics/shaders.sh`](../common/graphics/shaders.sh) provê auto-detecção via gerenciador de pacotes ou fallback dinâmico oficial via GitHub para `~/.local/opt/` com wrappers em `~/.local/bin/`.
+
+---
+
 ## ☁️ Servidores em Nuvem (OCI & Magalu Cloud)
 
 Para servidores remotos (Oracle Cloud Infrastructure e Magalu Cloud):

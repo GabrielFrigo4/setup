@@ -1,0 +1,5 @@
+# Temporary files and logs
+*~
+*.swp
+*.log
+.DS_Store

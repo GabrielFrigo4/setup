@@ -35,4 +35,11 @@ ${ELEVATE} pkg install --yes \
 	fastfetch \
 	cpufetch
 
+if ! command -v uv > "/dev/null" 2>&1; then
+	echo "  ↳ Instalando Astral uv (Fast Python Package Manager)..."
+	${ELEVATE} pkg install --yes py311-uv 2> "/dev/null" || ${ELEVATE} pkg install --yes uv 2> "/dev/null" || {
+		curl -LsSf https://astral.sh/uv/install.sh | sh
+	}
+fi
+
 echo "✅ [FreeBSD CLI]: Utilitários instalados com sucesso!"

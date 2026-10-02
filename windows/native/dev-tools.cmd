@@ -12,6 +12,7 @@ winget install Microsoft.WindowsTerminal --accept-package-agreements --accept-so
 winget install Microsoft.PowerToys --accept-package-agreements --accept-source-agreements
 winget install Microsoft.Sysinternals.TCPView --accept-package-agreements --accept-source-agreements
 winget install Microsoft.WinDbg --accept-package-agreements --accept-source-agreements
+winget install --id=astral-sh.uv --accept-package-agreements --accept-source-agreements
 
 echo [V] Ferramentas de desenvolvimento instaladas com sucesso!
 endlocal
