@@ -7,7 +7,7 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Setup Provisioning
 # ----------------------------------------------------------------
 
-.PHONY: help hooks audit test fix-banners doctor ci
+.PHONY: help hooks audit test format prettier fix-banners doctor ci
 
 ### ================================
 ### HELP & DOCUMENTATION
@@ -24,6 +24,8 @@ help:
 	sec "Auditoria & Qualidade:"; \
 	cmd "test"           "Valida sintaxe POSIX em todas as receitas de provisionamento"; \
 	cmd "audit"          "Executa a suíte de auditoria completa e quality gates"; \
+	cmd "format"         "Formata documentações Markdown com Prettier"; \
+	cmd "prettier"       "Formata documentações Markdown com Prettier"; \
 	cmd "ci"             "Executa suite completa de CI local"; \
 	sec "Diagnóstico:"; \
 	cmd "doctor"         "Executa diagnóstico de saúde e sanity check pós-boot do sistema"; \
@@ -49,6 +51,17 @@ test:
 	echo "🧪 Validando sintaxe POSIX das receitas de provisionamento..."
 	find . -name "*.sh" -not -path "*/.git/*" -exec sh -n {} +
 	echo "✅ Todas as receitas POSIX estão válidas!"
+
+format: prettier
+	echo "✅ Formatação concluída!"
+
+prettier:
+	echo "🎨 Formatando documentações Markdown com Prettier..."
+	if command -v prettier > "/dev/null" 2>&1; then \
+		prettier --write "**/*.md" 2> "/dev/null" || true; \
+	elif command -v npx > "/dev/null" 2>&1; then \
+		npx prettier --write "**/*.md" 2> "/dev/null" || true; \
+	fi
 
 fix-banners:
 	echo "📏 Normalizando réguas de banners de cabeçalho e seções..."

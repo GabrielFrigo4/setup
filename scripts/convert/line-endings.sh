@@ -16,7 +16,7 @@ case "${MODE}" in
 				TEMP_FILE="$(mktemp)"
 				tr -d '\r' < "$FILE_PATH" > "$TEMP_FILE"
 				mv "$TEMP_FILE" "$FILE_PATH"
-				printf "  \033[32m➔ LF: %s\033[0m\n" "${FILE_PATH}"
+				printf "  \x1b[32m➔ LF: %s\x1b[0m\n" "${FILE_PATH}"
 			fi
 		done
 		;;
@@ -27,7 +27,7 @@ case "${MODE}" in
 				TEMP_FILE="$(mktemp)"
 				sed 's/$/\r/' "$FILE_PATH" > "$TEMP_FILE"
 				mv "$TEMP_FILE" "$FILE_PATH"
-				printf "  \033[32m➔ CRLF: %s\033[0m\n" "${FILE_PATH}"
+				printf "  \x1b[32m➔ CRLF: %s\x1b[0m\n" "${FILE_PATH}"
 			fi
 		done
 		;;

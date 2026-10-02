@@ -50,7 +50,7 @@ echo "✅ [Nome]: Configurado com sucesso!"
 - **Orçamento de Linhas (Regra 8 - 128):** Piso de 8 linhas e teto de 128 linhas úteis.
 - **Camada 1 (Header Banner):** Exclusivo para linhas 2 a 4, delimitado por 64 hífens (`# ----------------------------------------------------------------`).
 - **Camada 2 (Delimitadores Estruturais de Corpo):** Réguas simétricas de 32 caracteres (`### ================================` ou `### --------------------------------`). O título DEVE ter no máximo 32 caracteres e JAMAIS vazar além da régua (total de 36 colunas com `### `).
-- **Camada 3 (Zero Comentários Narrativos):** Proibição absoluta de comentários narrativos ou inline em scripts, templates e exemplos. Utilize linhas em branco para separar blocos lógicos.
+- **Camada 3 (Zero Comentários Narrativos):** Não use comentários narrativos ou inline em scripts, templates e exemplos. Utilize linhas em branco para separar blocos lógicos.
 
 ## 6. Padrão Universal de READMEs
 

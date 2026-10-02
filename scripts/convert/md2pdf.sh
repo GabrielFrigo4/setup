@@ -5,7 +5,7 @@
 set -eu
 
 if [ -z "${1-}" ] || [ ! -d "${1}" ]; then
-	printf "\033[31mErro: Forneça um diretório válido.\033[0m\n"
+	printf "\x1b[31mErro: Forneça um diretório válido.\x1b[0m\n"
 	exit 1
 fi
 
@@ -26,7 +26,7 @@ find "$INPUT_DIR" -type f -name "*.md" -not -path "$OUTPUT_ROOT/*" | while read 
 	FILE_BASE="$(basename "$MD_FILE" .md)"
 	PDF_OUTPUT="$TARGET_DIR/$FILE_BASE.pdf"
 
-	printf "\033[36mPDF: %s.pdf\033[0m\n" "$FILE_BASE"
+	printf "\x1b[36mPDF: %s.pdf\x1b[0m\n" "$FILE_BASE"
 
 	pandoc "$MD_FILE" -o "$PDF_OUTPUT" \
 		--pdf-engine=weasyprint \
