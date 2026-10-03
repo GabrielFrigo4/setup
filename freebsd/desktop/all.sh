@@ -36,6 +36,7 @@ _run "${_common}/wasm/emscripten.sh"
 _run "${_common}/media/cli.sh"
 _run "${_common}/docs/typesetting.sh"
 _run "${_common}/fonts/fonts.sh"
+_run "${_common}/web/browsers.sh"
 _run "${_common}/linters/linters.sh"
 
 echo "✅ [FreeBSD Bundle] Instalação do desktop FreeBSD finalizada com sucesso!"
