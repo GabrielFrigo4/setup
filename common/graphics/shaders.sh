@@ -18,14 +18,16 @@ if command -v pkg > "/dev/null" 2>&1; then
 		spirv-cross \
 		spirv-tools
 elif command -v dnf > "/dev/null" 2>&1; then
-	${ELEVATE} dnf install --assumeyes \
+	${ELEVATE} dnf install --assumeyes --skip-unavailable \
 		vulkan-loader-devel \
 		vulkan-headers \
 		vulkan-tools \
-		shaderc \
 		glslang \
-		spirv-cross-devel \
-		spirv-tools
+		spirv-tools \
+		jq \
+		unzip \
+		curl \
+		tar
 	${ELEVATE} dnf copr enable --assumeyes rustyclanker/slang 2> "/dev/null" || true
 	${ELEVATE} dnf install --assumeyes shader-slang 2> "/dev/null" || true
 elif command -v apt-get > "/dev/null" 2>&1; then
@@ -36,7 +38,11 @@ elif command -v apt-get > "/dev/null" 2>&1; then
 		glslang-tools \
 		libshaderc-dev \
 		spirv-cross \
-		spirv-tools
+		spirv-tools \
+		jq \
+		unzip \
+		curl \
+		tar
 	${ELEVATE} apt-get install --yes slang-compiler 2> "/dev/null" || true
 elif command -v pacman > "/dev/null" 2>&1; then
 	if [ -n "${MSYSTEM-}" ]; then
@@ -45,7 +51,11 @@ elif command -v pacman > "/dev/null" 2>&1; then
 			mingw-w64-ucrt-x86_64-shaderc \
 			mingw-w64-ucrt-x86_64-glslang \
 			mingw-w64-ucrt-x86_64-spirv-cross \
-			mingw-w64-ucrt-x86_64-spirv-tools
+			mingw-w64-ucrt-x86_64-spirv-tools \
+			jq \
+			unzip \
+			curl \
+			tar
 	else
 		${ELEVATE} pacman -S --needed --noconfirm \
 			vulkan-icd-loader \
@@ -56,7 +66,11 @@ elif command -v pacman > "/dev/null" 2>&1; then
 			spirv-cross \
 			spirv-tools \
 			shader-slang \
-			directx-shader-compiler
+			directx-shader-compiler \
+			jq \
+			unzip \
+			curl \
+			tar
 	fi
 fi
 
