@@ -34,16 +34,16 @@ Execute a partir da raiz do repositório:
 ### Suíte Completa (Recomendado)
 
 ```sh
-python3 scripts/audit/all.py
+python3 .scripts/audit/all.py
 ```
 
 ### Execuções Individuais
 
 ```sh
-python3 scripts/audit/monoliths.py
-python3 scripts/audit/nanos.py
-python3 scripts/audit/syntax.py
-python3 scripts/audit/banners.py
-python3 scripts/audit/links.py
-python3 scripts/audit/formats.py
+python3 .scripts/audit/monoliths.py
+python3 .scripts/audit/nanos.py
+python3 .scripts/audit/syntax.py
+python3 .scripts/audit/banners.py
+python3 .scripts/audit/links.py
+python3 .scripts/audit/formats.py
 ```

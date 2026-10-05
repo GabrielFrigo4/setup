@@ -28,8 +28,8 @@ jobs:
 
             - name: Run Setup Audit Suite
               run: |
-                  python3 scripts/audit/all.py
+                  python3 .scripts/audit/all.py
 
             - name: Validate Recipe Syntax (POSIX sh -n)
               run: |
-                  find common freebsd linux windows scripts setup.sh -name "*.sh" -exec sh -n {} +
+                  find common freebsd linux windows .scripts setup.sh -name "*.sh" -exec sh -n {} +

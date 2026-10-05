@@ -42,5 +42,5 @@ O agente nunca deve agir de forma passiva diante de violações de idempotência
 Antes de finalizar qualquer modificação:
 
 1. `git diff --check`
-2. `python3 scripts/audit/all.py`
+2. `python3 .scripts/audit/all.py`
 3. `./.githooks/pre-commit`

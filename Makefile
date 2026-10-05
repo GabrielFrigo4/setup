@@ -45,7 +45,7 @@ hooks:
 ### ================================
 audit:
 	echo "🔍 Executando suíte de auditoria do Setup..."
-	python3 scripts/audit/all.py
+	python3 .scripts/audit/all.py
 
 test:
 	echo "🧪 Validando sintaxe POSIX das receitas de provisionamento..."
@@ -65,11 +65,11 @@ prettier:
 
 fix-banners:
 	echo "📏 Normalizando réguas de banners de cabeçalho e seções..."
-	python3 scripts/audit/banners.py --fix
+	python3 .scripts/audit/banners.py --fix
 	echo "✅ Réguas de banners normalizadas com sucesso!"
 
 doctor:
-	sh scripts/audit/doctor.sh
+	sh .scripts/audit/doctor.sh
 
 ci: test audit
 	echo "🚀 Setup 100% aprovado no CI local!"

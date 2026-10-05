@@ -49,7 +49,7 @@ Antes de escrever qualquer código, posicione a receita no diretório correto:
 ```sh
 git diff --check
 
-python3 scripts/audit/all.py
+python3 .scripts/audit/all.py
 
 ./.githooks/pre-commit
 ```

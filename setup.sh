@@ -25,7 +25,7 @@ for _arg in "$@"; do
 		--dry-run) _dry_run=1 ;;
 		--profile=*) _profile="${_arg#*=}" ;;
 		doctor) _profile="doctor" ;;
-		audit) python3 "${_repo_root}/scripts/audit/all.py"; exit 0 ;;
+		audit) python3 "${_repo_root}/.scripts/audit/all.py"; exit 0 ;;
 		test)
 			find "${_repo_root}" -name "*.sh" -not -path "*/.git/*" -exec sh -n {} +
 			echo "✅ [Setup] Todas as receitas POSIX estão válidas!"
@@ -125,7 +125,7 @@ case "${_choice}" in
 		;;
 	5)
 		echo "↳ Executando diagnóstico..."
-		sh "${_repo_root}/scripts/audit/doctor.sh"
+		sh "${_repo_root}/.scripts/audit/doctor.sh"
 		;;
 	*)
 		echo "Operação cancelada."

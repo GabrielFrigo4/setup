@@ -29,13 +29,13 @@ Esta pasta centraliza ferramentas para sanear e converter formatos de arquivos e
 ### Conversão de Quebras de Linha
 
 ```sh
-sh scripts/convert/line-endings.sh --to-unix
+sh .scripts/convert/line-endings.sh --to-unix
 
-sh scripts/convert/line-endings.sh --to-dos
+sh .scripts/convert/line-endings.sh --to-dos
 ```
 
 ### Markdown para PDF
 
 ```sh
-sh scripts/convert/md2pdf.sh ./docs
+sh .scripts/convert/md2pdf.sh ./docs
 ```

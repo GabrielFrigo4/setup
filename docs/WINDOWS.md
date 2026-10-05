@@ -74,10 +74,10 @@ O **MSYS2 UCRT64** provê um ambiente de desenvolvimento POSIX completo que comp
 
 ---
 
-## 🔧 3. Tweaks de Registro e Sistema (`scripts/windows/`)
+## 🔧 3. Tweaks de Registro e Sistema (`.scripts/windows/`)
 
 Para garantir a melhor experiência no terminal e compatibilidade com padrões globais:
 
-- **[`registry/utf8.reg`](../scripts/windows/registry/utf8.reg):** Força o Prompt de Comando (CMD) a usar a página de código UTF-8 (`chcp 65001`) por padrão.
-- **[`registry/altgr2alt.reg`](../scripts/windows/registry/altgr2alt.reg):** Mapeamento do teclado para transformar a tecla AltGr em Alt esquerdo, facilitando atalhos em editores como Emacs e Vim.
-- **[`hyper-v.cmd`](../scripts/windows/hyper-v.cmd):** Ativação e configuração do hypervisor Hyper-V e subsistema de virtualização da Microsoft.
+- **[`registry/utf8.reg`](../.scripts/windows/registry/utf8.reg):** Força o Prompt de Comando (CMD) a usar a página de código UTF-8 (`chcp 65001`) por padrão.
+- **[`registry/altgr2alt.reg`](../.scripts/windows/registry/altgr2alt.reg):** Mapeamento do teclado para transformar a tecla AltGr em Alt esquerdo, facilitando atalhos em editores como Emacs e Vim.
+- **[`hyper-v.cmd`](../.scripts/windows/hyper-v.cmd):** Ativação e configuração do hypervisor Hyper-V e subsistema de virtualização da Microsoft.
