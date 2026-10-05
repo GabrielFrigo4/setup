@@ -1,46 +1,117 @@
 # ----------------------------------------------------------------
-# Recipe: Windows PowerShell Modules & Emacs Daemon
+# Recipe: Windows PowerShell Modules, Emacs Daemon & Ollama
 # ----------------------------------------------------------------
 [CmdletBinding()]
 param ()
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "📦 [Windows Config]: Instalando módulos essenciais do PowerShell..."
+# ----------------------------------------------------------------
+# Módulos PowerShell & Políticas
+# ----------------------------------------------------------------
+Write-Host "📦 [PowerShell]: Instalando módulos essenciais..." -ForegroundColor Cyan
 
-@("PSWindowsUpdate", "Terminal-Icons", "NerdFonts", "Fonts", "pstools") | ForEach-Object {
-	Install-Module -Name $_ -Force -SkipPublisherCheck -Scope CurrentUser -ErrorAction SilentlyContinue
+$Modules = @("PSWindowsUpdate", "Terminal-Icons", "NerdFonts", "Fonts", "pstools")
+foreach ($Module in $Modules) {
+	if (-not (Get-Module -ListAvailable -Name $Module)) {
+		Install-Module -Name $Module -Force -SkipPublisherCheck -Scope CurrentUser -ErrorAction SilentlyContinue
+	}
 }
 
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
-
-Write-Host "📦 [Windows Config]: Configurando atalhos de inicialização do Emacs Daemon..."
-
-$WshShell = New-Object -ComObject WScript.Shell
-$UserHome = $env:USERPROFILE
-$AppData = $env:APPDATA
-$StartupFolder = [Environment]::GetFolderPath('Startup')
-
-$Shortcut = $WshShell.CreateShortcut("$StartupFolder\Emacs-Daemon.lnk")
-$Shortcut.TargetPath = "C:\msys64\ucrt64\bin\runemacs.exe"
-$Shortcut.Arguments = "--fg-daemon --init-directory `"$UserHome\.emacs.d`""
-$Shortcut.Save()
-
-$TargetFolder = Join-Path $AppData "Microsoft\Windows\Start Menu\Customizado\Emacs"
-if (!(Test-Path -Path $TargetFolder)) {
-	New-Item -ItemType Directory -Path $TargetFolder -Force | Out-Null
+if ((Get-ExecutionPolicy -Scope CurrentUser) -ne 'RemoteSigned') {
+	Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force -ErrorAction SilentlyContinue
 }
 
-$ShortcutNormal = $WshShell.CreateShortcut("$TargetFolder\Emacs.lnk")
-$ShortcutNormal.TargetPath = "C:\msys64\ucrt64\bin\runemacs.exe"
-$ShortcutNormal.Arguments = "--init-directory `"$UserHome\.emacs.d`""
-$ShortcutNormal.Description = "Inicia uma nova instância standalone do Emacs"
-$ShortcutNormal.Save()
+# ----------------------------------------------------------------
+# Infraestrutura de Atalhos
+# ----------------------------------------------------------------
+$WshShell       = New-Object -ComObject WScript.Shell
+$UserHome       = $env:USERPROFILE
+$AppData        = $env:APPDATA
+$LocalAppData   = $env:LOCALAPPDATA
+$StartupFolder  = [Environment]::GetFolderPath('Startup')
+$CustomFolder   = Join-Path $AppData "Microsoft\Windows\Start Menu\Customizado"
 
-$ShortcutClient = $WshShell.CreateShortcut("$TargetFolder\Emacs Client.lnk")
-$ShortcutClient.TargetPath = "C:\msys64\ucrt64\bin\emacsclientw.exe"
-$ShortcutClient.Arguments = "--server-file `"$UserHome\.emacs.d\var\server\auth\server`" --create-frame --alternate-editor `"`"C:\msys64\ucrt64\bin\runemacs.exe`" --init-directory `"$UserHome\.emacs.d`"`""
-$ShortcutClient.Description = "Conecta ao Emacs Daemon"
-$ShortcutClient.Save()
+function New-AppShortcut {
+	param (
+		[Parameter(Mandatory)] [string] $TargetPath,
+		[Parameter(Mandatory)] [string] $ShortcutPath,
+		[string] $Arguments = "",
+		[string] $Description = "",
+		[string] $WorkingDirectory = "",
+		[string] $IconLocation = ""
+	)
 
-Write-Host "✅ [Windows Config]: Módulos e atalhos configurados com sucesso!"
+	$Folder = Split-Path -Path $ShortcutPath -Parent
+	if (-not (Test-Path -Path $Folder)) {
+		New-Item -ItemType Directory -Path $Folder -Force | Out-Null
+	}
+
+	$Shortcut = $WshShell.CreateShortcut($ShortcutPath)
+	$Shortcut.TargetPath = $TargetPath
+	if ($Arguments)        { $Shortcut.Arguments =$Arguments }
+	if ($Description)      { $Shortcut.Description =$Description }
+	if ($WorkingDirectory) { $Shortcut.WorkingDirectory = $WorkingDirectory }
+	if ($IconLocation)     { $Shortcut.IconLocation = $IconLocation }
+	$Shortcut.Save()
+}
+
+# ----------------------------------------------------------------
+# Atalhos: Emacs & Daemon
+# ----------------------------------------------------------------
+Write-Host "📦 [Emacs]: Verificando instalação e gerando atalhos..." -ForegroundColor Cyan
+
+$RunEmacsExe       = "C:\msys64\ucrt64\bin\runemacs.exe"
+$EmacsClientExe    = "C:\msys64\ucrt64\bin\emacsclientw.exe"
+$TargetFolderEmacs = Join-Path $CustomFolder "Emacs"
+
+if (Test-Path $RunEmacsExe) {
+	New-AppShortcut `
+		-TargetPath $RunEmacsExe `
+		-ShortcutPath "$StartupFolder\Emacs-Daemon.lnk" `
+		-Arguments "--fg-daemon --init-directory `"$UserHome\.emacs.d`"" `
+		-Description "Inicia o Emacs Daemon no boot"
+
+	New-AppShortcut `
+		-TargetPath $RunEmacsExe `
+		-ShortcutPath "$TargetFolderEmacs\Emacs.lnk" `
+		-Arguments "--init-directory `"$UserHome\.emacs.d`"" `
+		-Description "Inicia uma nova instância standalone do Emacs"
+
+	if (Test-Path $EmacsClientExe) {$ClientArgs = "--server-file `"$UserHome\.emacs.d\var\server\auth\server`" --create-frame --alternate-editor `"`"$RunEmacsExe`" --init-directory `"$UserHome\.emacs.d`"`""
+		New-AppShortcut `
+			-TargetPath $EmacsClientExe `
+			-ShortcutPath "$TargetFolderEmacs\Emacs Client.lnk" `
+			-Arguments $ClientArgs `
+			-Description "Conecta ao Emacs Daemon"
+	}
+} else {
+	Write-Warning "Emacs não foi encontrado em '$RunEmacsExe'. Atalhos ignorados."
+}
+
+# ----------------------------------------------------------------
+# Atalhos: Ollama
+# ----------------------------------------------------------------
+Write-Host "📦 [Ollama]: Verificando instalação e gerando atalhos..." -ForegroundColor Cyan
+
+$OllamaAppPath      = Join-Path $LocalAppData "Programs\Ollama\ollama app.exe"
+$OllamaIconPath     = Join-Path $LocalAppData "Programs\Ollama\app.ico"
+
+$TargetFolderOllama = Join-Path $CustomFolder "Ollama"
+if (Test-Path $OllamaAppPath) {
+	New-AppShortcut `
+		-TargetPath $OllamaAppPath `
+		-ShortcutPath "$StartupFolder\Ollama.lnk" `
+		-Description "Inicia o Ollama no boot" `
+		-IconLocation $OllamaIconPath
+
+	New-AppShortcut `
+		-TargetPath $OllamaAppPath `
+		-ShortcutPath "$TargetFolderOllama\Ollama.lnk" `
+		-Description "Inicia o Ollama" `
+		-IconLocation $OllamaIconPath
+} else {
+	Write-Warning "Ollama não foi encontrado em '$OllamaAppPath'. Atalhos ignorados."
+}
+
+Write-Host "✅ [Windows Config]: Processo finalizado com sucesso!" -ForegroundColor Green
