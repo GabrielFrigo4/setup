@@ -23,6 +23,25 @@ if ((Get-ExecutionPolicy -Scope CurrentUser) -ne 'RemoteSigned') {
 }
 
 # ----------------------------------------------------------------
+# Rede: Portas Dinâmicas (Padrão IANA: 49152-65535)
+# ----------------------------------------------------------------
+$IanaStartPort = 49152
+$DynamicPorts  = netsh int ipv4 show dynamicport tcp
+
+if ($DynamicPorts -notmatch $IanaStartPort) {
+    Write-Host "📦 [Rede]: Ajustando faixa dinâmica do WinNAT para o padrão IANA..." -ForegroundColor Cyan
+
+    $Commands = @(
+        "net stop winnat",
+        "netsh int ipv4 set dynamicport tcp start=$IanaStartPort num=16384",
+        "netsh int ipv6 set dynamicport tcp start=$IanaStartPort num=16384",
+        "net start winnat"
+    ) -join " && "
+
+    sudo cmd /c $Commands
+}
+
+# ----------------------------------------------------------------
 # Infraestrutura de Atalhos
 # ----------------------------------------------------------------
 $WshShell       = New-Object -ComObject WScript.Shell
