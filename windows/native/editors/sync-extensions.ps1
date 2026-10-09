@@ -30,10 +30,24 @@ if ($Target -eq "vscode" -or ($Target -eq "auto" -and (Get-Command code -ErrorAc
 }
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$LocalFile = Join-Path $ScriptDir "..\..\..\..\software\editors\$ResolvedTarget\extensions.txt"
-$RawUrl = "https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/software/editors/$ResolvedTarget/extensions.txt"
+$CandidateFiles = @(
+	(Join-Path $ScriptDir "..\..\..\..\Profile\editors\$ResolvedTarget\extensions.txt"),
+	"$env:USERPROFILE\.local\share\profile\editors\$ResolvedTarget\extensions.txt",
+	"$env:APPDATA\profile\editors\$ResolvedTarget\extensions.txt"
+)
+$LocalFile = $null
+foreach ($cand in $CandidateFiles) {
+	if (Test-Path $cand) {
+		$LocalFile = $cand
+		break
+	}
+}
+$RawUrl = "https://raw.githubusercontent.com/GabrielFrigo4/profile/main/editors/$ResolvedTarget/extensions.txt"
 
 if ($Action -eq "export") {
+	if (-not $LocalFile) {
+		$LocalFile = "$env:USERPROFILE\.local\share\profile\editors\$ResolvedTarget\extensions.txt"
+	}
 	Write-Host "📦 [IDE Extensions]: Exportando extensões instaladas via $Cli para $LocalFile..."
 	$installed = & $Cli --list-extensions | Sort-Object
 	$installed | Out-File -FilePath $LocalFile -Encoding utf8
@@ -42,7 +56,7 @@ if ($Action -eq "export") {
 }
 
 $Lines = @()
-if (Test-Path $LocalFile) {
+if ($LocalFile -and (Test-Path $LocalFile)) {
 	$Lines = Get-Content $LocalFile
 } else {
 	Write-Host "🌐 [IDE Extensions]: Buscando extensões declaradas para $ResolvedTarget no GitHub..."

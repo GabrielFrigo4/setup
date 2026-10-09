@@ -55,10 +55,33 @@ fi
 
 ACTION="${1:-install}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-LOCAL_FILE="${SCRIPT_DIR}/../../../software/editors/${TARGET}/extensions.txt"
-RAW_URL="https://raw.githubusercontent.com/GabrielFrigo4/Configuration/main/software/editors/${TARGET}/extensions.txt"
+
+find_local_extensions_file() {
+	_target_app="$1"
+	if [ -n "${PROFILE_DIR:-}" ] && [ -f "${PROFILE_DIR}/editors/${_target_app}/extensions.txt" ]; then
+		echo "${PROFILE_DIR}/editors/${_target_app}/extensions.txt"
+		return 0
+	fi
+	if [ -f "${SCRIPT_DIR}/../../../Profile/editors/${_target_app}/extensions.txt" ]; then
+		echo "${SCRIPT_DIR}/../../../Profile/editors/${_target_app}/extensions.txt"
+		return 0
+	fi
+	if [ -f "${HOME}/.local/share/profile/editors/${_target_app}/extensions.txt" ]; then
+		echo "${HOME}/.local/share/profile/editors/${_target_app}/extensions.txt"
+		return 0
+	fi
+	if [ -f "${HOME}/.config/profile/editors/${_target_app}/extensions.txt" ]; then
+		echo "${HOME}/.config/profile/editors/${_target_app}/extensions.txt"
+		return 0
+	fi
+	return 1
+}
+
+LOCAL_FILE="$(find_local_extensions_file "${TARGET}" 2> "/dev/null" || true)"
+RAW_URL="https://raw.githubusercontent.com/GabrielFrigo4/profile/main/editors/${TARGET}/extensions.txt"
 
 if [ "${ACTION}" = "export" ] || [ "${ACTION}" = "dump" ]; then
+	[ -z "${LOCAL_FILE}" ] && LOCAL_FILE="${HOME}/.local/share/profile/editors/${TARGET}/extensions.txt"
 	echo "📦 [IDE Extensions]: Exportando extensões instaladas via ${CLI} para ${LOCAL_FILE}..."
 	mkdir -p "$(dirname "${LOCAL_FILE}")"
 	"${CLI}" --list-extensions | sort > "${LOCAL_FILE}"
@@ -67,7 +90,7 @@ if [ "${ACTION}" = "export" ] || [ "${ACTION}" = "dump" ]; then
 fi
 
 TEMP_FILE=""
-if [ -f "${LOCAL_FILE}" ]; then
+if [ -n "${LOCAL_FILE}" ] && [ -f "${LOCAL_FILE}" ]; then
 	EXT_FILE="${LOCAL_FILE}"
 else
 	TEMP_FILE="$(mktemp)"
