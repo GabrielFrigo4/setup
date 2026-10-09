@@ -27,12 +27,15 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 echo "✅ [Nome]: Configurado com sucesso!"
 ```
 
-## 3. Ordem Canônica de Priorização de Pacotes (Dispatch Universal)
+## 3. Ordem Canônica de Priorização de Pacotes & Paradigma do `common/`
 
-1. Receitas Multi-OS (`FreeBSD` + `Linux`):
-   `pkg` (FreeBSD) -> `dnf` (Fedora) -> `apt` (Debian) -> `pacman` (Arch)
-2. Receitas Exclusivas de Linux (`linux/`):
-   `dnf` (Fedora) -> `apt` (Debian) -> `pacman` (Arch)
+- **O Paradigma do `common/` (Despachante Multi-OS Universal):**
+  A pasta `common/` é o lar de qualquer ferramenta ou serviço que possa ser instalado em múltiplos sistemas operacionais. Suas receitas utilizam uma cascata unificada:
+  `pkg` (FreeBSD) -> `dnf` (Fedora) -> `apt` (Debian/Ubuntu) -> `pacman` (MSYS2 UCRT64 / Arch) -> `winget.exe` (Windows).
+- **Pastas Específicas por Sistema (`linux/`, `freebsd/`, `windows/`):**
+  Reservadas estritamente para o que é inerentemente exclusivo do sistema operacional (ex: configurações de dconf/GNOME, regras udev, Jails nativas, Linuxulator, sysctl de kernel BSD, atalhos do Windows Shell).
+- **Receitas Exclusivas de Linux (`linux/`):**
+  `dnf` (Fedora) -> `apt` (Debian) -> `pacman` (Arch)
 
 ## 4. Preferência Absoluta por Flags Longas Autoexplicativas
 

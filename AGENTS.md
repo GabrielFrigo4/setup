@@ -19,7 +19,7 @@ O **Setup** é o pilar de **provisionamento de sistema operacional** do ecossist
 
 1. **Idempotência absoluta:** Toda receita DEVE ser reexecutável sem efeitos colaterais.
 2. **Template canônico:** Shebang `#!/usr/bin/env sh`, header de 64 hífens, `set -eu`.
-3. **Ordem de dispatch:** `pkg` → `dnf` → `apt` → `pacman`.
+3. **Ordem de dispatch & Paradigma do `common/`:** A pasta `common/` é a camada canônica de provimento de software cross-platform, atuando como um **Despachante Multi-OS Universal** (`pkg` → `dnf` → `apt` → `pacman` [MSYS2 / Arch] → `winget.exe`). Toda ferramenta ou serviço que possa ser instalado em mais de um sistema operacional DEVE residir em `common/<categoria>/<ferramenta>.sh`. As pastas específicas (`linux/`, `freebsd/`, `windows/`) são estritamente reservadas para o que é inerentemente exclusivo e idiossincrático daquele sistema operacional (ex: dconf/GNOME, regras udev, Jails/Linuxulator, sysctl de kernel BSD, atalhos do Windows Shell). Jamais isole pacotes universais dentro de pastas de SO individuais.
 4. **Flags longas:** `--yes`, `--assumeyes`, `--needed`, `--noconfirm`.
 5. **Zero comentários narrativos:** Código autoexplicativo, blocos separados por linhas em branco.
 6. **Orçamento de linhas:** Piso < 8 proibido, aviso <= 16, sweet spot 17-128, aviso 129-255, teto > 256 proibido (salvo Whitelist).

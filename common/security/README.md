@@ -12,9 +12,10 @@ Esta pasta centraliza ferramentas de auditoria e inspeção de código e binári
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo / Receita | Descrição                                                   | Plataforma                                  |
-| :---------------- | :---------------------------------------------------------- | :------------------------------------------ |
-| [`re.sh`](re.sh)  | Ferramentas de análise binária e depuração (LLDB, Valgrind) | Linux / FreeBSD / macOS / WSL / MSYS2 / Win |
+| Arquivo / Receita              | Descrição                                                   | Plataforma                                  |
+| :----------------------------- | :---------------------------------------------------------- | :------------------------------------------ |
+| [`re.sh`](re.sh)               | Ferramentas de análise binária e depuração (LLDB, Valgrind) | Linux / FreeBSD / macOS / WSL / MSYS2 / Win |
+| [`wireshark.sh`](wireshark.sh) | Captura de pacotes Wireshark e permissões não-root          | Linux / FreeBSD / macOS / WSL / MSYS2 / Win |
 
 ---
 

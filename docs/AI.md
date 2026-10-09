@@ -54,7 +54,17 @@ Deve exibir informações do driver Vulkan da GPU (Mesa, NVIDIA, AMD AMDVLK, etc
 
 O [Ollama](https://ollama.com) é o servidor de inferência local que expõe uma API HTTP compatível com OpenAI em `http://127.0.0.1:11434`. Permite executar modelos de linguagem (LLMs) diretamente na GPU local sem depender de serviços cloud.
 
-### Instalação por Plataforma
+### Receita Automatizada Universal (Multi-OS)
+
+Para instalar o Ollama e o SDK Python com um comando cross-platform:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/ai/ollama.sh | sh
+```
+
+Também disponível no catálogo local: [`../common/ai/ollama.sh`](../common/ai/ollama.sh).
+
+### Instalação Manual por Plataforma
 
 #### FreeBSD
 

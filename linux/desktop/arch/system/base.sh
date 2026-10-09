@@ -9,7 +9,15 @@ echo "📦 [Arch Base]: Configurando sistema base, SDDM e journald..."
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
 ${ELEVATE} pacman-mirrors --fasttrack 5 2> "/dev/null" || true
-${ELEVATE} pacman -Syyu --needed --noconfirm
+${ELEVATE} pacman -Syyu --needed --noconfirm zsh
+
+if command -v zsh > "/dev/null" 2>&1; then
+	TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
+	ZSH_BIN="$(command -v zsh)"
+	if [ "$(getent passwd "${TARGET_USER}" 2> "/dev/null" | cut -d: -f7)" != "${ZSH_BIN}" ]; then
+		${ELEVATE} chsh -s "${ZSH_BIN}" "${TARGET_USER}" 2> "/dev/null" || true
+	fi
+fi
 
 if [ -f "/etc/sddm.conf" ]; then
 	${ELEVATE} sed -i 's/Numlock=none/Numlock=on/' "/etc/sddm.conf" 2> "/dev/null" || true

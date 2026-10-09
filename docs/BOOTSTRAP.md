@@ -47,12 +47,18 @@ echo "✅ [Nome]: Configurado com sucesso!"
 
 ## 📂 Organização das Receitas por Categorias
 
-As receitas em `common/`, `freebsd/`, `linux/` e `windows/` são categorizadas por funcionalidade:
+### 🌐 O Paradigma do `common/` vs Pastas Específicas
 
+- **`common/` (Despachante Multi-OS Universal):** Camada canônica de provimento multiplataforma. Toda ferramenta suportada em mais de um SO (`pkg`, `dnf`, `apt`, `pacman`, `winget`) DEVE residir em `common/<categoria>/<ferramenta>.sh` com cascata unificada.
+- **`linux/`, `freebsd/`, `windows/` (Específicos de SO):** Reservados estritamente para idiossincrasias inerentes (ex: dconf/GNOME, Jails, Linuxulator, sysctl BSD, registro do Windows).
+
+As receitas são categorizadas por funcionalidade:
+
+- **`ai/`**: Servidores de inferência local (Ollama) e bibliotecas Python.
 - **`system/`**: Configurações essenciais de usuário, privilégios (`doas`, `sudo`), kernel e sysctl.
 - **`desktop/`**: Ambientes de interface gráfica (GNOME no Fedora, KDE Plasma no FreeBSD) e fontes.
 - **`containers/`**: Virtualização leve de sistema (Docker, Incus, FreeBSD Bastille Jails).
-- **`security/`**: Ferramentas de análise, engenharia reversa e captura de pacotes (Wireshark com BPF, Ghidra, Horsicq suite).
+- **`security/`**: Ferramentas de análise, engenharia reversa e captura de pacotes (Wireshark universal, LLDB, Valgrind).
 - **`emulation/`**: Camadas de compatibilidade (Linuxlator no FreeBSD, Wine/Winetricks).
 - **`devices/`**: Roteamento de áudio/microfone para Android via RTP, webcams e drivers FUSE.
 - **`network/`**: Configurações de Wi-Fi nativo e Wifibox (drivers Wi-Fi Linux no FreeBSD).

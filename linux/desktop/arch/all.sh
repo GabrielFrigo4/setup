@@ -34,6 +34,8 @@ _run "${_common}/docs/typesetting.sh"
 _run "${_common}/fonts/fonts.sh"
 _run "${_common}/web/browsers.sh"
 _run "${_common}/security/re.sh"
+_run "${_common}/security/wireshark.sh"
+_run "${_common}/ai/ollama.sh"
 _run "${_common}/linters/linters.sh"
 _run "${_dir}/system/diagnostics.sh"
 

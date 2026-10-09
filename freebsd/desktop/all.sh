@@ -38,6 +38,8 @@ _run "${_common}/docs/typesetting.sh"
 _run "${_common}/fonts/fonts.sh"
 _run "${_common}/web/browsers.sh"
 _run "${_common}/linters/linters.sh"
+_run "${_common}/ai/ollama.sh"
+_run "${_common}/security/wireshark.sh"
 
 echo "✅ [FreeBSD Bundle] Instalação do desktop FreeBSD finalizada com sucesso!"
 exit 0

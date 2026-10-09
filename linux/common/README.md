@@ -14,14 +14,14 @@ Esta pasta centraliza as receitas de infraestrutura de sistema, ferramentas e se
 
 ## 📂 Catálogo de Receitas
 
-| Categoria       | Receita                                                          | Descrição                                                              |
-| :-------------- | :--------------------------------------------------------------- | :--------------------------------------------------------------------- |
-| **`system/`**   | [`system/swap.sh`](system/swap.sh)                               | Alocação de 2GB de Swap e `vm.swappiness=10` (Agnóstico de SO)         |
-| **`system/`**   | [`../../common/system/nopass.sh`](../../common/system/nopass.sh) | Elevação com `doas` e `sudo` sem senha para desktop/workstation (0440) |
-| **`system/`**   | [`system/flatpak.sh`](system/flatpak.sh)                         | Instalação universal de Flatpak e integração com o repositório Flathub |
-| **`security/`** | [`security/firewall.sh`](security/firewall.sh)                   | Regras de portas 22, 80 e 443 para `firewalld`, `ufw` e `iptables`     |
-| **`security/`** | [`security/wireshark.sh`](security/wireshark.sh)                 | Instalação do Wireshark e adição do usuário ao grupo `wireshark`       |
-| **`tools/`**    | [`tools/antigravity.sh`](tools/antigravity.sh)                   | Instalação do Antigravity IDE & CLI com lançador `.desktop` universal  |
+| Categoria       | Receita                                                                    | Descrição                                                              |
+| :-------------- | :------------------------------------------------------------------------- | :--------------------------------------------------------------------- |
+| **`system/`**   | [`system/swap.sh`](system/swap.sh)                                         | Alocação de 2GB de Swap e `vm.swappiness=10` (Agnóstico de SO)         |
+| **`system/`**   | [`../../common/system/nopass.sh`](../../common/system/nopass.sh)           | Elevação com `doas` e `sudo` sem senha para desktop/workstation (0440) |
+| **`system/`**   | [`system/flatpak.sh`](system/flatpak.sh)                                   | Instalação universal de Flatpak e integração com o repositório Flathub |
+| **`security/`** | [`security/firewall.sh`](security/firewall.sh)                             | Regras de portas 22, 80 e 443 para `firewalld`, `ufw` e `iptables`     |
+| **`security/`** | [`../../common/security/wireshark.sh`](../../common/security/wireshark.sh) | Instalação do Wireshark e permissões de captura não-root               |
+| **`tools/`**    | [`tools/antigravity.sh`](tools/antigravity.sh)                             | Instalação do Antigravity IDE & CLI com lançador `.desktop` universal  |
 
 ---
 
