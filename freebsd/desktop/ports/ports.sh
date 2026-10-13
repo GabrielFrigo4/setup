@@ -37,10 +37,12 @@ ${ELEVATE} git -C "${PORTS_DIR}" fetch --depth 1 --prune origin
 echo "   🔄 Sincronizando branch main..."
 ${ELEVATE} git -C "${PORTS_DIR}" checkout -B main origin/main > "/dev/null" 2>&1
 ${ELEVATE} git -C "${PORTS_DIR}" reset --hard origin/main > "/dev/null" 2>&1
+${ELEVATE} git -C "${PORTS_DIR}" clean -fd > "/dev/null" 2>&1 || true
 
 echo "   🔄 Sincronizando branch trimestral corrente (${PORTS_QUARTER})..."
 ${ELEVATE} git -C "${PORTS_DIR}" checkout -B "${PORTS_QUARTER}" "origin/${PORTS_QUARTER}" > "/dev/null" 2>&1
 ${ELEVATE} git -C "${PORTS_DIR}" reset --hard "origin/${PORTS_QUARTER}" > "/dev/null" 2>&1
+${ELEVATE} git -C "${PORTS_DIR}" clean -fd > "/dev/null" 2>&1 || true
 
 for _b in $(git -C "${PORTS_DIR}" for-each-ref --format='%(refname:short)' refs/heads/ 2> "/dev/null"); do
 	case "${_b}" in
