@@ -17,6 +17,7 @@ Esta pasta reúne scripts especializados para a estação de trabalho gráfica F
 | Categoria        | Receita                                                                    | Descrição                                                                                    |
 | :--------------- | :------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
 | **`system/`**    | [`system/system.sh`](system/system.sh)                                     | Grupos essenciais (`wheel`, `video`, `webcamd`), fontes Spleen e diretório de workspace      |
+| **`system/`**    | [`system/ttys.sh`](system/ttys.sh)                                         | Alinhamento canônico, auto-cura e formatação tabular do `/etc/ttys`                          |
 | **`system/`**    | [`system/zfs-arc.sh`](system/zfs-arc.sh)                                   | Dimensionamento dinâmico de memória ZFS ARC (4/8), Host (3/8) e Bhyve VM (1/8)               |
 | **`gui/`**       | [`gui/kde.sh`](gui/kde.sh)                                                 | Ambiente gráfico KDE Plasma 6 Wayland, tema GTK (`plasma6-breeze-gtk`) e `desktop-installer` |
 | **`ports/`**     | [`ports/ports.sh`](ports/ports.sh)                                         | Clonagem e sincronização da árvore oficial de Ports via Git                                  |
