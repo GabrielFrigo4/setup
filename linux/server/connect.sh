@@ -52,12 +52,17 @@ esac
 [ "$#" -ge 1 ] && shift
 
 _ssh_opts=""
-case "${RAW_TTY:-}${LC_RAW_TTY:-}" in
+case "${RAW_TTY:-}" in
 	1|true|yes) _ssh_opts="-o SendEnv=LC_RAW_TTY -o SetEnv=LC_RAW_TTY=1" ;;
 	*)
-		case "$(command tty 2> "/dev/null")" in
-			/dev/tty[0-9]*|/dev/ttyv*|/dev/console)
-				_ssh_opts="-o SendEnv=LC_RAW_TTY -o SetEnv=LC_RAW_TTY=1"
+		case "${LC_RAW_TTY:-}" in
+			1|true|yes) _ssh_opts="-o SendEnv=LC_RAW_TTY -o SetEnv=LC_RAW_TTY=1" ;;
+			*)
+				case "$(command tty 2> "/dev/null")" in
+					/dev/tty[0-9]*|/dev/ttyv*|/dev/console)
+						_ssh_opts="-o SendEnv=LC_RAW_TTY -o SetEnv=LC_RAW_TTY=1"
+						;;
+				esac
 				;;
 		esac
 		;;
