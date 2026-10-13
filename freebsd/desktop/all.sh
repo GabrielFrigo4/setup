@@ -21,6 +21,7 @@ _run() {
 ### Execução Sequencial
 ### --------------------------------
 _run "${_dir}/system/system.sh"
+_run "${_dir}/system/zfs-arc.sh"
 _run "${_dir}/gui/kde.sh"
 _run "${_dir}/devices/audio.sh"
 _run "${_dir}/devices/filesystem.sh"
