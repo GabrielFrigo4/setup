@@ -10,9 +10,9 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
-		ffmpeg \
-		ImageMagick7 \
-		yt-dlp
+		multimedia/ffmpeg \
+		graphics/ImageMagick7 \
+		www/yt-dlp
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
 		ffmpeg \

@@ -9,7 +9,7 @@ echo "📦 [AI]: Instalando Ollama e biblioteca Python..."
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
 if command -v pkg > "/dev/null" 2>&1; then
-	${ELEVATE} pkg install --yes ollama
+	${ELEVATE} pkg install --yes misc/ollama
 	${ELEVATE} sysrc ollama_enable="YES" > "/dev/null" 2>&1 || true
 	${ELEVATE} service ollama start > "/dev/null" 2>&1 || true
 	if command -v pip > "/dev/null" 2>&1; then

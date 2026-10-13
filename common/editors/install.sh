@@ -10,12 +10,12 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
-		neovim \
-		vim \
-		emacs \
-		helix \
-		micro \
-		vscode 2> "/dev/null" || true
+		editors/neovim \
+		editors/vim \
+		editors/emacs \
+		editors/helix \
+		editors/micro \
+		editors/vscode 2> "/dev/null" || true
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
 		neovim \

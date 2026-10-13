@@ -10,11 +10,11 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
-		git \
-		got \
-		git-credential-oauth \
-		gh \
-		git-lfs
+		devel/git \
+		devel/got \
+		security/git-credential-oauth \
+		devel/gh \
+		devel/git-lfs
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
 		git \

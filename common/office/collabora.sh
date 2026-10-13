@@ -16,7 +16,7 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 ### --------------------------------
 if command -v pkg > "/dev/null" 2>&1; then
 	if pkg search -q "^collabora-office$" > "/dev/null" 2>&1 || pkg search -q "^collabora$" > "/dev/null" 2>&1; then
-		${ELEVATE} pkg install --yes collabora-office
+		${ELEVATE} pkg install --yes editors/collabora-office
 		echo "✅ [Collabora Office]: Pacote nativo FreeBSD instalado com sucesso!"
 	else
 		echo "ℹ️  [Collabora Office]: Pacote nativo 'collabora-office' ainda não disponibilizado no repositório pkg do FreeBSD."

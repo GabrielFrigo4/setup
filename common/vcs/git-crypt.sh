@@ -14,7 +14,7 @@ if command -v git-crypt > "/dev/null" 2>&1; then
 fi
 
 if command -v pkg > "/dev/null" 2>&1; then
-	${ELEVATE} pkg install --yes git-crypt
+	${ELEVATE} pkg install --yes security/git-crypt
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes git-crypt
 elif command -v pacman > "/dev/null" 2>&1; then

@@ -10,12 +10,12 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
-		bat \
-		eza \
-		fd-find \
-		ripgrep \
-		zoxide \
-		fastfetch
+		textproc/bat \
+		sysutils/eza \
+		sysutils/fd \
+		textproc/ripgrep \
+		sysutils/zoxide \
+		sysutils/fastfetch
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
 		bat \

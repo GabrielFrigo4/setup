@@ -21,5 +21,5 @@ fi
 if command -v got > "/dev/null" 2>&1; then
 	echo "✅ [Got]: Binário 'got' disponível no PATH."
 else
-	echo "ℹ️  [Got]: Binário 'got' ainda não instalado (disponível via 'pkg install got' ou 'yay -S got-portable')."
+	echo "ℹ️  [Got]: Binário 'got' ainda não instalado (disponível via 'pkg install devel/got' ou 'yay -S got-portable')."
 fi

@@ -10,7 +10,7 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 
 if ! command -v node > "/dev/null" 2>&1 || ! command -v npm > "/dev/null" 2>&1; then
 	if command -v pkg > "/dev/null" 2>&1; then
-		${ELEVATE} pkg install --yes node npm
+		${ELEVATE} pkg install --yes www/node www/npm
 	elif command -v dnf > "/dev/null" 2>&1; then
 		${ELEVATE} dnf install --assumeyes nodejs npm
 	elif command -v apt > "/dev/null" 2>&1; then

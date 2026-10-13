@@ -11,7 +11,7 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 ### --------------------------------
 ### 1. Pacotes e Firmware
 ### --------------------------------
-${ELEVATE} pkg install --yes vm-bhyve bhyve-firmware tigervnc-viewer
+${ELEVATE} pkg install --yes sysutils/vm-bhyve sysutils/bhyve-firmware net/tigervnc-viewer
 
 ### --------------------------------
 ### 2. Persistência de Serviços

@@ -11,7 +11,7 @@ Antes de instalar o Ollama ou compilar o llama.cpp com aceleração de GPU, é n
 ### FreeBSD
 
 ```sh
-pkg install vulkan-loader vulkan-headers vulkan-tools shaderc
+pkg install graphics/vulkan-loader graphics/vulkan-headers graphics/vulkan-tools graphics/shaderc
 ```
 
 ### Linux (Fedora)
@@ -69,7 +69,7 @@ Também disponível no catálogo local: [`../common/ai/ollama.sh`](../common/ai/
 #### FreeBSD
 
 ```sh
-pkg install ollama
+pkg install misc/ollama
 ```
 
 #### Linux
@@ -141,7 +141,7 @@ cd /usr/ports/misc/llama-cpp && make -DWITH_VULKAN install clean
 Ou via `pkg` se o pacote já estiver disponível:
 
 ```sh
-pkg install llama-cpp
+pkg install misc/llama-cpp
 ```
 
 ### Verificação

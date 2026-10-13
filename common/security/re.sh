@@ -10,9 +10,8 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
-		lldb \
-		valgrind \
-		radare2 2> "/dev/null" || true
+		devel/valgrind \
+		devel/radare2 2> "/dev/null" || true
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
 		lldb \

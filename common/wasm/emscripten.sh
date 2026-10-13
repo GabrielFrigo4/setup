@@ -9,7 +9,7 @@ echo "📦 [Wasm]: Instalando toolchain WebAssembly (Emscripten)..."
 ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
 
 if command -v pkg > "/dev/null" 2>&1; then
-	${ELEVATE} pkg install --yes emscripten
+	${ELEVATE} pkg install --yes devel/emscripten
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes emscripten 2> "/dev/null" || true
 elif command -v apt-get > "/dev/null" 2>&1; then

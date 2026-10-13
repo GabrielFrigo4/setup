@@ -10,13 +10,13 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
-		vulkan-loader \
-		vulkan-headers \
-		vulkan-tools \
-		shaderc \
-		glslang \
-		spirv-cross \
-		spirv-tools
+		graphics/vulkan-loader \
+		graphics/vulkan-headers \
+		graphics/vulkan-tools \
+		graphics/shaderc \
+		graphics/glslang \
+		graphics/spirv-cross \
+		graphics/spirv-tools
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes --skip-unavailable \
 		vulkan-loader-devel \

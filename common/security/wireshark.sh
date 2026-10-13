@@ -10,7 +10,7 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 
 if command -v pkg > "/dev/null" 2>&1; then
-	${ELEVATE} pkg install --yes wireshark
+	${ELEVATE} pkg install --yes net/wireshark
 	DEVFS_CONF="/etc/devfs.rules"
 	[ -f "${DEVFS_CONF}" ] || ${ELEVATE} touch "${DEVFS_CONF}"
 	if ! grep -q "own.*bpf" "${DEVFS_CONF}" 2> "/dev/null"; then

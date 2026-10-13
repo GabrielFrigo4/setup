@@ -10,13 +10,13 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
-		glfw \
-		sdl3 \
-		sdl3_image \
-		sdl3_net \
-		sdl3_ttf \
-		sdl3_mixer
-	${ELEVATE} pkg install --yes sdl3_shadercross 2> "/dev/null" || true
+		graphics/glfw \
+		devel/sdl3 \
+		graphics/sdl3_image \
+		net/sdl3_net \
+		graphics/sdl3_ttf \
+		audio/sdl3_mixer
+	${ELEVATE} pkg install --yes graphics/sdl3_shadercross 2> "/dev/null" || true
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
 		glfw-devel \

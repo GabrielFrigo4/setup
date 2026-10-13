@@ -12,7 +12,7 @@ _ui_step "Instalando fontes Liberation e Nerd Fonts..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
-	${ELEVATE} pkg install --yes liberation-fonts-ttf
+	${ELEVATE} pkg install --yes x11-fonts/liberation-fonts-ttf
 elif command -v dnf > "/dev/null" 2>&1; then
 	sudo dnf install --assumeyes liberation-fonts
 elif command -v apt > "/dev/null" 2>&1; then
