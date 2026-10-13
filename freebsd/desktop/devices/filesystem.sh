@@ -6,7 +6,14 @@ set -eu
 
 echo "📦 [FreeBSD Filesystems]: Instalando drivers de sistemas de arquivos..."
 
-ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
+ELEVATE=""
+if [ "$(id -u)" -ne 0 ]; then
+	if command -v doas > "/dev/null" 2>&1; then
+		ELEVATE="doas"
+	elif command -v sudo > "/dev/null" 2>&1; then
+		ELEVATE="sudo"
+	fi
+fi
 
 ${ELEVATE} pkg install --yes sysutils/fusefs-exfat sysutils/exfat-utils sysutils/fusefs-ntfs sysutils/fusefs-ext2
 ${ELEVATE} sysrc kld_list+="fusefs"

@@ -10,7 +10,14 @@ _ui_ok()   { printf '[Common Browsers] %s\n' "$1"; }
 _ui_step "Instalando Firefox e Chromium..."
 
 if command -v pkg > "/dev/null" 2>&1; then
-	ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
+	ELEVATE=""
+if [ "$(id -u)" -ne 0 ]; then
+	if command -v doas > "/dev/null" 2>&1; then
+		ELEVATE="doas"
+	elif command -v sudo > "/dev/null" 2>&1; then
+		ELEVATE="sudo"
+	fi
+fi
 	${ELEVATE} pkg install --yes www/firefox www/chromium
 elif command -v dnf > "/dev/null" 2>&1; then
 	sudo dnf install --assumeyes firefox chromium

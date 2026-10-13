@@ -6,7 +6,14 @@ set -eu
 
 echo "📦 [Privileges/Nopass]: Configurando elevação sem senha..."
 
-ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
+ELEVATE=""
+if [ "$(id -u)" -ne 0 ]; then
+	if command -v doas > "/dev/null" 2>&1; then
+		ELEVATE="doas"
+	elif command -v sudo > "/dev/null" 2>&1; then
+		ELEVATE="sudo"
+	fi
+fi
 
 if [ "$(uname -s)" = "FreeBSD" ] || command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes security/doas security/sudo

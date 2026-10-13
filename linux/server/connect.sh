@@ -49,7 +49,7 @@ case "${SERVER}" in
 		;;
 esac
 
-shift 1 || true
+[ "$#" -ge 1 ] && shift
 
 if [ -n "${SERVER_KEY}" ]; then
 	if [ "$#" -gt 0 ]; then

@@ -22,7 +22,7 @@ case "${ACTION}" in
 		exec ssh "freebsd@${FREEBSD_IP}"
 		;;
 	scp)
-		shift
+		[ "$#" -ge 1 ] && shift
 		if [ "$#" -lt 2 ]; then
 			echo "Uso: $0 scp <origem> <destino>" >&2
 			exit 1
