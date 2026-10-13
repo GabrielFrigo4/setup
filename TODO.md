@@ -42,6 +42,7 @@
 - [x] Provisionamento da suite de produtividade Collabora Office Desktop para Linux (Flatpak/AUR), Windows (Winget/Store) e FreeBSD (preparação nativa resiliente).
 - [ ] Refinar o suporte às distribuições Linux: Arch Linux, Debian/Ubuntu, Fedora, Void Linux e Alpine Linux.
 - [ ] Expandir receitas nativas para FreeBSD 14+ e modernização com ZFS/Jails.
+
 ### 5. 🖥️ Bhyve Linux Runtime & FreeBSD Compat Layer
 
 - [x] Receita de provisionamento do Host FreeBSD em `freebsd/container/bhyve.sh` (vm-bhyve, switch, PF NAT, NFSv3 e template).
