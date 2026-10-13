@@ -51,10 +51,11 @@ ${ELEVATE} sysctl vfs.zfs.arc.max="${ARC_MAX_BYTES}" > "/dev/null" 2>&1 || true
 ### --------------------------------
 if [ -f "/etc/sysctl.conf" ]; then
 	if grep -q "vfs.zfs.arc" "/etc/sysctl.conf" 2> "/dev/null"; then
-		${ELEVATE} sed -i '' '/vfs.zfs.arc/d' "/etc/sysctl.conf" 2> "/dev/null" || true
+		${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc/d' "/etc/sysctl.conf" 2> "/dev/null" || true
 	fi
 	cat <<- EOF | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
-		# ZFS ARC Cache Limit (50% da RAM fisica)
+
+		# Default ZFS ARC Cache
 		vfs.zfs.arc_max=${ARC_MAX_BYTES}
 	EOF
 fi
@@ -64,10 +65,11 @@ fi
 ### --------------------------------
 if [ -f "/boot/loader.conf" ]; then
 	if grep -q "vfs.zfs.arc" "/boot/loader.conf" 2> "/dev/null"; then
-		${ELEVATE} sed -i '' '/vfs.zfs.arc/d' "/boot/loader.conf" 2> "/dev/null" || true
+		${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc/d' "/boot/loader.conf" 2> "/dev/null" || true
 	fi
 	cat <<- EOF | ${ELEVATE} tee -a "/boot/loader.conf" > "/dev/null"
-		# ZFS ARC Cache Boot Limit (50% da RAM fisica)
+
+		# Default ZFS ARC Cache
 		vfs.zfs.arc_max="${ARC_MAX_BYTES}"
 	EOF
 fi
@@ -84,7 +86,7 @@ fi
 ### --------------------------------
 echo "📦 [ZFS ARC]: Instalando utilitários de diagnóstico e py-sysctl..."
 ${ELEVATE} pkg install --yes py312-sysctl arc_summary zfs-stats 2> "/dev/null" || \
-	${ELEVATE} pkg install --yes devel/py-sysctl sysutils/arc_summary sysutils/zfs-stats 2> "/dev/null" || true
+	${ELEVATE} pkg install --yes py312-sysctl arc_summary zfs-stats 2> "/dev/null" || true
 
 if [ ! -f "/usr/local/bin/arcstat" ]; then
 	if command -v fetch > "/dev/null" 2>&1; then
