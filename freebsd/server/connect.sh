@@ -16,10 +16,22 @@ if [ -z "${FREEBSD_IP}" ]; then
 	exit 1
 fi
 
+_ssh_opts=""
+case "${RAW_TTY:-}${LC_RAW_TTY:-}" in
+	1|true|yes) _ssh_opts="-o SendEnv=LC_RAW_TTY -o SetEnv=LC_RAW_TTY=1" ;;
+	*)
+		case "$(command tty 2> "/dev/null")" in
+			/dev/tty[0-9]*|/dev/ttyv*|/dev/console)
+				_ssh_opts="-o SendEnv=LC_RAW_TTY -o SetEnv=LC_RAW_TTY=1"
+				;;
+		esac
+		;;
+esac
+
 case "${ACTION}" in
 	ssh)
 		echo "🔌 [FreeBSD Connect]: Conectando via SSH em freebsd@${FREEBSD_IP}..."
-		exec ssh "freebsd@${FREEBSD_IP}"
+		exec ssh ${_ssh_opts} "freebsd@${FREEBSD_IP}"
 		;;
 	scp)
 		[ "$#" -ge 1 ] && shift
@@ -30,6 +42,6 @@ case "${ACTION}" in
 		exec scp "$@"
 		;;
 	*)
-		exec ssh "freebsd@${FREEBSD_IP}" "$@"
+		exec ssh ${_ssh_opts} "freebsd@${FREEBSD_IP}" "$@"
 		;;
 esac

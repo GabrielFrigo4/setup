@@ -51,18 +51,30 @@ esac
 
 [ "$#" -ge 1 ] && shift
 
+_ssh_opts=""
+case "${RAW_TTY:-}${LC_RAW_TTY:-}" in
+	1|true|yes) _ssh_opts="-o SendEnv=LC_RAW_TTY -o SetEnv=LC_RAW_TTY=1" ;;
+	*)
+		case "$(command tty 2> "/dev/null")" in
+			/dev/tty[0-9]*|/dev/ttyv*|/dev/console)
+				_ssh_opts="-o SendEnv=LC_RAW_TTY -o SetEnv=LC_RAW_TTY=1"
+				;;
+		esac
+		;;
+esac
+
 if [ -n "${SERVER_KEY}" ]; then
 	if [ "$#" -gt 0 ]; then
-		exec ssh -i "${SERVER_KEY}" "${SERVER_USER}@${SERVER_IP}" "$@"
+		exec ssh ${_ssh_opts} -i "${SERVER_KEY}" "${SERVER_USER}@${SERVER_IP}" "$@"
 	else
 		echo "🔌 [Server Connect]: Conectando a ${SERVER_USER}@${SERVER_IP} (${SERVER})..."
-		exec ssh -i "${SERVER_KEY}" "${SERVER_USER}@${SERVER_IP}"
+		exec ssh ${_ssh_opts} -i "${SERVER_KEY}" "${SERVER_USER}@${SERVER_IP}"
 	fi
 else
 	if [ "$#" -gt 0 ]; then
-		exec ssh "${SERVER_USER}@${SERVER_IP}" "$@"
+		exec ssh ${_ssh_opts} "${SERVER_USER}@${SERVER_IP}" "$@"
 	else
 		echo "🔌 [Server Connect]: Conectando a ${SERVER_USER}@${SERVER_IP} (${SERVER})..."
-		exec ssh "${SERVER_USER}@${SERVER_IP}"
+		exec ssh ${_ssh_opts} "${SERVER_USER}@${SERVER_IP}"
 	fi
 fi
