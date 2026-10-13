@@ -36,6 +36,8 @@ echo "✅ [Nome]: Configurado com sucesso!"
   Reservadas estritamente para o que é inerentemente exclusivo do sistema operacional (ex: configurações de dconf/GNOME, regras udev, Jails nativas, Linuxulator, sysctl de kernel BSD, atalhos do Windows Shell).
 - **Receitas Exclusivas de Linux (`linux/`):**
   `dnf` (Fedora) -> `apt` (Debian) -> `pacman` (Arch)
+- **Origens Canônicas Antifrágeis no FreeBSD (`pkg`):**
+  Para pacotes no FreeBSD (especialmente módulos Python e bibliotecas multi-flavor), **SEMPRE utilize a origem canônica do port** (`<categoria>/<nome>`, ex: `devel/py-sysctl`, `sysutils/arc_summary`, `devel/uv`) em vez de nomes binários com versões de runtime hardcoded (`py312-sysctl`, `py311-uv`). A origem canônica é resolvida dinamicamente pelo `pkg` para a versão ativa no sistema, prevenindo quebras em upgrades de versão.
 
 ## 4. Preferência Absoluta por Flags Longas Autoexplicativas
 

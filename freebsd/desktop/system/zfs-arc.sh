@@ -85,8 +85,7 @@ fi
 ### 7. Diagnostico do ZFS ARC
 ### --------------------------------
 echo "📦 [ZFS ARC]: Instalando utilitários de diagnóstico e py-sysctl..."
-${ELEVATE} pkg install --yes py312-sysctl arc_summary zfs-stats 2> "/dev/null" || \
-	${ELEVATE} pkg install --yes py312-sysctl arc_summary zfs-stats 2> "/dev/null" || true
+${ELEVATE} pkg install --yes devel/py-sysctl sysutils/arc_summary sysutils/zfs-stats 2> "/dev/null" || true
 
 if [ ! -f "/usr/local/bin/arcstat" ]; then
 	if command -v fetch > "/dev/null" 2>&1; then

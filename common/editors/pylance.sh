@@ -12,8 +12,7 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 ### 1. Detecção e Instalação
 ### --------------------------------
 if command -v pkg > "/dev/null" 2>&1; then
-	${ELEVATE} pkg install --yes py312-pylance 2> "/dev/null" || \
-	${ELEVATE} pkg install --yes databases/py-pylance 2> "/dev/null" || true
+	${ELEVATE} pkg install --yes devel/py-pylance 2> "/dev/null" || true
 elif command -v pip3 > "/dev/null" 2>&1 || command -v pip > "/dev/null" 2>&1; then
 	_pip="pip"
 	command -v pip3 > "/dev/null" 2>&1 && _pip="pip3"

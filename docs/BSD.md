@@ -50,7 +50,7 @@ Os perfis do Konsole no repositório [Profile](https://github.com/GabrielFrigo4/
 
 Para gerenciamento de runtimes Python, ambientes virtuais e ferramentas CLI com velocidade nativa em Rust, adotamos o **`uv`**:
 
-- **Instalação via Pacotes:** `pkg install py311-uv` (ou `devel/uv`).
+- **Instalação via Pacotes:** `pkg install devel/uv` (origem canônica do port, sem hardcodar versões de runtime).
 - **Instalação Standalone:** `curl -LsSf https://astral.sh/uv/install.sh | sh`.
 - **Automação:** Integrado na receita canônica universal [`common/cli/core.sh`](../common/cli/core.sh).
 
