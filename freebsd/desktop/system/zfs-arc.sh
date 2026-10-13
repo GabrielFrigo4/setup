@@ -79,5 +79,22 @@ if [ -f "/zroot/vm/.templates/debian.conf" ] && [ "${VM_MEM_GB}" -ge 1 ]; then
 	${ELEVATE} sed -i '' "s/^memory=.*/memory=${VM_MEM_GB}G/" "/zroot/vm/.templates/debian.conf" 2> "/dev/null" || true
 fi
 
+### --------------------------------
+### 7. Diagnostico do ZFS ARC
+### --------------------------------
+echo "📦 [ZFS ARC]: Instalando utilitários de diagnóstico e py-sysctl..."
+${ELEVATE} pkg install --yes py312-sysctl arc_summary zfs-stats 2> "/dev/null" || \
+	${ELEVATE} pkg install --yes devel/py-sysctl sysutils/arc_summary sysutils/zfs-stats 2> "/dev/null" || true
+
+if [ ! -f "/usr/local/bin/arcstat" ]; then
+	if command -v fetch > "/dev/null" 2>&1; then
+		echo "   ➕ Instalando arcstat OpenZFS..."
+		fetch -qo - "https://raw.githubusercontent.com/openzfs/zfs/master/cmd/arcstat/arcstat.in" 2> "/dev/null" | \
+			sed 's|@PYTHON_SHEBANG@|#!/usr/bin/env python3|g' | \
+			${ELEVATE} tee "/usr/local/bin/arcstat" > "/dev/null" 2>&1 || true
+		${ELEVATE} chmod 0755 "/usr/local/bin/arcstat" 2> "/dev/null" || true
+	fi
+fi
+
 echo "✅ [ZFS ARC]: Limite superior do ARC configurado em ${ARC_MAX_GB} GB!"
 exit 0
