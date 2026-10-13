@@ -20,6 +20,7 @@ Esta pasta reúne scripts autônomos em POSIX Shell para provisionar editores de
 | **Doom Emacs** | [`doom-emacs.sh`](doom-emacs.sh) | Instala o Doom Emacs completo com módulos Treesitter e Mermaid |
 | **LazyVim** | [`lazyvim.sh`](lazyvim.sh) | Instala o starter completo do LazyVim com opções de cursor |
 | **SpaceVim** | [`spacevim.sh`](spacevim.sh) | Instala o SpaceVim com camadas de LSP, Git, Autocomplete e Shell |
+| **Pylance LSP** | [`pylance.sh`](pylance.sh) | Instala o Python Language Server (Pylance) no FreeBSD, Linux e Windows |
 
 ---
 

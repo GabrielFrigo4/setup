@@ -14,7 +14,8 @@ if command -v pkg > "/dev/null" 2>&1; then
 		vim \
 		emacs \
 		helix \
-		micro
+		micro \
+		vscode 2> "/dev/null" || true
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
 		neovim \

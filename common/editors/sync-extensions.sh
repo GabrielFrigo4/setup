@@ -5,12 +5,12 @@
 set -eu
 
 find_vscode_cli() {
-	if command -v code > "/dev/null" 2>&1; then
-		echo "code"
-	elif command -v vscode > "/dev/null" 2>&1; then
-		echo "vscode"
-	elif command -v code-oss > "/dev/null" 2>&1; then
-		echo "code-oss"
+	if [ "$(uname -s 2> "/dev/null")" != "FreeBSD" ]; then
+		if command -v code > "/dev/null" 2>&1; then
+			echo "code"
+		elif command -v vscode > "/dev/null" 2>&1; then
+			echo "vscode"
+		fi
 	fi
 }
 
@@ -19,6 +19,14 @@ find_vscodium_cli() {
 		echo "codium"
 	elif command -v vscodium > "/dev/null" 2>&1; then
 		echo "vscodium"
+	elif command -v code-oss > "/dev/null" 2>&1; then
+		echo "code-oss"
+	elif [ "$(uname -s 2> "/dev/null")" = "FreeBSD" ]; then
+		if command -v code > "/dev/null" 2>&1; then
+			echo "code"
+		elif command -v vscode > "/dev/null" 2>&1; then
+			echo "vscode"
+		fi
 	fi
 }
 
@@ -39,12 +47,12 @@ else
 	if command -v antigravity > "/dev/null" 2>&1; then
 		CLI="antigravity"
 		TARGET="antigravity"
-	elif [ -n "$(find_vscode_cli)" ]; then
-		CLI="$(find_vscode_cli)"
-		TARGET="vscode"
 	elif [ -n "$(find_vscodium_cli)" ]; then
 		CLI="$(find_vscodium_cli)"
 		TARGET="vscodium"
+	elif [ -n "$(find_vscode_cli)" ]; then
+		CLI="$(find_vscode_cli)"
+		TARGET="vscode"
 	fi
 fi
 

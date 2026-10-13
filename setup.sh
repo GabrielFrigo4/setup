@@ -113,6 +113,7 @@ case "${_choice}" in
 		echo "↳ Provisionando Containers..."
 		if [ "${_os}" = "FreeBSD" ]; then
 			_run_recipe "${_repo_root}/freebsd/container/jails.sh"
+			_run_recipe "${_repo_root}/freebsd/container/bhyve.sh"
 		else
 			_run_recipe "${_repo_root}/linux/container/incus.sh"
 			_run_recipe "${_repo_root}/linux/container/podman.sh"

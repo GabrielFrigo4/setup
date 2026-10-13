@@ -25,7 +25,7 @@ Esta pasta reúne scripts especializados para a estação de trabalho gráfica F
 | **`devices/`**   | [`devices/filesystem.sh`](devices/filesystem.sh)                           | Drivers FUSE para exFAT, NTFS e EXT2/3/4                                                     |
 | **`network/`**   | [`network/wifi.sh`](network/wifi.sh)                                       | Configuração nativa de rede sem fio com `wpa_supplicant`                                     |
 | **`network/`**   | [`network/wifibox.sh`](network/wifibox.sh)                                 | Máquina virtual Bhyve com drivers Wi-Fi Linux (Wifibox)                                      |
-| **`emulation/`** | [`emulation/linuxlator.sh`](emulation/linuxlator.sh)                       | Camada de compatibilidade Linux no kernel (`linux_enable="YES"`)                             |
+| **`emulation/`** | [`emulation/compat.sh`](emulation/compat.sh)                               | Camada de compatibilidade Linux no kernel (`linux_enable="YES"`)                             |
 | **`emulation/`** | [`emulation/wine.sh`](emulation/wine.sh)                                   | Wine e Winetricks para execução de binários Windows                                          |
 | **`security/`**  | [`../../common/security/wireshark.sh`](../../common/security/wireshark.sh) | Wireshark com permissão BPF (`/dev/bpf*`) no devfs para captura sem root                     |
 

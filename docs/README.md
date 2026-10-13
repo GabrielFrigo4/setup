@@ -26,7 +26,7 @@ Esta pasta reúne os manuais arquiteturais e técnicos que sustentam o ecossiste
 - **[MACOS.md](MACOS.md)** — Compatibilidade POSIX / Darwin e consumo de receitas/dotfiles universais.
 - **[GNOME.md](GNOME.md)** — Ambiente gráfico padrão no Fedora Workstation (Wayland, Adwaita escuro e atalhos).
 - **[KDE.md](KDE.md)** — Ambiente gráfico padrão no FreeBSD Desktop (KDE Plasma 6 Wayland, Polkit e atalhos).
-- **[LINUXLATOR.md](LINUXLATOR.md)** — Camada de compatibilidade binária do Linux no kernel FreeBSD.
+- **[COMPAT.md](COMPAT.md)** — Camada de compatibilidade binária do Linux no kernel FreeBSD (/compat/linux).
 
 ---
 
