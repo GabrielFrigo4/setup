@@ -11,24 +11,29 @@ ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo
 ### --------------------------------
 ### 1. Deteccao de Memoria Fisica
 ### --------------------------------
-TOTAL_MEM_BYTES="$(sysctl -n hw.physmem 2> "/dev/null" || sysctl -n hw.realmem 2> "/dev/null" || echo 0)"
+RAW_BYTES="$(sysctl -n hw.realmem 2> "/dev/null" || sysctl -n hw.physmem 2> "/dev/null" || echo 0)"
 
-if [ "${TOTAL_MEM_BYTES}" -le 0 ]; then
-	echo "⚠️  [ZFS ARC]: Não foi possível detectar hw.physmem. Pulando ajuste."
+if [ "${RAW_BYTES}" -le 0 ]; then
+	echo "⚠️  [ZFS ARC]: Não foi possível detectar memória física. Pulando ajuste."
 	exit 0
 fi
+
+TOTAL_GB="$(echo "${RAW_BYTES}" | awk '{ printf "%.0f\n", $1 / 1073741824 }')"
+[ "${TOTAL_GB}" -lt 1 ] && TOTAL_GB=1
 
 ### --------------------------------
 ### 2. Proporcao de Memoria
 ### --------------------------------
-ARC_MAX_BYTES=$(( TOTAL_MEM_BYTES * 4 / 8 ))
-VM_MEM_BYTES=$(( TOTAL_MEM_BYTES * 1 / 8 ))
-HOST_MEM_BYTES=$(( TOTAL_MEM_BYTES * 3 / 8 ))
+ARC_MAX_GB=$(( TOTAL_GB * 4 / 8 ))
+HOST_MEM_GB=$(( TOTAL_GB * 3 / 8 ))
+VM_MEM_GB=$(( TOTAL_GB * 1 / 8 ))
 
-TOTAL_GB=$(( TOTAL_MEM_BYTES / 1024 / 1024 / 1024 ))
-ARC_MAX_GB=$(( ARC_MAX_BYTES / 1024 / 1024 / 1024 ))
-VM_MEM_GB=$(( VM_MEM_BYTES / 1024 / 1024 / 1024 ))
-HOST_MEM_GB=$(( HOST_MEM_BYTES / 1024 / 1024 / 1024 ))
+[ "${VM_MEM_GB}" -lt 1 ] && VM_MEM_GB=1
+[ "${ARC_MAX_GB}" -lt 1 ] && ARC_MAX_GB=1
+
+ARC_MAX_BYTES=$(( ARC_MAX_GB * 1024 * 1024 * 1024 ))
+VM_MEM_BYTES=$(( VM_MEM_GB * 1024 * 1024 * 1024 ))
+HOST_MEM_BYTES=$(( HOST_MEM_GB * 1024 * 1024 * 1024 ))
 
 echo "   🧠 RAM Total: ${TOTAL_GB} GB"
 echo "   📊 ZFS ARC Max (4/8): ${ARC_MAX_GB} GB (${ARC_MAX_BYTES} bytes)"
