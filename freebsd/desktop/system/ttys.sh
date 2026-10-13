@@ -6,7 +6,14 @@ set -eu
 
 echo "📦 [FreeBSD ttys]: Alinhando e padronizando /etc/ttys..."
 
-ELEVATE="$( [ "$(id -u)" -ne 0 ] && { command -v doas > "/dev/null" 2>&1 && echo "doas" || { command -v sudo > "/dev/null" 2>&1 && echo "sudo"; }; } )"
+ELEVATE=""
+if [ "$(id -u)" -ne 0 ]; then
+	if command -v doas > "/dev/null" 2>&1; then
+		ELEVATE="doas"
+	elif command -v sudo > "/dev/null" 2>&1; then
+		ELEVATE="sudo"
+	fi
+fi
 
 TARGET="/etc/ttys"
 
@@ -43,18 +50,26 @@ while IFS= read -r line || [ -n "${line}" ]; do
 			getty="\"$(echo "${rest}" | cut -d\" -f2)\""
 			after_getty=$(echo "${rest}" | cut -d\" -f3-)
 			set -- ${after_getty}
-			type="$1"
-			status="$2"
-			shift 2 2> "/dev/null" || true
-			comments="$*"
+			type="${1:-}"
+			status="${2:-}"
+			if [ $# -ge 2 ]; then
+				shift 2
+				comments="$*"
+			else
+				comments=""
+			fi
 			;;
 		*)
 			set -- ${rest}
-			getty="$1"
-			type="$2"
-			status="$3"
-			shift 3 2> "/dev/null" || true
-			comments="$*"
+			getty="${1:-}"
+			type="${2:-}"
+			status="${3:-}"
+			if [ $# -ge 3 ]; then
+				shift 3
+				comments="$*"
+			else
+				comments=""
+			fi
 			;;
 	esac
 
@@ -65,9 +80,16 @@ while IFS= read -r line || [ -n "${line}" ]; do
 	fi
 done < "${TARGET}"
 
-${ELEVATE} cp "${TARGET}" "${TARGET}.bak"
-${ELEVATE} cp "${TMP_FILE}" "${TARGET}"
-${ELEVATE} chmod 0644 "${TARGET}"
+if [ -n "${ELEVATE}" ]; then
+	${ELEVATE} cp "${TARGET}" "${TARGET}.bak"
+	${ELEVATE} cp "${TMP_FILE}" "${TARGET}"
+	${ELEVATE} chmod 0644 "${TARGET}"
+else
+	cp "${TARGET}" "${TARGET}.bak"
+	cp "${TMP_FILE}" "${TARGET}"
+	chmod 0644 "${TARGET}"
+fi
+
 rm -f "${TMP_FILE}"
 
 echo "✅ [FreeBSD ttys]: Configuração do /etc/ttys alinhada com sucesso!"
