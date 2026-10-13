@@ -36,6 +36,20 @@ if ! grep -q "hw.snd.default_unit=2" "/etc/sysctl.conf" 2> "/dev/null"; then
 	EOF
 fi
 
+### --------------------------------
+### Intel Graphics Tuning
+### --------------------------------
+if [ -f "/boot/loader.conf" ]; then
+	if ! grep -q "compat.linuxkpi.i915_enable_psr" "/boot/loader.conf" 2> "/dev/null"; then
+		cat <<- 'EOF' | ${ELEVATE} tee -a "/boot/loader.conf" > "/dev/null"
+
+		# Default Intel Alder Lake Graphics
+		compat.linuxkpi.i915_enable_psr="0"
+		compat.linuxkpi.i915_enable_fbc="0"
+		EOF
+	fi
+fi
+
 mkdir -p "${HOME}/Workspace"
 
 echo "✅ [FreeBSD System]: Configuração base concluída com sucesso!"
