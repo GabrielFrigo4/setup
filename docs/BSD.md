@@ -67,3 +67,46 @@ Seguindo a simetria do repositório, as receitas do FreeBSD residem em [`freebsd
 - **[`container/`](../freebsd/container/README.md):** `jails.sh` (Jails nativas), `bastille.sh` (BastilleBSD) e `podman.sh` (Podman OCI nativo).
 - **[`desktop/`](../freebsd/desktop/README.md):** `gui/kde.sh` (KDE Plasma 6), `ports/ports.sh`, `emulation/compat.sh` e `devices/audio.sh` (Wireshark universal em [`common/security/`](../common/security/README.md)).
 - **[`server/`](../freebsd/server/README.md):** `system/guest.sh` (QEMU Guest Agent para VM KVM) e `connect.sh` (conexão dinâmica SSH/SCP).
+
+---
+
+### 9. Estabilidade de Hardware & Kernel (GPU Hang & Wi-Fi Realtek)
+
+Em estações de trabalho com processadores Intel modernos (Gen 12 / Alder Lake) e adaptadores Wi-Fi Realtek sob FreeBSD, os drivers operam sobre a camada de compatibilidade `LinuxKPI`. Para prevenir travamentos e esgotamento de buffers, aplicamos parâmetros canônicos de mitigação:
+
+#### A. Prevenção de GPU Hang no Intel Alder Lake / Iris Xe (`i915kms`)
+
+- **Sintoma:** Congelamento total da sessão Wayland (`kwin_wayland`) ou reinício forçado com erro no kernel:
+    ```text
+    drmn0: [drm] Resetting rcs0 for preemption time out
+    drmn0: [drm] GPU HANG: ecode 12:1:85dffffb, in Renderer [101727]
+    drmn0: [drm] Resetting chip for stopped heartbeat on rcs0
+    ```
+- **Causa Raiz:** O motor de renderização `rcs0` não atinge o timeout de preempção ao alternar estados profundos de economia de energia (_Display C-States_) e compressão de frame (_Panel Self Refresh_ e _Frame Buffer Compression_) sob o driver `i915kms`.
+- **Solução Definitiva:** Adicionar os parâmetros no `/boot/loader.conf`:
+    ```ini
+    compat.linuxkpi.i915_enable_psr="0"
+    compat.linuxkpi.i915_enable_fbc="0"
+    compat.linuxkpi.i915_enable_dc="0"
+    ```
+- **Tratamento de Sintaxe (`sysrc` vs `/boot/loader.conf`):** O comando `sysrc` rejeita nomes de variáveis contendo pontos (`.`) como `compat.linuxkpi.*`. Por isso, a receita de provisionamento [`system.sh`](../freebsd/desktop/system/system.sh) implementa a função `_set_loader_tunable` com manipulação idempotente direta.
+- **Drivers de Kernel:** Garantir o uso do pacote moderno `drm-61-kmod` (baseado no Linux 6.1) em vez do legado `drm-515-kmod`, acompanhado do microcódigo `gpu-firmware-intel-kmod-alderlake`.
+
+#### B. Estabilidade de Wi-Fi Realtek (`rtw880` / LinuxKPI)
+
+- **Sintoma:** Queda da conexão com erros em cascata no console:
+    ```text
+    rtw880: lkpi_stop_hw_scan: failed to cancel scan: 35
+    rtw880: failed to send h2c frame
+    dhclient: send_packet: No buffer space available
+    ```
+- **Causa Raiz:** A varredura de roaming em segundo plano (_background scan_) do `rtw88` trava durante transições de autenticação (`AUTH`), enchendo o buffer de transmissão do driver e esgotando as filas do `dhclient`.
+- **Solução:** Desativar o roaming agressivo em background no `/etc/rc.conf`:
+    ```sh
+    sysrc ifconfig_wlan0="WPA DHCP -bgscan"
+    ```
+
+#### C. Sanitização de Módulos de Kernel (`kld_list`)
+
+- O `/etc/rc.conf` deve carregar módulos essenciais sem duplicatas (ex: evitar carregar `/boot/kernel/fusefs.ko` simultaneamente com `fusefs`).
+- Ordem limpa de carregamento: `/boot/modules/i915kms.ko /boot/kernel/cuse.ko /boot/kernel/fusefs.ko /boot/kernel/ext2fs.ko vmm nmdm`.
