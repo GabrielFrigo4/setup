@@ -4,16 +4,25 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Multiplexers]: Provisionando suite de multiplexadores de terminal..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-_DIR="$(cd "$(dirname "$0")" && pwd)"
-
-if [ -f "${_DIR}/tmux.sh" ]; then
-	sh "${_DIR}/tmux.sh"
+if command -v tmux > "/dev/null" 2>&1 && command -v zellij > "/dev/null" 2>&1; then
+	_ui_ok "Multiplexadores de terminal (tmux e zellij) já instalados."
+	exit 0
 fi
 
-if [ -f "${_DIR}/zellij.sh" ]; then
-	sh "${_DIR}/zellij.sh"
+_ui_step "Provisionando suite de multiplexadores de terminal..."
+
+_dir="$(cd "$(dirname "$0")" && pwd)"
+
+if [ -f "${_dir}/tmux.sh" ]; then
+	sh "${_dir}/tmux.sh"
 fi
 
-echo "✅ [Multiplexers]: Suite de multiplexadores provisionada com sucesso!"
+if [ -f "${_dir}/zellij.sh" ]; then
+	sh "${_dir}/zellij.sh"
+fi
+
+_ui_ok "Suite de multiplexadores provisionada com sucesso!"

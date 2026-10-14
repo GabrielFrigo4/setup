@@ -4,20 +4,17 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Pylance]: Instalando suporte ao Python Language Server..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v pylance > "/dev/null" 2>&1 || python3 -c "import pylance" > "/dev/null" 2>&1; then
+	_ui_ok "Pylance já está instalado."
+	exit 0
 fi
 
-### --------------------------------
-### 1. Detecção e Instalação
-### --------------------------------
+_ui_step "Instalando suporte ao Python Language Server (Pylance)..."
+
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes devel/py-pylance 2> "/dev/null" || true
 elif command -v pip3 > "/dev/null" 2>&1 || command -v pip > "/dev/null" 2>&1; then
@@ -35,4 +32,4 @@ elif command -v py.exe > "/dev/null" 2>&1; then
 	py.exe -m pip install pylance 2> "/dev/null" || true
 fi
 
-echo "✅ [Pylance]: Suporte ao Pylance configurado com sucesso!"
+_ui_ok "Suporte ao Pylance configurado com sucesso!"

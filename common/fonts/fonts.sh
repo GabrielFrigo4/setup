@@ -4,31 +4,29 @@
 # ----------------------------------------------------------------
 set -eu
 
-_ui_step() { printf '[Common Fonts] %s\n' "$1"; }
-_ui_sub()  { printf '  -> %s\n' "$1"; }
-_ui_ok()   { printf '[Common Fonts] %s\n' "$1"; }
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
+
+FONTS_DIR="${HOME}/.local/share/fonts"
+
+if [ -f "${FONTS_DIR}/MesloLGS NF Regular.ttf" ] && ls "${FONTS_DIR}"/JetBrainsMono* > "/dev/null" 2>&1 && ls "${FONTS_DIR}"/RobotoMono* > "/dev/null" 2>&1; then
+	_ui_ok "Nerd Fonts já instaladas em ${FONTS_DIR}."
+	exit 0
+fi
 
 _ui_step "Instalando fontes Liberation e Nerd Fonts..."
 
 if command -v pkg > "/dev/null" 2>&1; then
-	ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
 	${ELEVATE} pkg install --yes x11-fonts/liberation-fonts-ttf
 elif command -v dnf > "/dev/null" 2>&1; then
-	sudo dnf install --assumeyes liberation-fonts
+	${ELEVATE} dnf install --assumeyes liberation-fonts
 elif command -v apt > "/dev/null" 2>&1; then
-	sudo apt install --yes fonts-liberation
+	${ELEVATE} apt install --yes fonts-liberation
 elif command -v pacman > "/dev/null" 2>&1; then
-	sudo pacman --sync --needed --noconfirm ttf-liberation
+	${ELEVATE} pacman --sync --needed --noconfirm ttf-liberation
 fi
 
-FONTS_DIR="${HOME}/.local/share/fonts"
 mkdir -p "${FONTS_DIR}"
 
 _TMP_DIR="$(mktemp -d)"

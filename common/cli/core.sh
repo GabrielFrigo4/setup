@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [CLI]: Instalando utilitários essenciais de terminal..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v eza > "/dev/null" 2>&1 && command -v rg > "/dev/null" 2>&1 && command -v zoxide > "/dev/null" 2>&1; then
+	_ui_ok "Utilitários CLI essenciais já instalados."
+	exit 0
 fi
+
+_ui_step "Instalando utilitários essenciais de terminal..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
@@ -81,8 +81,8 @@ elif command -v winget.exe > "/dev/null" 2>&1; then
 	winget.exe install --id ajeetdsouza.zoxide --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 	winget.exe install --id Fastfetch-cli.Fastfetch --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 else
-	echo "❌ [CLI]: Gerenciador de pacotes não suportado." >&2
+	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [CLI]: Utilitários de terminal instalados com sucesso!"
+_ui_ok "Utilitários de terminal instalados com sucesso!"

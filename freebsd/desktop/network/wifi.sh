@@ -4,20 +4,15 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD Wi-Fi]: Configurando serviço de rede sem fio..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando serviço de rede sem fio..."
 
 IFACE="${1:-wlan0}"
 
 ${ELEVATE} sysrc wpa_supplicant_enable="YES"
 ${ELEVATE} sysrc "ifconfig_${IFACE}"="WPA DHCP"
 
-echo "✅ [FreeBSD Wi-Fi]: wpa_supplicant configurado para '${IFACE}'!"
+_ui_ok "wpa_supplicant configurado para '${IFACE}'!"

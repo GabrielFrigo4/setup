@@ -4,16 +4,17 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Wireshark]: Instalando Wireshark e configurando permissões de captura..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v wireshark > "/dev/null" 2>&1 || command -v tshark > "/dev/null" 2>&1; then
+	_ui_ok "Wireshark já está instalado."
+	exit 0
 fi
+
+_ui_step "Instalando Wireshark e configurando permissões de captura..."
+
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 
 if command -v pkg > "/dev/null" 2>&1; then
@@ -49,8 +50,8 @@ elif command -v pacman > "/dev/null" 2>&1; then
 elif command -v winget.exe > "/dev/null" 2>&1; then
 	winget.exe install --id WiresharkFoundation.Wireshark --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 else
-	echo "❌ [Wireshark]: Gerenciador de pacotes não suportado." >&2
+	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [Wireshark]: Wireshark instalado e usuário '${TARGET_USER}' autorizado para captura!"
+_ui_ok "Wireshark instalado e usuário '${TARGET_USER}' autorizado para captura!"

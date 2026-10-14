@@ -4,6 +4,10 @@
 # ----------------------------------------------------------------
 set -eu
 
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
+
 _resolve_vault_ssh_key() {
 	_explicit_key="${1:-}"
 	_key_name="${2:-}"
@@ -44,7 +48,7 @@ case "${SERVER}" in
 		SERVER_KEY="$(_resolve_vault_ssh_key "${VENTURE_SERVER_KEY:-}" "ssh-key-venture-server.key" || true)"
 		;;
 	*)
-		echo "Uso: $0 [personal | venture] [comando/argumentos adicionais]" >&2
+		_ui_err "Uso: $0 [personal | venture] [comando/argumentos adicionais]"
 		exit 1
 		;;
 esac
@@ -72,14 +76,14 @@ if [ -n "${SERVER_KEY}" ]; then
 	if [ "$#" -gt 0 ]; then
 		exec ssh ${_ssh_opts} -i "${SERVER_KEY}" "${SERVER_USER}@${SERVER_IP}" "$@"
 	else
-		echo "🔌 [Server Connect]: Conectando a ${SERVER_USER}@${SERVER_IP} (${SERVER})..."
+		_ui_step "Conectando a ${SERVER_USER}@${SERVER_IP} (${SERVER})..."
 		exec ssh ${_ssh_opts} -i "${SERVER_KEY}" "${SERVER_USER}@${SERVER_IP}"
 	fi
 else
 	if [ "$#" -gt 0 ]; then
 		exec ssh ${_ssh_opts} "${SERVER_USER}@${SERVER_IP}" "$@"
 	else
-		echo "🔌 [Server Connect]: Conectando a ${SERVER_USER}@${SERVER_IP} (${SERVER})..."
+		_ui_step "Conectando a ${SERVER_USER}@${SERVER_IP} (${SERVER})..."
 		exec ssh ${_ssh_opts} "${SERVER_USER}@${SERVER_IP}"
 	fi
 fi

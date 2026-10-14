@@ -1,14 +1,11 @@
 @echo off
 setlocal
 rem ----------------------------------------------------------------
-rem Recipe: Git Global Configuration (Windows)
+rem Recipe: Oh-My-Posh Binary Installation (Windows)
 rem ----------------------------------------------------------------
 
-echo [*] Configurando Oh-My-Posh no PowerShell...
-oh-my-posh init pwsh --config "$HOME/.oh-my-posh/themes/atomic.omp.json" > "$HOME/.oh-my-posh.ps1"
+echo [*] Instalando Oh-My-Posh via Winget...
+winget install JanDeDobbeleer.OhMyPosh --source winget --accept-package-agreements --accept-source-agreements
 
-echo [*] Configurando Oh-My-Posh no Nushell...
-oh-my-posh init nu --config "$HOME/.oh-my-posh/themes/atomic.omp.json" > "$HOME/.oh-my-posh.nu"
-
-echo [Oh-My-Posh]: Configuracao global concluida com sucesso.
+echo [Oh-My-Posh]: Instalacao do binario concluida com sucesso.
 endlocal

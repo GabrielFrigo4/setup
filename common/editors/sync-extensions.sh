@@ -4,6 +4,10 @@
 # ----------------------------------------------------------------
 set -eu
 
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
+
 find_vscode_cli() {
 	if [ "$(uname -s 2> "/dev/null")" != "FreeBSD" ]; then
 		if command -v code > "/dev/null" 2>&1; then
@@ -42,7 +46,7 @@ if [ "$#" -gt 0 ] && { [ "$1" = "antigravity" ] || [ "$1" = "vscode" ] || [ "$1"
 	else
 		CLI="antigravity"
 	fi
-	shift
+	[ "$#" -ge 1 ] && shift
 else
 	if command -v antigravity > "/dev/null" 2>&1; then
 		CLI="antigravity"
@@ -57,7 +61,7 @@ else
 fi
 
 if [ -z "${CLI}" ] || ! command -v "${CLI}" > "/dev/null" 2>&1; then
-	echo "❌ [IDE Extensions]: Nenhuma CLI de editor suportada encontrada (antigravity, code, vscode, codium)." >&2
+	_ui_err "Nenhuma CLI de editor suportada encontrada (antigravity, code, vscode, codium)."
 	exit 1
 fi
 
@@ -90,10 +94,10 @@ RAW_URL="https://raw.githubusercontent.com/GabrielFrigo4/profile/main/editors/${
 
 if [ "${ACTION}" = "export" ] || [ "${ACTION}" = "dump" ]; then
 	[ -z "${LOCAL_FILE}" ] && LOCAL_FILE="${HOME}/.local/share/profile/editors/${TARGET}/extensions.txt"
-	echo "📦 [IDE Extensions]: Exportando extensões instaladas via ${CLI} para ${LOCAL_FILE}..."
+	_ui_step "Exportando extensões instaladas via ${CLI} para ${LOCAL_FILE}..."
 	mkdir -p "$(dirname "${LOCAL_FILE}")"
 	"${CLI}" --list-extensions | sort > "${LOCAL_FILE}"
-	echo "✅ [IDE Extensions]: Lista exportada com sucesso em ${LOCAL_FILE}!"
+	_ui_ok "Lista exportada com sucesso em ${LOCAL_FILE}!"
 	exit 0
 fi
 
@@ -102,16 +106,18 @@ if [ -n "${LOCAL_FILE}" ] && [ -f "${LOCAL_FILE}" ]; then
 	EXT_FILE="${LOCAL_FILE}"
 else
 	TEMP_FILE="$(mktemp)"
-	echo "🌐 [IDE Extensions]: Buscando extensões declaradas para ${TARGET} no GitHub..."
+	_ui_info "Buscando extensões declaradas para ${TARGET} no GitHub..."
 	if ! curl -fsSL "${RAW_URL}" -o "${TEMP_FILE}"; then
-		echo "❌ [IDE Extensions]: Erro ao baixar extensões de ${RAW_URL}" >&2
+		_ui_err "Erro ao baixar extensões de ${RAW_URL}"
 		rm -f "${TEMP_FILE}"
 		exit 1
 	fi
 	EXT_FILE="${TEMP_FILE}"
 fi
 
-echo "📦 [IDE Extensions]: Sincronizando extensões declaradas no ${TARGET} (${CLI})..."
+_ui_step "Sincronizando extensões declaradas no ${TARGET} (${CLI})..."
+
+_installed_list="$("${CLI}" --list-extensions 2> "/dev/null" || true)"
 
 while IFS= read -r line || [ -n "${line}" ]; do
 	line="$(echo "${line}" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
@@ -119,10 +125,14 @@ while IFS= read -r line || [ -n "${line}" ]; do
 		\#*|"") continue ;;
 	esac
 
-	echo "  ➔ Instalando: ${line}"
-	"${CLI}" --install-extension "${line}" --force || true
+	if echo "${_installed_list}" | grep -iq "^${line}$"; then
+		_ui_ok "Extensão já instalada: ${line}"
+	else
+		_ui_sub "Instalando: ${line}"
+		"${CLI}" --install-extension "${line}" --force || true
+	fi
 done < "${EXT_FILE}"
 
 [ -n "${TEMP_FILE}" ] && rm -f "${TEMP_FILE}"
 
-echo "✅ [IDE Extensions]: Extensões sincronizadas com sucesso no ${TARGET}!"
+_ui_ok "Extensões sincronizadas com sucesso no ${TARGET}!"

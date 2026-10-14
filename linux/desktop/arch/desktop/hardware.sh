@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Arch Hardware]: Configurando aceleração gráfica e regras udev..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando aceleração gráfica e regras udev..."
 
 ${ELEVATE} pacman -S --needed --noconfirm \
 	mesa \
@@ -34,4 +29,4 @@ EOF
 ${ELEVATE} udevadm control --reload-rules 2> "/dev/null" || true
 ${ELEVATE} udevadm trigger 2> "/dev/null" || true
 
-echo "✅ [Arch Hardware]: Hardware e regras configurados com sucesso!"
+_ui_ok "Hardware e regras configurados com sucesso!"

@@ -4,21 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD ttys]: Alinhando e padronizando /etc/ttys..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Alinhando e padronizando /etc/ttys..."
 
 TARGET="/etc/ttys"
 
 if [ ! -f "${TARGET}" ]; then
-	echo "⚠️  [FreeBSD ttys]: Arquivo ${TARGET} não encontrado."
+	_ui_warn "Arquivo ${TARGET} não encontrado."
 	exit 0
 fi
 
@@ -81,15 +76,13 @@ while IFS= read -r line || [ -n "${line}" ]; do
 done < "${TARGET}"
 
 if [ -n "${ELEVATE}" ]; then
-	${ELEVATE} cp "${TARGET}" "${TARGET}.bak"
 	${ELEVATE} cp "${TMP_FILE}" "${TARGET}"
 	${ELEVATE} chmod 0644 "${TARGET}"
 else
-	cp "${TARGET}" "${TARGET}.bak"
 	cp "${TMP_FILE}" "${TARGET}"
 	chmod 0644 "${TARGET}"
 fi
 
 rm -f "${TMP_FILE}"
 
-echo "✅ [FreeBSD ttys]: Configuração do /etc/ttys alinhada com sucesso!"
+_ui_ok "Configuração do /etc/ttys alinhada com sucesso!"

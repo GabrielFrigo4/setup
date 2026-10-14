@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Fedora GNOME]: Configurando ambiente GNOME e atalhos..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando ambiente GNOME e atalhos..."
 
 ${ELEVATE} dnf install --assumeyes gnome-tweak-tool adw-gtk3-theme plasma-breeze-qt6
 
@@ -55,4 +50,4 @@ create_launcher "1" "Terminal" "kgx" "<Super>Return"
 create_launcher "2" "File Manager" "nautilus" "<Super>e"
 create_launcher "3" "Text Editor" "gnome-text-editor" "<Super>t"
 
-echo "✅ [Fedora GNOME]: Ambiente configurado com sucesso!"
+_ui_ok "Ambiente configurado com sucesso!"

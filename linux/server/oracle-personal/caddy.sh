@@ -4,18 +4,13 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Personal Server]: Configurando servidor web Caddy..."
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando servidor web Caddy..."
+
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
-USER_HOME="$(eval echo "~${TARGET_USER}")"
 
 ${ELEVATE} apt install --yes debian-keyring debian-archive-keyring apt-transport-https curl
 
@@ -26,7 +21,6 @@ if [ ! -f "/etc/apt/sources.list.d/caddy-stable.list" ]; then
 fi
 
 ${ELEVATE} apt install --yes caddy
-
 ${ELEVATE} usermod -aG "${TARGET_USER:-ubuntu}" caddy 2> "/dev/null" || true
 
 cat << 'EOF' | ${ELEVATE} tee "/etc/caddy/Caddyfile" > "/dev/null"
@@ -43,4 +37,4 @@ EOF
 
 ${ELEVATE} systemctl restart caddy
 
-echo "✅ [Personal Server]: Caddy configurado e ativo!"
+_ui_ok "Caddy configurado e ativo!"

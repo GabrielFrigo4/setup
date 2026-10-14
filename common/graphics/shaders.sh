@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Shaders]: Detectando ecossistema e instalando Vulkan, Slang e DXC..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v glslang > "/dev/null" 2>&1 && command -v slangc > "/dev/null" 2>&1 && command -v dxc > "/dev/null" 2>&1; then
+	_ui_ok "Toolchains de shaders (glslang, slangc, dxc) já instaladas."
+	exit 0
 fi
+
+_ui_step "Detectando ecossistema e instalando Vulkan, Slang e DXC..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
@@ -99,10 +99,10 @@ if ! command -v slangc > "/dev/null" 2>&1 || ! command -v slangd > "/dev/null" 2
 			if [ "$(uname -s)" = "FreeBSD" ]; then
 				brandelf -t Linux "${HOME}/.local/opt/slang/bin/${_bin}" 2> "/dev/null" || true
 			fi
-			cat <<- WRAPPER > "${HOME}/.local/bin/${_bin}"
+			cat <<- 'WRAPPER' > "${HOME}/.local/bin/${_bin}"
 				#!/usr/bin/env sh
-				export LD_LIBRARY_PATH="\$HOME/.local/opt/slang/lib\${LD_LIBRARY_PATH:+:\$LD_LIBRARY_PATH}"
-				exec "\$HOME/.local/opt/slang/bin/${_bin}" "\$@"
+				export LD_LIBRARY_PATH="$HOME/.local/opt/slang/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+				exec "$HOME/.local/opt/slang/bin/${_bin}" "$@"
 			WRAPPER
 			chmod 0755 "${HOME}/.local/bin/${_bin}"
 		fi
@@ -130,14 +130,14 @@ if ! command -v dxc > "/dev/null" 2>&1 || ! command -v dxv > "/dev/null" 2>&1; t
 			if [ "$(uname -s)" = "FreeBSD" ]; then
 				brandelf -t Linux "${HOME}/.local/opt/dxc/bin/${_bin}" 2> "/dev/null" || true
 			fi
-			cat <<- WRAPPER > "${HOME}/.local/bin/${_bin}"
+			cat <<- 'WRAPPER' > "${HOME}/.local/bin/${_bin}"
 				#!/usr/bin/env sh
-				export LD_LIBRARY_PATH="\$HOME/.local/opt/dxc/lib\${LD_LIBRARY_PATH:+:\$LD_LIBRARY_PATH}"
-				exec "\$HOME/.local/opt/dxc/bin/${_bin}" "\$@"
+				export LD_LIBRARY_PATH="$HOME/.local/opt/dxc/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+				exec "$HOME/.local/opt/dxc/bin/${_bin}" "$@"
 			WRAPPER
 			chmod 0755 "${HOME}/.local/bin/${_bin}"
 		fi
 	done
 fi
 
-echo "✅ [Shaders]: Toolchains de shaders e Vulkan configuradas com sucesso!"
+_ui_ok "Toolchains de shaders e Vulkan configuradas com sucesso!"

@@ -4,18 +4,13 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD Jails]: Ativando subsistema nativo de Jails..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Ativando subsistema nativo de Jails..."
 
 ${ELEVATE} sysrc jail_enable="YES"
 ${ELEVATE} mkdir -p "/usr/jails"
 
-echo "✅ [FreeBSD Jails]: Subsistema de Jails ativo no rc.conf!"
+_ui_ok "Subsistema de Jails ativo no rc.conf!"

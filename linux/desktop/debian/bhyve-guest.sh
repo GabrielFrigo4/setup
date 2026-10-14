@@ -4,22 +4,17 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Debian Bhyve Guest]: Configurando ambiente guest para integração com FreeBSD..."
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando ambiente guest para integração com FreeBSD..."
 
 ### --------------------------------
 ### 1. Pacotes Básicos do Guest
 ### --------------------------------
 ${ELEVATE} apt update
-${ELEVATE} apt install -y nfs-common curl sudo doas git-crypt
+${ELEVATE} apt install --yes nfs-common curl sudo doas git-crypt
 
 ### --------------------------------
 ### 2. Alinhamento POSIX 1001
@@ -27,7 +22,7 @@ ${ELEVATE} apt install -y nfs-common curl sudo doas git-crypt
 if id -u gabriel > "/dev/null" 2>&1; then
 	_current_uid="$(id -u gabriel)"
 	if [ "${_current_uid}" -ne 1001 ]; then
-		echo "   🔄 Realinhando UID/GID do usuário gabriel para 1001..."
+		_ui_sub "Realinhando UID/GID do usuário gabriel para 1001..."
 		${ELEVATE} sed -i "s/^gabriel:x:${_current_uid}:[0-9]*:/gabriel:x:1001:1001:/" /etc/passwd
 		${ELEVATE} sed -i "s/^gabriel:x:[0-9]*:/gabriel:x:1001:/" /etc/group
 		${ELEVATE} chown -R 1001:1001 /home/gabriel 2> "/dev/null" || true
@@ -66,4 +61,4 @@ elif [ -f "/tmp/agy" ]; then
 	${ELEVATE} chmod 0755 "/usr/local/bin/agy"
 fi
 
-echo "✅ [Debian Bhyve Guest]: Configuração concluída com sucesso!"
+_ui_ok "Configuração concluída com sucesso!"

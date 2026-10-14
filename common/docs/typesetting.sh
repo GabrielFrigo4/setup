@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Docs]: Instalando Pandoc, TeX Live e PDFtk..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v pandoc > "/dev/null" 2>&1 && command -v pdftk > "/dev/null" 2>&1; then
+	_ui_ok "Ferramentas de diagramação (Pandoc, PDFtk) já instaladas."
+	exit 0
 fi
+
+_ui_step "Instalando Pandoc, TeX Live e PDFtk..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
@@ -44,8 +44,8 @@ elif command -v pacman > "/dev/null" 2>&1; then
 elif command -v winget.exe > "/dev/null" 2>&1; then
 	winget.exe install --id JohnMacFarlane.Pandoc --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 else
-	echo "❌ [Docs]: Gerenciador de pacotes não suportado." >&2
+	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [Docs]: Ferramentas de documentos instaladas com sucesso!"
+_ui_ok "Ferramentas de documentos instaladas com sucesso!"

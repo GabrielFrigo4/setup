@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [ZFS ARC]: Calculando limites dinâmicos de memória..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Calculando limites dinâmicos de memória ZFS ARC..."
 
 ### --------------------------------
 ### 1. Deteccao de Memoria Fisica
@@ -21,7 +16,7 @@ fi
 RAW_BYTES="$(sysctl -n hw.realmem 2> "/dev/null" || sysctl -n hw.physmem 2> "/dev/null" || echo 0)"
 
 if [ "${RAW_BYTES}" -le 0 ]; then
-	echo "⚠️  [ZFS ARC]: Não foi possível detectar memória física. Pulando ajuste."
+	_ui_warn "Não foi possível detectar memória física. Pulando ajuste."
 	exit 0
 fi
 
@@ -42,10 +37,10 @@ ARC_MAX_BYTES=$(( ARC_MAX_GB * 1024 * 1024 * 1024 ))
 VM_MEM_BYTES=$(( VM_MEM_GB * 1024 * 1024 * 1024 ))
 HOST_MEM_BYTES=$(( HOST_MEM_GB * 1024 * 1024 * 1024 ))
 
-echo "   🧠 RAM Total: ${TOTAL_GB} GB"
-echo "   📊 ZFS ARC Max (4/8): ${ARC_MAX_GB} GB (${ARC_MAX_BYTES} bytes)"
-echo "   🖥️  Host FreeBSD (3/8): ${HOST_MEM_GB} GB"
-echo "   💻 Bhyve VM Guest (1/8): ${VM_MEM_GB} GB"
+_ui_info "RAM Total: ${TOTAL_GB} GB"
+_ui_sub "ZFS ARC Max: ${ARC_MAX_GB} GB (${ARC_MAX_BYTES} bytes)"
+_ui_sub "Host FreeBSD: ${HOST_MEM_GB} GB"
+_ui_sub "Bhyve VM Guest: ${VM_MEM_GB} GB"
 
 ### --------------------------------
 ### 3. Ajuste Imediato em Runtime
@@ -91,12 +86,12 @@ fi
 ### --------------------------------
 ### 7. Diagnostico do ZFS ARC
 ### --------------------------------
-echo "📦 [ZFS ARC]: Instalando utilitários de diagnóstico e py-sysctl..."
+_ui_step "Instalando utilitários de diagnóstico e py-sysctl..."
 ${ELEVATE} pkg install --yes devel/py-sysctl sysutils/arc_summary sysutils/zfs-stats 2> "/dev/null" || true
 
 if [ ! -f "/usr/local/bin/arcstat" ]; then
 	if command -v fetch > "/dev/null" 2>&1; then
-		echo "   ➕ Instalando arcstat OpenZFS..."
+		_ui_sub "Instalando arcstat OpenZFS..."
 		fetch -qo - "https://raw.githubusercontent.com/openzfs/zfs/master/cmd/arcstat/arcstat.in" 2> "/dev/null" | \
 			sed 's|@PYTHON_SHEBANG@|#!/usr/bin/env python3|g' | \
 			${ELEVATE} tee "/usr/local/bin/arcstat" > "/dev/null" 2>&1 || true
@@ -104,5 +99,5 @@ if [ ! -f "/usr/local/bin/arcstat" ]; then
 	fi
 fi
 
-echo "✅ [ZFS ARC]: Limite superior do ARC configurado em ${ARC_MAX_GB} GB!"
+_ui_ok "Limite superior do ARC configurado em ${ARC_MAX_GB} GB!"
 exit 0

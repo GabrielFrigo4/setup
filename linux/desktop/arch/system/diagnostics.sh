@@ -4,18 +4,13 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Arch Diagnostics]: Verificando kernel, firmwares e dispositivos..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Verificando kernel, firmwares e dispositivos..."
 
 ${ELEVATE} pacman -S --needed --noconfirm linux linux-firmware
 cat /proc/bus/input/devices
 
-echo "✅ [Arch Diagnostics]: Diagnóstico concluído!"
+_ui_ok "Diagnóstico concluído!"

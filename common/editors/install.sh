@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Editors]: Instalando editores de código (Neovim, Vim, Emacs, Helix, Micro)..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v nvim > "/dev/null" 2>&1 && command -v hx > "/dev/null" 2>&1 && command -v emacs > "/dev/null" 2>&1; then
+	_ui_ok "Editores principais (nvim, hx, emacs) já instalados."
+	exit 0
 fi
+
+_ui_step "Instalando editores de código (Neovim, Vim, Emacs, Helix, Micro)..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
@@ -56,8 +56,8 @@ elif command -v winget.exe > "/dev/null" 2>&1; then
 	winget.exe install --id Helix.Helix --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 	winget.exe install --id zyedidia.micro --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 else
-	echo "❌ [Editors]: Gerenciador de pacotes não suportado." >&2
+	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [Editors]: Editores de código instalados com sucesso!"
+_ui_ok "Editores de código instalados com sucesso!"

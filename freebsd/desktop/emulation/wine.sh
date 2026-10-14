@@ -4,17 +4,12 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD Wine]: Instalando Wine e Winetricks..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Instalando Wine e Winetricks..."
 
 ${ELEVATE} pkg install --yes emulators/wine emulators/winetricks
 
-echo "✅ [FreeBSD Wine]: Wine instalado com sucesso!"
+_ui_ok "Wine instalado com sucesso!"

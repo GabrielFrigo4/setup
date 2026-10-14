@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Tmux]: Instalando o multiplexador de terminal tmux..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v tmux > "/dev/null" 2>&1; then
+	_ui_ok "Multiplexador tmux já está instalado."
+	exit 0
 fi
+
+_ui_step "Instalando o multiplexador de terminal tmux..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes sysutils/tmux
@@ -35,8 +35,8 @@ elif command -v xbps-install > "/dev/null" 2>&1; then
 elif command -v winget.exe > "/dev/null" 2>&1; then
 	winget.exe install --id tmux.tmux --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 else
-	echo "❌ [Tmux]: Gerenciador de pacotes não suportado." >&2
+	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [Tmux]: Multiplexador tmux instalado com sucesso!"
+_ui_ok "Multiplexador tmux instalado com sucesso!"

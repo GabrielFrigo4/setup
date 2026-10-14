@@ -4,7 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Doom Emacs]: Instalando e configurando framework..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
+
+if [ -x "${HOME}/.config/emacs/bin/doom" ]; then
+	_ui_ok "Doom Emacs já está instalado."
+	exit 0
+fi
+
+_ui_step "Instalando e configurando framework Doom Emacs..."
 
 rm -rf "${HOME}/.emacs" "${HOME}/.emacs.d" "${HOME}/.config/emacs" "${HOME}/.config/doom" 2> "/dev/null" || true
 
@@ -50,4 +59,4 @@ EOF
 "${HOME}/.config/emacs/bin/doom" sync
 "${HOME}/.config/emacs/bin/doom" upgrade
 
-echo "✅ [Doom Emacs]: Doom Emacs configurado com sucesso!"
+_ui_ok "Doom Emacs configurado com sucesso!"

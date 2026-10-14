@@ -4,6 +4,10 @@
 # ----------------------------------------------------------------
 set -eu
 
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
+
 VM_NAME="${FREEBSD_VM_NAME:-FreeBSD}"
 ACTION="${1:-ssh}"
 
@@ -11,8 +15,8 @@ FREEBSD_IP="$(virsh --connect "qemu:///system" domifaddr "${VM_NAME}" 2> "/dev/n
 	| awk '$3 == "ipv4" {print $4}' | cut -d'/' -f1 || true)"
 
 if [ -z "${FREEBSD_IP}" ]; then
-	echo "❌ [FreeBSD Connect]: IP da VM '${VM_NAME}' não detectado via virsh." >&2
-	echo "   Certifique-se de que a VM está em execução ('virsh start ${VM_NAME}')." >&2
+	_ui_err "IP da VM '${VM_NAME}' não detectado via virsh."
+	_ui_sub "Certifique-se de que a VM está em execução ('virsh start ${VM_NAME}')."
 	exit 1
 fi
 
@@ -35,13 +39,13 @@ esac
 
 case "${ACTION}" in
 	ssh)
-		echo "🔌 [FreeBSD Connect]: Conectando via SSH em freebsd@${FREEBSD_IP}..."
+		_ui_step "Conectando via SSH em freebsd@${FREEBSD_IP}..."
 		exec ssh ${_ssh_opts} "freebsd@${FREEBSD_IP}"
 		;;
 	scp)
 		[ "$#" -ge 1 ] && shift
 		if [ "$#" -lt 2 ]; then
-			echo "Uso: $0 scp <origem> <destino>" >&2
+			_ui_err "Uso: $0 scp <origem> <destino>"
 			exit 1
 		fi
 		exec scp "$@"

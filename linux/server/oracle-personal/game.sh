@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Personal Server]: Configurando serviço Game..."
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando serviço Game..."
 
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 USER_HOME="$(eval echo "~${TARGET_USER}")"
@@ -26,8 +21,8 @@ if [ ! -f "${USER_HOME}/game/.env" ]; then
 	ADMIN_PASS="${GAME_ADMIN_PASS:-change_me}"
 	EOF
 	chmod 0600 "${USER_HOME}/game/.env"
-	echo "ℹ️  Arquivo ${USER_HOME}/game/.env criado com modelo inicial (chmod 0600)."
-	echo "   Edite-o manualmente com as credenciais guardadas no seu Vault."
+	_ui_info "Arquivo ${USER_HOME}/game/.env criado com modelo inicial (chmod 0600)."
+	_ui_sub "Edite-o manualmente com as credenciais guardadas no seu Vault."
 fi
 
 cat << EOF | ${ELEVATE} tee "/etc/systemd/system/game.service" > "/dev/null"
@@ -50,4 +45,4 @@ EOF
 ${ELEVATE} systemctl daemon-reload
 ${ELEVATE} systemctl enable --now game 2> "/dev/null" || true
 
-echo "✅ [Personal Server]: Serviço Game configurado!"
+_ui_ok "Serviço Game configurado!"

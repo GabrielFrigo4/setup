@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [AI]: Instalando Ollama e biblioteca Python..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v ollama > "/dev/null" 2>&1; then
+	_ui_ok "Ollama já está instalado."
+	exit 0
 fi
+
+_ui_step "Instalando Ollama e biblioteca Python..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes misc/ollama
@@ -52,8 +52,8 @@ elif command -v winget.exe > "/dev/null" 2>&1; then
 		pip install ollama > "/dev/null" 2>&1 || true
 	fi
 else
-	echo "❌ [AI]: Gerenciador de pacotes não suportado." >&2
+	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [AI]: Ollama e SDK Python instalados com sucesso!"
+_ui_ok "Ollama e SDK Python instalados com sucesso!"

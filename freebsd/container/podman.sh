@@ -4,17 +4,12 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD Podman]: Instalando Podman nativo..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Instalando Podman nativo no FreeBSD..."
 
 ${ELEVATE} pkg install --yes sysutils/podman
 
-echo "✅ [FreeBSD Podman]: Engine Podman nativa instalada com sucesso!"
+_ui_ok "Engine Podman nativa instalada com sucesso!"

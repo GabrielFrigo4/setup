@@ -4,7 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [SpaceVim]: Instalando e configurando SpaceVim..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
+
+if [ -d "${HOME}/.SpaceVim" ] && [ -f "${HOME}/.SpaceVim.d/init.toml" ]; then
+	_ui_ok "SpaceVim já está configurado."
+	exit 0
+fi
+
+_ui_step "Instalando e configurando SpaceVim..."
 
 rm -rf "${HOME}/.vim" "${HOME}/.vimrc" "${HOME}/.SpaceVim" "${HOME}/.SpaceVim.d" 2> "/dev/null" || true
 
@@ -49,4 +58,4 @@ function! myspacevim#before() abort
 endfunction
 EOF
 
-echo "✅ [SpaceVim]: SpaceVim configurado com sucesso!"
+_ui_ok "SpaceVim configurado com sucesso!"

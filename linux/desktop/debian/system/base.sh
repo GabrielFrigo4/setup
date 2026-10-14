@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Debian Base]: Configurando repositórios e sistema base..."
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando repositórios e sistema base Debian..."
 
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 ${ELEVATE} usermod --append --groups sudo "${TARGET_USER}" 2> "/dev/null" || true
@@ -25,4 +20,4 @@ fi
 ${ELEVATE} apt update
 ${ELEVATE} apt install --yes gnupg ca-certificates apt-transport-https
 
-echo "✅ [Debian Base]: Sistema base configurado com sucesso!"
+_ui_ok "Sistema base configurado com sucesso!"

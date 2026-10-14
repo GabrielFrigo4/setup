@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Mermaid CLI]: Instalando runtime Node, mermaid-filter e @mermaid-js/mermaid-cli..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v mermaid-filter > "/dev/null" 2>&1 && command -v mmdc > "/dev/null" 2>&1; then
+	_ui_ok "Mermaid CLI e mermaid-filter já instalados."
+	exit 0
 fi
+
+_ui_step "Instalando runtime Node, mermaid-filter e @mermaid-js/mermaid-cli..."
 
 if ! command -v node > "/dev/null" 2>&1 || ! command -v npm > "/dev/null" 2>&1; then
 	if command -v pkg > "/dev/null" 2>&1; then
@@ -36,4 +36,4 @@ if command -v npm > "/dev/null" 2>&1; then
 	fi
 fi
 
-echo "✅ [Mermaid CLI]: mermaid-filter e mmdc configurados com sucesso!"
+_ui_ok "mermaid-filter e mmdc configurados com sucesso!"

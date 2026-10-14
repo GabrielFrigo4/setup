@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Media]: Instalando FFmpeg, ImageMagick e yt-dlp..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v ffmpeg > "/dev/null" 2>&1 && { command -v magick > "/dev/null" 2>&1 || command -v convert > "/dev/null" 2>&1; }; then
+	_ui_ok "Ferramentas de mídia (FFmpeg, ImageMagick) já instaladas."
+	exit 0
 fi
+
+_ui_step "Instalando FFmpeg, ImageMagick e yt-dlp..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
@@ -47,8 +47,8 @@ elif command -v winget.exe > "/dev/null" 2>&1; then
 	winget.exe install --id ImageMagick.ImageMagick --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 	winget.exe install --id yt-dlp.yt-dlp --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 else
-	echo "❌ [Media]: Gerenciador de pacotes não suportado." >&2
+	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [Media]: FFmpeg, ImageMagick e yt-dlp instalados com sucesso!"
+_ui_ok "FFmpeg, ImageMagick e yt-dlp instalados com sucesso!"

@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Linux Firewall]: Configurando regras de firewall para portas 22, 80 e 443..."
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando regras de firewall para portas 22, 80 e 443..."
 
 if command -v firewall-cmd > "/dev/null" 2>&1; then
 	${ELEVATE} firewall-cmd --permanent --add-service=ssh > "/dev/null" 2>&1 || true
@@ -38,4 +33,4 @@ elif command -v iptables > "/dev/null" 2>&1; then
 	fi
 fi
 
-echo "✅ [Linux Firewall]: Regras de firewall aplicadas com sucesso!"
+_ui_ok "Regras de firewall aplicadas com sucesso!"

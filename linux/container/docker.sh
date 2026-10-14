@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Linux Docker]: Instalando Docker CE oficial..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Instalando Docker CE oficial..."
 
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 
@@ -29,4 +24,4 @@ fi
 ${ELEVATE} systemctl enable --now docker 2> "/dev/null" || true
 ${ELEVATE} usermod --append --groups docker "${TARGET_USER}" 2> "/dev/null" || true
 
-echo "✅ [Linux Docker]: Docker CE configurado e usuário '${TARGET_USER}' adicionado ao grupo docker!"
+_ui_ok "Docker CE configurado e usuário '${TARGET_USER}' adicionado ao grupo docker!"

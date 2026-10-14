@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Arch Servers]: Instalando scripts de controle da VM FreeBSD..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Instalando scripts de controle da VM FreeBSD..."
 
 if [ -n "${PERSONAL_SERVER_KEY-}" ] && [ -f "${PERSONAL_SERVER_KEY}" ]; then
 	chmod 0600 "${PERSONAL_SERVER_KEY}"
@@ -45,11 +40,11 @@ cat << 'EOF' | ${ELEVATE} tee "/usr/local/bin/freebsd-server" > "/dev/null"
 #!/usr/bin/env sh
 FREEBSD_IP="$(virsh --connect "qemu:///system" domifaddr FreeBSD 2> "/dev/null" | awk '$3 == "ipv4" {print $4}' | cut -d'/' -f1 || true)"
 if [ -z "${FREEBSD_IP}" ]; then
-	echo "❌ Não foi possível detectar o IP da VM FreeBSD."
+	echo "FAIL: Não foi possível detectar o IP da VM FreeBSD." >&2
 	exit 1
 fi
 ssh "freebsd@${FREEBSD_IP}"
 EOF
 ${ELEVATE} chmod 0755 "/usr/local/bin/freebsd-server"
 
-echo "✅ [Arch Servers]: Utilitários de controle da VM FreeBSD instalados em /usr/local/bin!"
+_ui_ok "Utilitários de controle da VM FreeBSD instalados em /usr/local/bin!"

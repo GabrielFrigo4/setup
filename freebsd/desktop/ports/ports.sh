@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD Ports]: Sincronizando árvore de Ports..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Sincronizando árvore de Ports FreeBSD..."
 
 ${ELEVATE} pkg install --yes devel/git
 
@@ -30,7 +25,7 @@ PORTS_QUARTER="$(date +%Y)Q$(date +%m | awk '{print int(($1-1)/3)+1}')"
 PORTS_TARGET="${1:-$PORTS_QUARTER}"
 
 if [ ! -d "${PORTS_DIR}/.git" ]; then
-	echo "   ➕ Clonando árvore de Ports inicial (${PORTS_TARGET})..."
+	_ui_sub "Clonando árvore de Ports inicial (${PORTS_TARGET})..."
 	${ELEVATE} git clone --branch main --single-branch --depth 1 https://git.FreeBSD.org/ports.git "${PORTS_DIR}"
 fi
 
@@ -38,15 +33,15 @@ ${ELEVATE} git -C "${PORTS_DIR}" config --unset-all remote.origin.fetch 2> "/dev
 ${ELEVATE} git -C "${PORTS_DIR}" config --add remote.origin.fetch "+refs/heads/main:refs/remotes/origin/main"
 ${ELEVATE} git -C "${PORTS_DIR}" config --add remote.origin.fetch "+refs/heads/${PORTS_QUARTER}:refs/remotes/origin/${PORTS_QUARTER}"
 
-echo "   🔄 Buscando atualizações rasas (main e ${PORTS_QUARTER})..."
+_ui_sub "Buscando atualizações rasas (main e ${PORTS_QUARTER})..."
 ${ELEVATE} git -C "${PORTS_DIR}" fetch --depth 1 --prune origin
 
-echo "   🔄 Sincronizando branch main..."
+_ui_sub "Sincronizando branch main..."
 ${ELEVATE} git -C "${PORTS_DIR}" checkout -B main origin/main > "/dev/null" 2>&1
 ${ELEVATE} git -C "${PORTS_DIR}" reset --hard origin/main > "/dev/null" 2>&1
 ${ELEVATE} git -C "${PORTS_DIR}" clean -fd > "/dev/null" 2>&1 || true
 
-echo "   🔄 Sincronizando branch trimestral corrente (${PORTS_QUARTER})..."
+_ui_sub "Sincronizando branch trimestral corrente (${PORTS_QUARTER})..."
 ${ELEVATE} git -C "${PORTS_DIR}" checkout -B "${PORTS_QUARTER}" "origin/${PORTS_QUARTER}" > "/dev/null" 2>&1
 ${ELEVATE} git -C "${PORTS_DIR}" reset --hard "origin/${PORTS_QUARTER}" > "/dev/null" 2>&1
 ${ELEVATE} git -C "${PORTS_DIR}" clean -fd > "/dev/null" 2>&1 || true
@@ -55,7 +50,7 @@ for _b in $(git -C "${PORTS_DIR}" for-each-ref --format='%(refname:short)' refs/
 	case "${_b}" in
 		[1-2][0-9][0-9][0-9]Q[1-4])
 			if [ "${_b}" != "${PORTS_QUARTER}" ] && [ "${_b}" != "${PORTS_TARGET}" ]; then
-				echo "   🗑️  Expurgando branch trimestral obsoleta: ${_b}..."
+				_ui_sub "Expurgando branch trimestral obsoleta: ${_b}..."
 				${ELEVATE} git -C "${PORTS_DIR}" branch -D "${_b}" > "/dev/null" 2>&1 || true
 			fi
 			;;
@@ -70,4 +65,4 @@ else
 	${ELEVATE} git -C "${PORTS_DIR}" checkout "${PORTS_QUARTER}" > "/dev/null" 2>&1
 fi
 
-echo "✅ [FreeBSD Ports]: Árvore sincronizada com sucesso em ${PORTS_DIR}!"
+_ui_ok "Árvore sincronizada com sucesso em ${PORTS_DIR}!"

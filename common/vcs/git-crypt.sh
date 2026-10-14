@@ -4,21 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [git-crypt]: Instalando git-crypt..."
-
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
 if command -v git-crypt > "/dev/null" 2>&1; then
-	echo "✅ [git-crypt]: git-crypt já está instalado."
+	_ui_ok "git-crypt já está instalado."
 	exit 0
 fi
+
+_ui_step "Instalando git-crypt..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes security/git-crypt
@@ -34,8 +29,8 @@ elif command -v brew > "/dev/null" 2>&1; then
 elif command -v scoop > "/dev/null" 2>&1; then
 	scoop install git-crypt
 else
-	echo "⚠️  [git-crypt]: Gerenciador de pacotes não suportado."
+	_ui_warn "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [git-crypt]: Instalado com sucesso!"
+_ui_ok "git-crypt instalado com sucesso!"

@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [WSL Arch Linux]: Configurando usuário, systemd e ferramentas base..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando usuário, systemd e ferramentas base Arch WSL2..."
 
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-gabriel}}"
 
@@ -57,4 +52,4 @@ permit nopass :wheel
 EOF
 ${ELEVATE} chmod 0440 "/etc/doas.conf"
 
-echo "✅ [WSL Arch Linux]: Ambiente Arch WSL2 configurado com sucesso!"
+_ui_ok "Ambiente Arch WSL2 configurado com sucesso!"

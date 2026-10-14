@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD Guest]: Configurando agente QEMU e console..."
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "FreeBSD Guest: Configurando agente QEMU e console..."
 
 ${ELEVATE} pw groupmod wheel -m "$(id -un)"
 
@@ -28,4 +23,4 @@ ${ELEVATE} service qemu-guest-agent start 2> "/dev/null" || true
 
 ${ELEVATE} sysrc allscreens_flags="-f spleen-16x32"
 
-echo "✅ [FreeBSD Guest]: Agente QEMU ativo e console spleen configurado!"
+_ui_ok "FreeBSD Guest: Agente QEMU ativo e console spleen configurado!"

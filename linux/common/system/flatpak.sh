@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Linux Flatpak]: Instalando Flatpak e configurando Flathub..."
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Instalando Flatpak e configurando Flathub..."
 
 if command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes flatpak
@@ -25,4 +20,4 @@ fi
 
 flatpak remote-add --if-not-exists flathub "https://dl.flathub.org/repo/flathub.flatpakrepo"
 
-echo "✅ [Linux Flatpak]: Flatpak e Flathub configurados com sucesso!"
+_ui_ok "Flatpak e Flathub configurados com sucesso!"

@@ -4,7 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [LazyVim]: Instalando e configurando LazyVim starter..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
+
+if [ -d "${HOME}/.config/nvim/lua/config" ] && [ -f "${HOME}/.config/nvim/lua/config/options.lua" ]; then
+	_ui_ok "LazyVim já está configurado."
+	exit 0
+fi
+
+_ui_step "Instalando e configurando LazyVim starter..."
 
 rm -rf "${HOME}/.config/nvim" 2> "/dev/null" || true
 
@@ -28,4 +37,4 @@ vim.api.nvim_create_autocmd({ 'VimLeave', 'VimSuspend' }, {
 })
 EOF
 
-echo "✅ [LazyVim]: LazyVim configurado com sucesso!"
+_ui_ok "LazyVim configurado com sucesso!"

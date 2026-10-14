@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Arch Base]: Configurando sistema base, SDDM e journald..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando sistema base, SDDM e journald Arch Linux..."
 
 ${ELEVATE} pacman-mirrors --fasttrack 5 2> "/dev/null" || true
 ${ELEVATE} pacman -Syyu --needed --noconfirm zsh
@@ -38,4 +33,4 @@ SystemMaxUse=256M
 EOF
 ${ELEVATE} systemctl restart systemd-journald 2> "/dev/null" || true
 
-echo "✅ [Arch Base]: Sistema base configurado com sucesso!"
+_ui_ok "Sistema base configurado com sucesso!"

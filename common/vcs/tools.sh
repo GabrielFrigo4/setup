@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [VCS]: Instalando Git, GitHub CLI e ferramentas de controle de versão..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v git > "/dev/null" 2>&1 && command -v gh > "/dev/null" 2>&1 && command -v git-lfs > "/dev/null" 2>&1; then
+	_ui_ok "Ferramentas principais de VCS (git, gh, git-lfs) já instaladas."
+	exit 0
 fi
+
+_ui_step "Instalando Git, GitHub CLI e ferramentas de controle de versão..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
@@ -51,8 +51,8 @@ elif command -v winget.exe > "/dev/null" 2>&1; then
 	winget.exe install --id Git.Git --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 	winget.exe install --id GitHub.cli --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 else
-	echo "❌ [VCS]: Gerenciador de pacotes não suportado." >&2
+	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [VCS]: Ferramentas de versionamento instaladas com sucesso!"
+_ui_ok "Ferramentas de versionamento instaladas com sucesso!"

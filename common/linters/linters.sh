@@ -4,7 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Common Tools]: Configurando formatadores e linters globais..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
+
+if [ -f "${HOME}/.clang-format" ] && [ -f "${HOME}/.prettierrc" ] && [ -f "${HOME}/.stylua.toml" ]; then
+	_ui_ok "Formatadores e linters globais já configurados."
+	exit 0
+fi
+
+_ui_step "Configurando formatadores e linters globais..."
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LOCAL_TOOLS_DIR="${SCRIPT_DIR}/../../../Profile/tools"
@@ -32,4 +41,4 @@ sync_file ".stylua.toml" "${HOME}/.stylua.toml"
 sync_file "mermaid-puppeteer.json" "${HOME}/.mermaid-puppeteer-config.json"
 sync_file "mermaid-theme.json" "${HOME}/.mermaid-theme-config.json"
 
-echo "✅ [Common Tools]: Formatadores (.clang-format, clangd, prettier, stylua, mermaid) configurados!"
+_ui_ok "Formatadores (.clang-format, clangd, prettier, stylua, mermaid) configurados!"

@@ -30,7 +30,7 @@ Reúne todo o ferramental de provisionamento nativo para estações de trabalho 
 | **`editors/`**         | [`editors/spacevim.cmd`](editors/spacevim.cmd)               | Setup completo do SpaceVim no Windows                                             |
 | **`editors/`**         | [`editors/themes.cmd`](editors/themes.cmd)                   | Temas One Dark (Geany), Dracula (Micro) e Vim-Plug                                |
 | **`fonts/`**           | [`fonts/fonts.ps1`](fonts/fonts.ps1)                         | Baixa e registra Nerd Fonts (`JetBrainsMono`, `MesloLGS`) no Windows              |
-| **`shell/`**           | [`shell/oh-my-posh.cmd`](shell/oh-my-posh.cmd)               | Gera scripts de inicialização do Oh-My-Posh para PowerShell e Nushell             |
+| **`shell/`**           | [`shell/oh-my-posh.cmd`](shell/oh-my-posh.cmd)               | Instalação do binário do Oh-My-Posh via Winget                                    |
 | **`linters/`**         | [`linters/linters.cmd`](linters/linters.cmd)                 | Implanta `.clang-format`, `.prettierrc`, `.stylua.toml` e `config.yaml` do Clangd |
 | **`vcs/`**             | [`vcs/git.cmd`](vcs/git.cmd)                                 | Configuração global do Git com padrões recomendados                               |
 | **`vcs/`**             | [`vcs/got.cmd`](vcs/got.cmd)                                 | Gera `%USERPROFILE%\.gotconfig` no Windows                                        |

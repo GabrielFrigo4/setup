@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Fedora Base]: Configurando sistema base, filesystems e workspace..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando sistema base, filesystems e workspace Fedora..."
 
 ${ELEVATE} dnf install --assumeyes fuse-sshfs zsh
 
@@ -42,4 +37,4 @@ set -eu
 EOF
 chmod 0755 "${MODELOS_DIR}/Shell.sh"
 
-echo "✅ [Fedora Base]: Sistema base configurado com sucesso!"
+_ui_ok "Sistema base configurado com sucesso!"

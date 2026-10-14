@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Prettier CLI]: Instalando runtime Node e Prettier global..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v prettier > "/dev/null" 2>&1; then
+	_ui_ok "Prettier CLI já está instalado."
+	exit 0
 fi
+
+_ui_step "Instalando runtime Node e Prettier global..."
 
 if ! command -v node > "/dev/null" 2>&1 || ! command -v npm > "/dev/null" 2>&1; then
 	if command -v pkg > "/dev/null" 2>&1; then
@@ -31,4 +31,4 @@ if ! command -v prettier > "/dev/null" 2>&1 && command -v npm > "/dev/null" 2>&1
 	${ELEVATE} npm install --global prettier
 fi
 
-echo "✅ [Prettier CLI]: Prettier configurado com sucesso!"
+_ui_ok "Prettier configurado com sucesso!"

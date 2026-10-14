@@ -4,19 +4,14 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Linux Antigravity]: Instalando Antigravity IDE & CLI..."
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Instalando Antigravity IDE & CLI..."
 
 if ! command -v antigravity > "/dev/null" 2>&1; then
-	curl -fsSL https://antigravity.google/cli/install.sh | bash
+	curl -fsSL https://antigravity.google/cli/install.sh | sh
 fi
 
 if [ -f "/opt/antigravity/bin/antigravity-ide" ]; then
@@ -42,4 +37,4 @@ if [ -f "/opt/antigravity/antigravity-ide" ]; then
 	EOF
 fi
 
-echo "✅ [Linux Antigravity]: Antigravity IDE & CLI configurados com sucesso!"
+_ui_ok "Antigravity IDE & CLI configurados com sucesso!"

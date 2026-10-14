@@ -7,12 +7,16 @@ set -eu
 _dir="$(cd "$(dirname "$0")" && pwd)"
 _common="$(cd "${_dir}/../../.." && pwd)/common"
 
-echo "📦 [Arch Bundle] Iniciando provisionamento completo do Arch Linux..."
+_setup_root="$(cd "${_dir}/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
+
+_ui_step "Iniciando provisionamento completo do Arch Linux..."
 
 _run() {
 	_script="$1"
 	if [ -f "${_script}" ]; then
-		echo "  ▶️ Executando: $(basename "${_script}")"
+		_ui_sub "Executando: $(basename "${_script}")"
 		sh "${_script}"
 	fi
 }
@@ -40,5 +44,5 @@ _run "${_common}/ai/ollama.sh"
 _run "${_common}/linters/linters.sh"
 _run "${_dir}/system/diagnostics.sh"
 
-echo "✅ [Arch Bundle] Instalação do Arch Linux finalizada com sucesso!"
+_ui_ok "Instalação do Arch Linux finalizada com sucesso!"
 exit 0

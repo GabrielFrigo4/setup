@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Personal Server]: Configurando serviço Resume..."
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando serviço Resume..."
 
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 USER_HOME="$(eval echo "~${TARGET_USER}")"
@@ -39,4 +34,4 @@ EOF
 ${ELEVATE} systemctl daemon-reload
 ${ELEVATE} systemctl enable --now resume 2> "/dev/null" || true
 
-echo "✅ [Personal Server]: Serviço Resume configurado!"
+_ui_ok "Serviço Resume configurado!"

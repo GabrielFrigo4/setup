@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Wasm]: Instalando toolchain WebAssembly (Emscripten)..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v emcc > "/dev/null" 2>&1; then
+	_ui_ok "Toolchain WebAssembly (Emscripten) já instalada."
+	exit 0
 fi
+
+_ui_step "Instalando toolchain WebAssembly (Emscripten)..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes devel/emscripten
@@ -31,8 +31,8 @@ elif command -v pacman > "/dev/null" 2>&1; then
 elif command -v scoop > "/dev/null" 2>&1; then
 	scoop install emscripten 2> "/dev/null" || true
 else
-	echo "❌ [Wasm]: Gerenciador de pacotes não suportado." >&2
+	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [Wasm]: Emscripten instalado com sucesso!"
+_ui_ok "Emscripten instalado com sucesso!"

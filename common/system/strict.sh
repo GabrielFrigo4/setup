@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Privileges/Strict]: Configurando elevação estrita (senha sempre)..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando elevação estrita (senha sempre)..."
 
 if [ "$(uname -s)" = "FreeBSD" ] || command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes security/doas security/sudo
@@ -37,10 +32,15 @@ elif command -v pacman > "/dev/null" 2>&1; then
 	DOAS_CONF="/etc/doas.conf"
 	SUDOERS_DIR="/etc/sudoers.d"
 else
-	echo "⚠️ [Privileges/Strict]: Gerenciador de pacotes não suportado automaticamente."
+	_ui_warn "Gerenciador de pacotes não suportado automaticamente."
 	TARGET_GROUP="wheel"
 	DOAS_CONF="/etc/doas.conf"
 	SUDOERS_DIR="/etc/sudoers.d"
+fi
+
+if [ -f "${DOAS_CONF}" ] && grep -q "permit :${TARGET_GROUP}" "${DOAS_CONF}" 2> "/dev/null" && [ -f "${SUDOERS_DIR}/${TARGET_GROUP}" ] && grep -q "timestamp_timeout=0" "${SUDOERS_DIR}/${TARGET_GROUP}" 2> "/dev/null"; then
+	_ui_ok "Elevação estrita já configurada para o grupo '${TARGET_GROUP}'."
+	exit 0
 fi
 
 cat << EOF | ${ELEVATE} tee "${DOAS_CONF}" > "/dev/null"
@@ -55,4 +55,4 @@ Defaults timestamp_timeout=0
 EOF
 ${ELEVATE} chmod 0440 "${SUDOERS_DIR}/${TARGET_GROUP}"
 
-echo "✅ [Privileges/Strict]: Configurado com sucesso para o grupo '${TARGET_GROUP}' (0440, exige senha sempre)!"
+_ui_ok "Configurado com sucesso para o grupo '${TARGET_GROUP}' (0440, exige senha sempre)!"

@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD System]: Iniciando configuração base..."
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Iniciando configuração base do FreeBSD..."
 
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 
@@ -26,6 +21,12 @@ ${ELEVATE} pkg bootstrap --yes
 ${ELEVATE} pkg update
 
 ${ELEVATE} sysrc allscreens_flags="-f spleen-16x32"
+
+### --------------------------------
+### Audio OSS and Sndiod Tuning
+### --------------------------------
+${ELEVATE} pkg install --yes audio/sndiod 2> "/dev/null" || true
+${ELEVATE} sysrc sndiod_enable="YES" > "/dev/null" 2>&1 || true
 
 ${ELEVATE} sysctl kern.coredump=0 > "/dev/null" 2>&1 || true
 grep -qxF "kern.coredump=0" "/etc/sysctl.conf" 2> "/dev/null" || echo "kern.coredump=0" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
@@ -44,8 +45,13 @@ if ! grep -q "hw.snd.default_unit=2" "/etc/sysctl.conf" 2> "/dev/null"; then
 fi
 
 ### --------------------------------
-### Intel Graphics Tuning
+### DRM and KMS Graphics Tuning
 ### --------------------------------
+${ELEVATE} pkg install --yes graphics/drm-kmod 2> "/dev/null" || true
+if ! sysrc -n kld_list 2> "/dev/null" | grep -q "i915kms"; then
+	${ELEVATE} sysrc kld_list+="i915kms" > "/dev/null" 2>&1 || true
+fi
+
 _set_loader_tunable() {
 	_tunable="$1"
 	_value="$2"
@@ -78,4 +84,4 @@ fi
 
 mkdir -p "${HOME}/Workspace"
 
-echo "✅ [FreeBSD System]: Configuração base concluída com sucesso!"
+_ui_ok "Configuração base concluída com sucesso!"

@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD Bhyve]: Configurando hipervisor Bhyve e rede virtual..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando hipervisor Bhyve e rede virtual..."
 
 ### --------------------------------
 ### 1. Pacotes e Firmware
@@ -21,7 +16,7 @@ fi
 ${ELEVATE} pkg install --yes sysutils/vm-bhyve sysutils/bhyve-firmware net/tigervnc-viewer
 
 ### --------------------------------
-### 2. Persistência de Serviços
+### 2. Persistencia de Servicos
 ### --------------------------------
 ${ELEVATE} sysrc vm_enable="YES"
 ${ELEVATE} sysrc vm_dir="zfs:zroot/vm"
@@ -51,7 +46,7 @@ ${ELEVATE} vm switch create public 2> "/dev/null" || true
 ${ELEVATE} vm switch address public 192.168.8.1/24 2> "/dev/null" || true
 
 ### --------------------------------
-### 5. Exportação NFSv3
+### 5. Exportacao NFSv3
 ### --------------------------------
 if [ -d "/home/gabrielf" ] && ! grep -q "/home/gabrielf.*192.168.8.2" /etc/exports 2> "/dev/null"; then
 	echo "/home/gabrielf -alldirs -mapall=gabrielf 192.168.8.2" | ${ELEVATE} tee -a /etc/exports > "/dev/null"
@@ -73,4 +68,4 @@ cat <<- "EOF" | ${ELEVATE} tee /zroot/vm/.templates/debian.conf > "/dev/null"
 	utctime="yes"
 EOF
 
-echo "✅ [FreeBSD Bhyve]: Hipervisor e ambiente de virtualização configurados com sucesso!"
+_ui_ok "Hipervisor e ambiente de virtualização configurados com sucesso!"

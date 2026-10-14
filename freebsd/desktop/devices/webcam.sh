@@ -4,19 +4,14 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD Webcam]: Configurando serviço de webcam..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando serviço de webcam..."
 
 ${ELEVATE} pkg install --yes multimedia/webcamd
 ${ELEVATE} sysrc webcamd_enable="YES"
 ${ELEVATE} service webcamd start 2> "/dev/null" || true
 
-echo "✅ [FreeBSD Webcam]: Serviço webcamd configurado e ativo!"
+_ui_ok "Serviço webcamd configurado e ativo!"

@@ -4,16 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [FreeBSD Filesystems]: Instalando drivers de sistemas de arquivos..."
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Instalando drivers de sistemas de arquivos..."
 
 ${ELEVATE} pkg install --yes sysutils/fusefs-exfat sysutils/exfat-utils sysutils/fusefs-ntfs sysutils/fusefs-ext2
 if ! sysrc -n kld_list 2> "/dev/null" | grep -q "fusefs"; then
@@ -21,4 +16,4 @@ if ! sysrc -n kld_list 2> "/dev/null" | grep -q "fusefs"; then
 fi
 ${ELEVATE} kldload fusefs 2> "/dev/null" || true
 
-echo "✅ [FreeBSD Filesystems]: Drivers FUSE instalados e módulo carregado!"
+_ui_ok "Drivers FUSE instalados e módulo carregado!"

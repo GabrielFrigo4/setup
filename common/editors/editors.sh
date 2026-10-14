@@ -4,7 +4,11 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Common Editors]: Configurando perfis de editores de código..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
+
+_ui_step "Configurando perfis de editores de código..."
 
 ### --------------------------------
 ### Emacs Configuration
@@ -40,8 +44,6 @@ set rtp+=~/.vim
 source ~/.vim/vimrc
 EOF
 
-[ ! -e "${HOME}/.vim" ] && ln -sf "${HOME}/.vim" "${HOME}/.vim"
-
 ### --------------------------------
 ### Helix Configuration
 ### --------------------------------
@@ -69,4 +71,4 @@ cat << 'EOF' | tee "${HOME}/.config/micro/settings.json" > "/dev/null"
 }
 EOF
 
-echo "✅ [Common Editors]: Perfis configurados com sucesso!"
+_ui_ok "Perfis de editores configurados com sucesso!"

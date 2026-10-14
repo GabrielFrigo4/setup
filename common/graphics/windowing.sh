@@ -4,16 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Windowing]: Instalando GLFW e ecossistema SDL3..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
+if command -v pkg-config > "/dev/null" 2>&1 && pkg-config --exists glfw3 sdl3 2> "/dev/null"; then
+	_ui_ok "Bibliotecas de janelamento (GLFW e SDL3) já instaladas."
+	exit 0
 fi
+
+_ui_step "Instalando GLFW e ecossistema SDL3..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
@@ -67,8 +67,8 @@ elif command -v pacman > "/dev/null" 2>&1; then
 elif command -v vcpkg > "/dev/null" 2>&1; then
 	vcpkg install glfw3 sdl3 sdl3-image sdl3-mixer sdl3-ttf sdl3-net sdl3-shadercross --triplet x64-windows 2> "/dev/null" || true
 else
-	echo "❌ [Windowing]: Gerenciador de pacotes não suportado." >&2
+	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1
 fi
 
-echo "✅ [Windowing]: GLFW e ecossistema SDL3 instalados com sucesso!"
+_ui_ok "GLFW e ecossistema SDL3 instalados com sucesso!"
