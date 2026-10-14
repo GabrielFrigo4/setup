@@ -47,13 +47,19 @@ fi
 ### Intel Graphics Tuning
 ### --------------------------------
 if [ -f "/boot/loader.conf" ]; then
-	if ! grep -q "compat.linuxkpi.i915_enable_psr" "/boot/loader.conf" 2> "/dev/null"; then
-		cat <<- 'EOF' | ${ELEVATE} tee -a "/boot/loader.conf" > "/dev/null"
+	${ELEVATE} sysrc -f /boot/loader.conf compat.linuxkpi.i915_enable_psr="0" > "/dev/null" 2>&1 || true
+	${ELEVATE} sysrc -f /boot/loader.conf compat.linuxkpi.i915_enable_fbc="0" > "/dev/null" 2>&1 || true
+	${ELEVATE} sysrc -f /boot/loader.conf compat.linuxkpi.i915_enable_dc="0" > "/dev/null" 2>&1 || true
+fi
 
-		# Default Intel Alder Lake Graphics
-		compat.linuxkpi.i915_enable_psr="0"
-		compat.linuxkpi.i915_enable_fbc="0"
-		EOF
+### --------------------------------
+### Wi-Fi Background Scan Fix
+### --------------------------------
+if [ -f "/etc/rc.conf" ]; then
+	if grep -q "ifconfig_wlan0=" "/etc/rc.conf" 2> "/dev/null"; then
+		if ! grep -q -- "-bgscan" "/etc/rc.conf" 2> "/dev/null"; then
+			${ELEVATE} sysrc ifconfig_wlan0="WPA DHCP -bgscan" > "/dev/null" 2>&1 || true
+		fi
 	fi
 fi
 
