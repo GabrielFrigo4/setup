@@ -16,7 +16,9 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 ${ELEVATE} pkg install --yes sysutils/fusefs-exfat sysutils/exfat-utils sysutils/fusefs-ntfs sysutils/fusefs-ext2
-${ELEVATE} sysrc kld_list+="fusefs"
+if ! sysrc -n kld_list 2> "/dev/null" | grep -q "fusefs"; then
+	${ELEVATE} sysrc kld_list+="fusefs"
+fi
 ${ELEVATE} kldload fusefs 2> "/dev/null" || true
 
 echo "✅ [FreeBSD Filesystems]: Drivers FUSE instalados e módulo carregado!"
