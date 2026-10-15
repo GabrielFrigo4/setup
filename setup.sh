@@ -4,7 +4,20 @@
 # ----------------------------------------------------------------
 set -eu
 
-_repo_root="$(cd "$(dirname "$0")" && pwd)"
+if [ -n "${SETUP_DIR:-}" ] && [ -d "${SETUP_DIR}" ]; then
+	_repo_root="${SETUP_DIR}"
+else
+	case "${0}" in
+		-*|"") _script_dir="" ;;
+		*/*)  _script_dir="${0%/*}" ;;
+		*)    _script_dir="." ;;
+	esac
+	if [ -n "${_script_dir}" ] && [ -d "${_script_dir}" ]; then
+		_repo_root="$(cd "${_script_dir}" && pwd)"
+	else
+		_repo_root="${PWD}"
+	fi
+fi
 
 . "${_repo_root}/core/ui.sh"
 . "${_repo_root}/core/elevate.sh"
