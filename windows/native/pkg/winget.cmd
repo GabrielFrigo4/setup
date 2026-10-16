@@ -204,7 +204,7 @@ rem --------------------------------
 winget install KDE.Krita
 winget install GIMP.GIMP.3
 winget install Inkscape.Inkscape
-winget install BlenderFoundation.Blender
+winget install BlenderFoundation.Blender --accept-package-agreements --accept-source-agreements
 
 rem --------------------------------
 rem game

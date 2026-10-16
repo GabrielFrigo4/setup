@@ -19,7 +19,7 @@ Esta pasta abriga receitas de automação que são **100% puras em POSIX Shell (
 | **[`cli/`](cli/README.md)**                  | Receita     | Utilitários modernos de terminal (`core.sh`: bat, eza, fd, ripgrep, zoxide, fastfetch)             |
 | **[`vcs/`](vcs/README.md)**                  | Receitas    | Instalação (`tools.sh`) e configuração global do Git (`git.sh`) e Game of Trees (`got.sh`)         |
 | **[`editors/`](editors/README.md)**          | Subcatálogo | Instalação (`install.sh`), perfis pessoais (`editors.sh`) e frameworks (`lazyvim.sh`, etc.)        |
-| **[`graphics/`](graphics/README.md)**        | Receitas    | Janelas / Multimídia (`windowing.sh`: GLFW, SDL3) e Shaders (`shaders.sh`: Vulkan, Slang, DXC)     |
+| **[`graphics/`](graphics/README.md)**        | Receitas    | Janelas (`windowing.sh`), Shaders (`shaders.sh`) e Suite 3D (`blender.sh`: Blender)                |
 | **[`wasm/`](wasm/README.md)**                | Receita     | Compilador WebAssembly (`emscripten.sh`: C/C++ para Wasm)                                          |
 | **[`media/`](media/README.md)**              | Receita     | Processamento de mídia (`cli.sh`: FFmpeg, ImageMagick, yt-dlp)                                     |
 | **[`docs/`](docs/README.md)**                | Receita     | Editoração técnica e tipografia (`typesetting.sh`: Pandoc, TeX Live, PDFtk)                        |
@@ -55,8 +55,11 @@ curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/fon
 # Configurar formatadores e linters globais
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/linters/linters.sh | sh
 
-# Instalar toolchains e bibliotecas gamedev (SDL3, GLFW, Emscripten)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/gamedev.sh | sh
+# Instalar suite de criação 3D Blender
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/blender.sh | sh
+
+# Instalar bibliotecas de janelas e multimídia (GLFW e SDL3)
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/windowing.sh | sh
 
 # Configurar Git
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git.sh | sh

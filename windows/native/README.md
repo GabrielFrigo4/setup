@@ -44,6 +44,7 @@ Reúne todo o ferramental de provisionamento nativo para estações de trabalho 
 | **`security/`**        | [`security/ropgadget.cmd`](security/ropgadget.cmd)           | Wrapper para chamadas do ROPgadget no Prompt de Comando                           |
 | **`dev-tools.cmd`**    | [`dev-tools.cmd`](dev-tools.cmd)                             | Visual Studio Community, Windows Terminal, PowerToys e Sysinternals               |
 | **`office/`**          | [`office/collabora.cmd`](office/collabora.cmd)               | Provisionamento do Collabora Office Desktop via Winget / Microsoft Store          |
+| **`graphics/`**        | [`graphics/blender.cmd`](graphics/blender.cmd)               | Provisionamento do Blender 3D Suite via Winget                                    |
 | **`shaders.cmd`**      | [`shaders.cmd`](shaders.cmd)                                 | Toolchains de shaders (Vulkan SDK, DXC, Slang via winget/vcpkg)                   |
 | **`setup.ps1`**        | [`setup.ps1`](setup.ps1)                                     | Módulos para PowerShell e atalhos de inicialização rápida do Emacs Daemon         |
 

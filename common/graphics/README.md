@@ -6,7 +6,7 @@
 
 ## 🎯 Finalidade
 
-Esta pasta centraliza receitas universais para bibliotecas de janelas e multimídia gráfica (**GLFW**, **SDL3**, ecossistema **SDL3_image**, **SDL3_net**, **SDL3_ttf**, **SDL3_mixer**, **SDL_gpu_shadercross**) e compiladores de shaders modernos (**Vulkan SDK**, **SPIR-V Tools**, **SPIRV-Cross**, **Slang**, **DXC**, **glslang** e **shaderc**).
+Esta pasta centraliza receitas universais para bibliotecas de janelas e multimídia gráfica (**GLFW**, **SDL3**, ecossistema **SDL3_image**, **SDL3_net**, **SDL3_ttf**, **SDL3_mixer**, **SDL_gpu_shadercross**), compiladores de shaders modernos (**Vulkan SDK**, **SPIR-V Tools**, **SPIRV-Cross**, **Slang**, **DXC**, **glslang** e **shaderc**) e a suite de criação e modelagem 3D (**Blender**).
 
 > ℹ️ **Toolchains WebAssembly:** A receita do compilador Emscripten reside em [`../wasm/emscripten.sh`](../wasm/emscripten.sh).
 
@@ -18,6 +18,7 @@ Esta pasta centraliza receitas universais para bibliotecas de janelas e multimí
 | :----------------------------- | :--------------------------------------------------------------------------------------- | :------------------------------------ |
 | [`windowing.sh`](windowing.sh) | Bibliotecas de janelas e multimídia gráfica (GLFW, SDL3 e ecossistema)                   | Linux / FreeBSD / macOS / WSL / MSYS2 |
 | [`shaders.sh`](shaders.sh)     | Compiladores de shaders modernos (Vulkan SDK, Slang, DXC, glslang, shaderc, SPIRV-Cross) | Linux / FreeBSD / MSYS2               |
+| [`blender.sh`](blender.sh)     | Suite completa de modelagem, animação e renderização 3D (Blender)                        | Linux / FreeBSD / Windows (Winget)    |
 
 ---
 
@@ -26,5 +27,9 @@ Esta pasta centraliza receitas universais para bibliotecas de janelas e multimí
 Execute diretamente no terminal:
 
 ```sh
+# Provisionar suite de modelagem e animação 3D Blender
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/blender.sh | sh
+
+# Provisionar bibliotecas de janelas e multimídia (GLFW e SDL3)
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/windowing.sh | sh
 ```
