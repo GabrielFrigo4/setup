@@ -9,6 +9,7 @@ set -eu
 ### ================================
 _ui_escape=$'\e'
 _ui_reset="${_ui_escape}[0m"
+_ui_bold="${_ui_escape}[1m"
 _ui_cyan="${_ui_escape}[1;36m"
 _ui_green="${_ui_escape}[1;32m"
 _ui_yellow="${_ui_escape}[1;33m"
@@ -32,7 +33,7 @@ _ui_banner() {
 	_title="$1"
 	_sep="================================================================"
 	if _ui_has_color; then
-		printf "\n%s%s%s\n  %s\n%s%s%s\n\n" "${_ui_cyan}" "${_sep}" "${_ui_reset}" "${_title}" "${_ui_cyan}" "${_sep}" "${_ui_reset}"
+		printf "\n%s%s%s\n%s  %s%s\n%s%s%s\n\n" "${_ui_cyan}" "${_sep}" "${_ui_reset}" "${_ui_bold}" "${_title}" "${_ui_reset}" "${_ui_cyan}" "${_sep}" "${_ui_reset}"
 	else
 		printf "\n%s\n  %s\n%s\n\n" "${_sep}" "${_title}" "${_sep}"
 	fi
