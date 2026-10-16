@@ -11,15 +11,17 @@ set "LOCAL_TOOLS_DIR=%SCRIPT_DIR%..\..\..\..\Profile\tools"
 set "RAW_BASE_URL=https://raw.githubusercontent.com/GabrielFrigo4/profile/main/tools"
 
 mkdir "%LOCALAPPDATA%\clangd" 2>nul
+mkdir "%APPDATA%\ruff" 2>nul
 
 call :sync_file ".clang-format" "%USERPROFILE%\.clang-format"
 call :sync_file "clangd.yaml" "%LOCALAPPDATA%\clangd\config.yaml"
 call :sync_file ".prettierrc" "%USERPROFILE%\.prettierrc"
 call :sync_file ".stylua.toml" "%USERPROFILE%\.stylua.toml"
+call :sync_file "ruff.toml" "%APPDATA%\ruff\ruff.toml"
 call :sync_file "mermaid-puppeteer.json" "%USERPROFILE%\.mermaid-puppeteer-config.json"
 call :sync_file "mermaid-theme.json" "%USERPROFILE%\.mermaid-theme-config.json"
 
-echo [+] Formatadores (.clang-format, clangd, prettier, stylua, mermaid) configurados com sucesso!
+echo [+] Formatadores (.clang-format, clangd, prettier, stylua, ruff, mermaid) configurados com sucesso!
 goto :eof
 
 :sync_file
