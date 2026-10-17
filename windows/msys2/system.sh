@@ -6,7 +6,7 @@ set -eu
 
 echo "📦 [MSYS2 System]: Configurando sistema base e shell padrão..."
 
-cat << 'EOF' | tee -a "/clang64.ini" | tee -a "/clangarm64.ini" | tee -a "/mingw32.ini" | tee -a "/mingw64.ini" | tee -a "/msys2.ini" | tee -a "/ucrt64.ini" > "/dev/null"
+cat << 'EOF' | tee -a "/clang64.ini" | tee -a "/clangarm64.ini" | tee -a "/mingw64.ini" | tee -a "/msys2.ini" | tee -a "/ucrt64.ini" > "/dev/null"
 SHELL=/usr/bin/bash
 EOF
 
