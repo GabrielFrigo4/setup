@@ -17,6 +17,7 @@ Esta pasta centraliza as receitas de infraestrutura de sistema, ferramentas e se
 | Categoria       | Receita                                                                    | Descrição                                                              |
 | :-------------- | :------------------------------------------------------------------------- | :--------------------------------------------------------------------- |
 | **`system/`**   | [`system/swap.sh`](system/swap.sh)                                         | Alocação de 2GB de Swap e `vm.swappiness=10` (Agnóstico de SO)         |
+| **`system/`**   | [`system/console.sh`](system/console.sh)                                   | Fonte Spleen 16x32 para consoles virtuais TTY Linux (`vconsole.conf`)  |
 | **`system/`**   | [`../../common/system/nopass.sh`](../../common/system/nopass.sh)           | Elevação com `doas` e `sudo` sem senha para desktop/workstation (0440) |
 | **`system/`**   | [`system/flatpak.sh`](system/flatpak.sh)                                   | Instalação universal de Flatpak e integração com o repositório Flathub |
 | **`security/`** | [`security/firewall.sh`](security/firewall.sh)                             | Regras de portas 22, 80 e 443 para `firewalld`, `ufw` e `iptables`     |
@@ -30,6 +31,9 @@ Esta pasta centraliza as receitas de infraestrutura de sistema, ferramentas e se
 Execute qualquer receita diretamente via terminal:
 
 ```sh
+# Configurar fonte do console TTY Linux (Spleen 16x32)
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/system/console.sh | sh
+
 # Configurar Flatpak + Flathub
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/system/flatpak.sh | sh
 

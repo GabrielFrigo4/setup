@@ -20,4 +20,9 @@ fi
 ${ELEVATE} apt update
 ${ELEVATE} apt install --yes gnupg ca-certificates apt-transport-https
 
+_console_recipe="${_setup_root}/linux/common/system/console.sh"
+if [ -f "${_console_recipe}" ]; then
+	sh "${_console_recipe}"
+fi
+
 _ui_ok "Sistema base configurado com sucesso!"
