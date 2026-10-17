@@ -44,7 +44,16 @@ _detect_distro() {
 			echo "generic"
 		fi
 	elif [ "${_os}" = "freebsd" ] || [ "${_os}" = "dragonfly" ]; then
-		echo "${_os}"
+		if [ -f "/etc/os-release" ]; then
+			_distro_id="$(grep '^ID=' "/etc/os-release" 2> "/dev/null" | cut -d= -f2 | tr -d '"')"
+			echo "${_distro_id:-${_os}}"
+		elif [ -f "/etc/ghostbsd-version" ] || [ -f "/usr/local/etc/ghostbsd-version" ]; then
+			echo "ghostbsd"
+		elif [ -f "/etc/nomadbsd-version" ]; then
+			echo "nomadbsd"
+		else
+			echo "${_os}"
+		fi
 	elif [ "${_os}" = "windows" ]; then
 		if [ -n "${MSYSTEM:-}" ]; then
 			echo "msys2"
