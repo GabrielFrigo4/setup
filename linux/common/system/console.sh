@@ -124,6 +124,8 @@ if command -v systemctl > "/dev/null" 2>&1; then
 	cat <<- "EOF" | ${ELEVATE} tee "${_getty_dropin_dir}/utf8.conf" > "/dev/null"
 	[Service]
 	Environment=LANG=pt_BR.UTF-8
+	TTYVTDisallocate=no
+	ExecStartPre=-/usr/lib/systemd/systemd-vconsole-setup /dev/%I
 	ExecStart=
 	ExecStart=-/usr/sbin/agetty --8bits --noreset --noclear --issue-file=/etc/issue:/etc/issue.d:/run/issue.d:/usr/lib/issue.d - $TERM
 	EOF
