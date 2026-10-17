@@ -128,7 +128,31 @@ if [ -f "/etc/issue" ]; then
 	rm -f "${_tmp_issue}"
 fi
 
-for _c in /dev/tty0 /dev/tty[1-6]; do
+### --------------------------------
+### Descoberta Dinâmica de Consoles
+### --------------------------------
+_vts="/dev/tty0"
+
+for _t in $(ps -e -o tty= 2> "/dev/null" | sort -u | grep -E '^tty[0-9]+$'); do
+	_vts="${_vts} /dev/${_t}"
+done
+
+if command -v systemctl > "/dev/null" 2>&1; then
+	for _unit in $(systemctl list-units --type=service 'getty@*' 'autovt@*' --no-legend --no-pager 2> "/dev/null" | awk '{print $1}'); do
+		_t="$(echo "${_unit}" | sed -E 's/^(getty|autovt)@([^.]+)\.service$/\2/')"
+		case "${_t}" in
+			tty[0-9]*) _vts="${_vts} /dev/${_t}" ;;
+		esac
+	done
+fi
+
+for _i in 1 2 3 4 5 6; do
+	_vts="${_vts} /dev/tty${_i}"
+done
+
+_unique_vts="$(echo "${_vts}" | tr ' ' '\n' | sort -u)"
+
+for _c in ${_unique_vts}; do
 	[ -c "${_c}" ] && printf '\033[?6c' | ${ELEVATE} tee "${_c}" > "/dev/null" 2>&1 || true
 done
 
@@ -137,8 +161,10 @@ done
 ### --------------------------------
 if command -v setfont > "/dev/null" 2>&1; then
 	${ELEVATE} setfont "${_target_font}" 2> "/dev/null" || true
-	for _c in /dev/tty[1-6]; do
-		[ -c "${_c}" ] && ${ELEVATE} setfont -C "${_c}" "${_target_font}" 2> "/dev/null" || true
+	for _c in ${_unique_vts}; do
+		if [ -c "${_c}" ] && [ "${_c}" != "/dev/tty0" ]; then
+			${ELEVATE} setfont -C "${_c}" "${_target_font}" 2> "/dev/null" || true
+		fi
 	done
 fi
 

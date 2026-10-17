@@ -21,6 +21,9 @@ ${ELEVATE} pkg bootstrap --yes
 ${ELEVATE} pkg update
 
 ${ELEVATE} sysrc allscreens_flags="-f spleen-16x32"
+if [ -x "/etc/rc.d/allscreens" ]; then
+	${ELEVATE} /etc/rc.d/allscreens restart > "/dev/null" 2>&1 || true
+fi
 
 ### --------------------------------
 ### Audio OSS and Sndiod Tuning
