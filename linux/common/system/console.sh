@@ -118,6 +118,20 @@ fi
 if [ -f "/sys/class/graphics/fbcon/cursor_blink" ]; then
 	echo 0 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
 fi
+### --------------------------------
+### Mapeamento Teclas F1-F5
+### --------------------------------
+_keymap_dir="/usr/local/share/kbd/keymaps"
+[ -d "${_keymap_dir}" ] || ${ELEVATE} mkdir -p "${_keymap_dir}"
+cat <<- "EOF" | ${ELEVATE} tee "${_keymap_dir}/standard-fkeys.map" > "/dev/null"
+string F1 = "\033[11~"
+string F2 = "\033[12~"
+string F3 = "\033[13~"
+string F4 = "\033[14~"
+string F5 = "\033[15~"
+EOF
+${ELEVATE} chmod 0644 "${_keymap_dir}/standard-fkeys.map"
+
 if command -v systemctl > "/dev/null" 2>&1; then
 	_getty_dropin_dir="/etc/systemd/system/getty@.service.d"
 	[ -d "${_getty_dropin_dir}" ] || ${ELEVATE} mkdir -p "${_getty_dropin_dir}"
@@ -126,6 +140,7 @@ if command -v systemctl > "/dev/null" 2>&1; then
 	Environment=LANG=pt_BR.UTF-8
 	TTYVTDisallocate=no
 	ExecStartPre=-/usr/lib/systemd/systemd-vconsole-setup /dev/%I
+	ExecStartPre=-/usr/bin/loadkeys -C /dev/%I /usr/local/share/kbd/keymaps/standard-fkeys.map
 	ExecStart=
 	ExecStart=-/usr/sbin/agetty --8bits --noreset --noclear --issue-file=/etc/issue:/etc/issue.d:/run/issue.d:/usr/lib/issue.d - $TERM
 	EOF
@@ -173,13 +188,22 @@ for _c in ${_unique_vts}; do
 done
 
 ### --------------------------------
-### Ativação Imediata da Fonte
+### Ativação Fonte e Teclado
 ### --------------------------------
 if command -v setfont > "/dev/null" 2>&1; then
 	${ELEVATE} setfont "${_target_font}" 2> "/dev/null" || true
 	for _c in ${_unique_vts}; do
 		if [ -c "${_c}" ] && [ "${_c}" != "/dev/tty0" ]; then
 			${ELEVATE} setfont -C "${_c}" "${_target_font}" 2> "/dev/null" || true
+		fi
+	done
+fi
+
+if command -v loadkeys > "/dev/null" 2>&1 && [ -f "${_keymap_dir}/standard-fkeys.map" ]; then
+	${ELEVATE} loadkeys -C /dev/tty0 "${_keymap_dir}/standard-fkeys.map" 2> "/dev/null" || true
+	for _c in ${_unique_vts}; do
+		if [ -c "${_c}" ] && [ "${_c}" != "/dev/tty0" ]; then
+			${ELEVATE} loadkeys -C "${_c}" "${_keymap_dir}/standard-fkeys.map" 2> "/dev/null" || true
 		fi
 	done
 fi
