@@ -16,6 +16,7 @@ Reúne receitas atômicas para configurar aplicações em instâncias remotas na
 
 | Recurso / Servidor                                                     | Tipo               | Descrição                                                                                  |
 | :--------------------------------------------------------------------- | :----------------- | :----------------------------------------------------------------------------------------- |
+| **[`ubuntu.sh`](ubuntu.sh)**                                           | Receita            | Baseline de servidor Ubuntu (`apt-clone`, `tmux`, etc.)                                    |
 | **[`connect.sh`](connect.sh)**                                         | Ferramenta         | Conexão SSH unificada aos servidores (`sh connect.sh personal` ou `sh connect.sh venture`) |
 | **[`../../common/system/persist.sh`](../../common/system/persist.sh)** | Receita            | Elevação com `doas` e `sudo` com senha e persistência de sessão (0440)                     |
 | **[`oracle-personal/`](oracle-personal/README.md)**                    | Servidor Pessoal   | Reverse proxy Caddy e serviços systemd (`resume`, `game`)                                  |
