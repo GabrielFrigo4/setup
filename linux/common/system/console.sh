@@ -81,11 +81,20 @@ fi
 ### --------------------------------
 _ui_sub "Configurando cursor em bloco padrão no console Linux (vt.cur_default=6)..."
 
-if [ -f "/etc/default/grub" ] && ! grep -q "vt\.cur_default=" "/etc/default/grub" 2> "/dev/null"; then
-	if grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX=" "/etc/default/grub" 2> "/dev/null"; then
-		${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX="\(.*\)"|GRUB_CMDLINE_LINUX="\1 vt.cur_default=6"|' "/etc/default/grub"
-	elif grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT=" "/etc/default/grub" 2> "/dev/null"; then
-		${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"|GRUB_CMDLINE_LINUX_DEFAULT="\1 vt.cur_default=6"|' "/etc/default/grub"
+if [ -f "/etc/default/grub" ]; then
+	if ! grep -q "vt\.cur_default=" "/etc/default/grub" 2> "/dev/null"; then
+		if grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX=" "/etc/default/grub" 2> "/dev/null"; then
+			${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX="\(.*\)"|GRUB_CMDLINE_LINUX="\1 vt.cur_default=6"|' "/etc/default/grub"
+		elif grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT=" "/etc/default/grub" 2> "/dev/null"; then
+			${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"|GRUB_CMDLINE_LINUX_DEFAULT="\1 vt.cur_default=6"|' "/etc/default/grub"
+		fi
+	fi
+
+	if ! grep -q "^[[:space:]]*GRUB_GFXMODE=" "/etc/default/grub" 2> "/dev/null"; then
+		echo 'GRUB_GFXMODE="1920x1080,auto"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
+	fi
+	if ! grep -q "^[[:space:]]*GRUB_GFXPAYLOAD_LINUX=" "/etc/default/grub" 2> "/dev/null"; then
+		echo 'GRUB_GFXPAYLOAD_LINUX="keep"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
 	fi
 
 	if command -v grubby > "/dev/null" 2>&1; then

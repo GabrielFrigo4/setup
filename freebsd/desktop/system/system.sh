@@ -63,6 +63,7 @@ _set_loader_tunable() {
 }
 
 if [ -f "/boot/loader.conf" ]; then
+	_set_loader_tunable "efi_max_resolution" "1080p"
 	_set_loader_tunable "compat.linuxkpi.i915_enable_psr" "0"
 	_set_loader_tunable "compat.linuxkpi.i915_enable_psr2_sel_fetch" "0"
 	_set_loader_tunable "compat.linuxkpi.i915_enable_fbc" "0"
