@@ -121,8 +121,8 @@ fi
 
 if [ -f "/etc/issue" ]; then
 	_tmp_issue="$(mktemp)"
-	printf '\033[?6c' > "${_tmp_issue}"
-	sed -e 's/\x1b\[?6c//g' -e 's/\x1b\[16;[0-9]*\]//g' "/etc/issue" >> "${_tmp_issue}"
+	printf '\033%%G\033[?6c' > "${_tmp_issue}"
+	sed -e 's/\x1b%G//g' -e 's/\x1b\[?6c//g' -e 's/\x1b\[16;[0-9]*\]//g' "/etc/issue" >> "${_tmp_issue}"
 	${ELEVATE} cp "${_tmp_issue}" "/etc/issue"
 	${ELEVATE} chmod 0644 "/etc/issue"
 	rm -f "${_tmp_issue}"
@@ -153,7 +153,10 @@ done
 _unique_vts="$(echo "${_vts}" | tr ' ' '\n' | sort -u)"
 
 for _c in ${_unique_vts}; do
-	[ -c "${_c}" ] && printf '\033[?6c' | ${ELEVATE} tee "${_c}" > "/dev/null" 2>&1 || true
+	if [ -c "${_c}" ]; then
+		printf '\033%%G\033[?6c' | ${ELEVATE} tee "${_c}" > "/dev/null" 2>&1 || true
+		command -v stty > "/dev/null" 2>&1 && ${ELEVATE} stty -F "${_c}" iutf8 2> "/dev/null" || true
+	fi
 done
 
 ### --------------------------------
