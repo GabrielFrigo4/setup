@@ -113,23 +113,23 @@ if [ -f "/etc/default/grub" ]; then
 fi
 
 if [ -d "/etc/tmpfiles.d" ]; then
-	echo "w /sys/class/graphics/fbcon/cursor_blink - - - - 0" | ${ELEVATE} tee "/etc/tmpfiles.d/console-cursor.conf" > "/dev/null"
+	echo "w /sys/class/graphics/fbcon/cursor_blink - - - - 1" | ${ELEVATE} tee "/etc/tmpfiles.d/console-cursor.conf" > "/dev/null"
 fi
 if [ -f "/sys/class/graphics/fbcon/cursor_blink" ]; then
-	echo 0 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
+	echo 1 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
 fi
 
-if [ -f "/etc/issue" ] && ! grep -q "\[16;0\]" "/etc/issue" 2> "/dev/null"; then
+if [ -f "/etc/issue" ]; then
 	_tmp_issue="$(mktemp)"
-	printf '\033[?6c\033[16;0]' > "${_tmp_issue}"
-	sed 's/\x1b\[?6c//g' "/etc/issue" >> "${_tmp_issue}"
+	printf '\033[?6c\033[16;500]' > "${_tmp_issue}"
+	sed -e 's/\x1b\[?6c//g' -e 's/\x1b\[16;0\]//g' -e 's/\x1b\[16;500\]//g' "/etc/issue" >> "${_tmp_issue}"
 	${ELEVATE} cp "${_tmp_issue}" "/etc/issue"
 	${ELEVATE} chmod 0644 "/etc/issue"
 	rm -f "${_tmp_issue}"
 fi
 
 if [ -c "/dev/tty0" ]; then
-	printf '\033[?6c\033[16;0]' | ${ELEVATE} tee /dev/tty0 > "/dev/null" 2>&1 || true
+	printf '\033[?6c\033[16;500]' | ${ELEVATE} tee /dev/tty0 > "/dev/null" 2>&1 || true
 fi
 
 ### --------------------------------
