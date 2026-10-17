@@ -12,6 +12,8 @@
 | **Linux Provisioning**      | 🟢 Estável  | Paridade Debian, Arch, Fedora, Void e Alpine com receitas idempotentes |
 | **FreeBSD Provisioning**    | 🟢 Estável  | Pacotes `pkg`, áudio OSS, DRM/KMS e Bhyve automatizados via `sysrc`    |
 | **Windows Provisioning**    | 🟢 Estável  | Receitas nativas integradas via Winget e delegação ao motor do Shell   |
+| **Console & TTY**           | 🟢 Estável  | Fontes KMS Terminus 16x32, teclados ABNT2/US e locale soberano UTF-8   |
+| **Servidores Ubuntu**       | 🟢 Estável  | Baseline minimalista de servidor com apt-clone, tmux e full-upgrade    |
 | **Orquestrador Central**    | 🟢 Estável  | `setup.sh` desacoplado em receitas atômicas e modulares em `core/`     |
 | **Segurança & Privilégios** | 🟢 Estável  | Detecção automática antifrágil de `sudo`/`doas` em `core/elevate.sh`   |
 | **Emissão Visual TUI**      | 🟢 Estável  | Biblioteca semântica canônica `core/ui.sh` (`_ui_*`) integrada         |
