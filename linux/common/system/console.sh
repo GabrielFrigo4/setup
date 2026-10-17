@@ -90,6 +90,10 @@ if [ -f "/etc/default/grub" ]; then
 		fi
 	fi
 
+	if grep -q '^[[:space:]]*GRUB_TERMINAL_OUTPUT="console"' "/etc/default/grub" 2> "/dev/null"; then
+		${ELEVATE} sed -i 's|^[[:space:]]*GRUB_TERMINAL_OUTPUT="console"|GRUB_TERMINAL_OUTPUT="gfxterm"|' "/etc/default/grub"
+	fi
+
 	if ! grep -q "^[[:space:]]*GRUB_GFXMODE=" "/etc/default/grub" 2> "/dev/null"; then
 		echo 'GRUB_GFXMODE="1920x1080,auto"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
 	fi
@@ -99,22 +103,33 @@ if [ -f "/etc/default/grub" ]; then
 
 	if command -v grubby > "/dev/null" 2>&1; then
 		${ELEVATE} grubby --update-kernel=ALL --args="vt.cur_default=6" 2> "/dev/null" || true
+	fi
+
+	if [ -f "/boot/grub2/grub.cfg" ] && command -v grub2-mkconfig > "/dev/null" 2>&1; then
+		${ELEVATE} grub2-mkconfig -o /boot/grub2/grub.cfg 2> "/dev/null" || true
 	elif command -v update-grub > "/dev/null" 2>&1; then
 		${ELEVATE} update-grub 2> "/dev/null" || true
 	fi
 fi
 
-if [ -f "/etc/issue" ] && ! grep -q "\[?6c" "/etc/issue" 2> "/dev/null"; then
+if [ -d "/etc/tmpfiles.d" ]; then
+	echo "w /sys/class/graphics/fbcon/cursor_blink - - - - 0" | ${ELEVATE} tee "/etc/tmpfiles.d/console-cursor.conf" > "/dev/null"
+fi
+if [ -f "/sys/class/graphics/fbcon/cursor_blink" ]; then
+	echo 0 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
+fi
+
+if [ -f "/etc/issue" ] && ! grep -q "\[16;0\]" "/etc/issue" 2> "/dev/null"; then
 	_tmp_issue="$(mktemp)"
-	printf '\033[?6c' > "${_tmp_issue}"
-	cat "/etc/issue" >> "${_tmp_issue}"
+	printf '\033[?6c\033[16;0]' > "${_tmp_issue}"
+	sed 's/\x1b\[?6c//g' "/etc/issue" >> "${_tmp_issue}"
 	${ELEVATE} cp "${_tmp_issue}" "/etc/issue"
 	${ELEVATE} chmod 0644 "/etc/issue"
 	rm -f "${_tmp_issue}"
 fi
 
 if [ -c "/dev/tty0" ]; then
-	printf '\033[?6c' | ${ELEVATE} tee /dev/tty0 > "/dev/null" 2>&1 || true
+	printf '\033[?6c\033[16;0]' | ${ELEVATE} tee /dev/tty0 > "/dev/null" 2>&1 || true
 fi
 
 ### --------------------------------
