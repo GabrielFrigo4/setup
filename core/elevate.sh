@@ -9,10 +9,10 @@ set -eu
 ### ================================
 ELEVATE=""
 if [ "$(id -u)" -ne 0 ]; then
-	if command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	elif command -v doas > "/dev/null" 2>&1; then
+	if command -v doas > "/dev/null" 2>&1; then
 		ELEVATE="doas"
+	elif command -v sudo > "/dev/null" 2>&1; then
+		ELEVATE="sudo"
 	fi
 fi
 export ELEVATE
