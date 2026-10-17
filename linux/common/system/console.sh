@@ -77,6 +77,38 @@ if [ -f "/etc/default/console-setup" ]; then
 fi
 
 ### --------------------------------
+### Configuração do Cursor em Bloco
+### --------------------------------
+_ui_sub "Configurando cursor em bloco padrão no console Linux (vt.cur_default=6)..."
+
+if [ -f "/etc/default/grub" ] && ! grep -q "vt\.cur_default=" "/etc/default/grub" 2> "/dev/null"; then
+	if grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX=" "/etc/default/grub" 2> "/dev/null"; then
+		${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX="\(.*\)"|GRUB_CMDLINE_LINUX="\1 vt.cur_default=6"|' "/etc/default/grub"
+	elif grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT=" "/etc/default/grub" 2> "/dev/null"; then
+		${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"|GRUB_CMDLINE_LINUX_DEFAULT="\1 vt.cur_default=6"|' "/etc/default/grub"
+	fi
+
+	if command -v grubby > "/dev/null" 2>&1; then
+		${ELEVATE} grubby --update-kernel=ALL --args="vt.cur_default=6" 2> "/dev/null" || true
+	elif command -v update-grub > "/dev/null" 2>&1; then
+		${ELEVATE} update-grub 2> "/dev/null" || true
+	fi
+fi
+
+if [ -f "/etc/issue" ] && ! grep -q "\[?6c" "/etc/issue" 2> "/dev/null"; then
+	_tmp_issue="$(mktemp)"
+	printf '\033[?6c' > "${_tmp_issue}"
+	cat "/etc/issue" >> "${_tmp_issue}"
+	${ELEVATE} cp "${_tmp_issue}" "/etc/issue"
+	${ELEVATE} chmod 0644 "/etc/issue"
+	rm -f "${_tmp_issue}"
+fi
+
+if [ -c "/dev/tty0" ]; then
+	printf '\033[?6c' | ${ELEVATE} tee /dev/tty0 > "/dev/null" 2>&1 || true
+fi
+
+### --------------------------------
 ### Ativação Imediata da Fonte
 ### --------------------------------
 if command -v setfont > "/dev/null" 2>&1; then
@@ -87,4 +119,4 @@ if command -v systemctl > "/dev/null" 2>&1 && systemctl is-active --quiet system
 	${ELEVATE} systemctl restart systemd-vconsole-setup.service 2> "/dev/null" || true
 fi
 
-_ui_ok "Fonte do console TTY configurada com sucesso (${_target_font})!"
+_ui_ok "Console TTY configurado com sucesso (fonte ${_target_font} e cursor em bloco)!"
