@@ -118,6 +118,17 @@ fi
 if [ -f "/sys/class/graphics/fbcon/cursor_blink" ]; then
 	echo 0 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
 fi
+if command -v systemctl > "/dev/null" 2>&1; then
+	_getty_dropin_dir="/etc/systemd/system/getty@.service.d"
+	[ -d "${_getty_dropin_dir}" ] || ${ELEVATE} mkdir -p "${_getty_dropin_dir}"
+	cat <<- "EOF" | ${ELEVATE} tee "${_getty_dropin_dir}/utf8.conf" > "/dev/null"
+	[Service]
+	Environment=LANG=pt_BR.UTF-8
+	ExecStart=
+	ExecStart=-/usr/sbin/agetty --8bits --noreset --noclear --issue-file=/etc/issue:/etc/issue.d:/run/issue.d:/usr/lib/issue.d - $TERM
+	EOF
+	${ELEVATE} systemctl daemon-reload 2> "/dev/null" || true
+fi
 
 if [ -f "/etc/issue" ]; then
 	_tmp_issue="$(mktemp)"
