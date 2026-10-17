@@ -128,15 +128,18 @@ if [ -f "/etc/issue" ]; then
 	rm -f "${_tmp_issue}"
 fi
 
-if [ -c "/dev/tty0" ]; then
-	printf '\033[?6c' | ${ELEVATE} tee /dev/tty0 > "/dev/null" 2>&1 || true
-fi
+for _c in /dev/tty0 /dev/tty[1-6]; do
+	[ -c "${_c}" ] && printf '\033[?6c' | ${ELEVATE} tee "${_c}" > "/dev/null" 2>&1 || true
+done
 
 ### --------------------------------
 ### Ativação Imediata da Fonte
 ### --------------------------------
 if command -v setfont > "/dev/null" 2>&1; then
 	${ELEVATE} setfont "${_target_font}" 2> "/dev/null" || true
+	for _c in /dev/tty[1-6]; do
+		[ -c "${_c}" ] && ${ELEVATE} setfont -C "${_c}" "${_target_font}" 2> "/dev/null" || true
+	done
 fi
 
 if command -v systemctl > "/dev/null" 2>&1 && systemctl is-active --quiet systemd-vconsole-setup.service 2> "/dev/null"; then
