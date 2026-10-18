@@ -20,7 +20,7 @@ Organiza a configuração do Arch Linux em módulos desacoplados: sistema base, 
 | **`system/`**         | [`system/diagnostics.sh`](system/diagnostics.sh)   | Diagnóstico de kernel, firmware e dispositivos           |
 | **`desktop/`**        | [`desktop/hardware.sh`](desktop/hardware.sh)       | Mesa, drivers de aceleração VA-API, Vulkan e regras udev |
 | **`virtualization/`** | [`virtualization/qemu.sh`](virtualization/qemu.sh) | QEMU, Libvirt, Virt-Manager e rede padrão                |
-| **`servers/`**        | [`servers/kvm.sh`](servers/kvm.sh)                 | Utilitários de controle da VM FreeBSD                    |
+| **`servers/`**        | [`servers/kvm.sh`](servers/kvm.sh)                 | Chaves de servidores e integração de virtualização KVM   |
 
 ---
 

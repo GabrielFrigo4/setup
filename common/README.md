@@ -14,24 +14,24 @@ Esta pasta abriga receitas de automação que são **100% puras em POSIX Shell (
 
 ## 📂 Catálogo de Recursos
 
-| Recurso                                      | Tipo        | Descrição                                                                                          |
-| :------------------------------------------- | :---------- | :------------------------------------------------------------------------------------------------- |
-| **[`cli/`](cli/README.md)**                  | Receita     | Utilitários modernos de terminal (`core.sh`: bat, eza, fd, ripgrep, zoxide, fastfetch)             |
-| **[`vcs/`](vcs/README.md)**                  | Receitas    | Instalação (`tools.sh`) e configuração global do Git (`git.sh`) e Game of Trees (`got.sh`)         |
-| **[`editors/`](editors/README.md)**          | Subcatálogo | Instalação (`install.sh`), perfis pessoais (`editors.sh`) e frameworks (`lazyvim.sh`, etc.)        |
-| **[`graphics/`](graphics/README.md)**        | Receitas    | Janelas (`windowing.sh`), Shaders (`shaders.sh`) e Suite 3D (`blender.sh`: Blender)                |
-| **[`wasm/`](wasm/README.md)**                | Receita     | Compilador WebAssembly (`emscripten.sh`: C/C++ para Wasm)                                          |
-| **[`media/`](media/README.md)**              | Receita     | Processamento de mídia (`cli.sh`: FFmpeg, ImageMagick, yt-dlp)                                     |
-| **[`docs/`](docs/README.md)**                | Receita     | Editoração técnica e tipografia (`typesetting.sh`: Pandoc, TeX Live, PDFtk)                        |
-| **[`ai/`](ai/README.md)**                    | Receita     | Inteligência artificial local (`ollama.sh`: inferência Ollama e SDK Python)                        |
-| **[`security/`](security/README.md)**        | Receitas    | Análise binária (`re.sh`) e captura de pacotes (`wireshark.sh`)                                    |
-| **[`fonts/`](fonts/README.md)**              | Receita     | Instalação de fontes tipográficas essenciais (`JetBrainsMono`, `RobotoMono`, `MesloLGS NF`)        |
-| **[`linters/`](linters/README.md)**          | Receitas    | Implantação de formatadores (`linters.sh`), Prettier (`prettier.sh`) e Mermaid (`mermaid.sh`)      |
-| **[`office/`](office/README.md)**            | Receita     | Suíte de escritório Collabora Office Desktop (`collabora.sh`) com dispatch universal               |
-| **[`iso/`](iso/README.md)**                  | Subcatálogo | Imagens ISO dinâmicas e checksums oficiais (`debian`, `freebsd`, `openbsd`, `netbsd`, `dragonfly`) |
-| **[`system/nopass.sh`](system/nopass.sh)**   | Receita     | Elevação de privilégios (`doas` + `sudo`) **sem senha** (0440)                                     |
-| **[`system/persist.sh`](system/persist.sh)** | Receita     | Elevação de privilégios (`doas` + `sudo`) **com senha e sessão de 5 minutos** (0440)               |
-| **[`system/strict.sh`](system/strict.sh)**   | Receita     | Elevação de privilégios (`doas` + `sudo`) **estrita (senha sempre / zero cache)** (0440)           |
+| Recurso                                      | Tipo        | Descrição                                                                                                                    |
+| :------------------------------------------- | :---------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| **[`cli/`](cli/README.md)**                  | Receita     | Utilitários modernos de terminal (`core.sh`: bat, eza, fd, ripgrep, zoxide, fastfetch)                                       |
+| **[`vcs/`](vcs/README.md)**                  | Receitas    | Instalação (`tools.sh`) e configuração global do Git (`git.sh`) e Game of Trees (`got.sh`)                                   |
+| **[`editors/`](editors/README.md)**          | Subcatálogo | Instalação (`install.sh`), perfis pessoais (`editors.sh`) e frameworks (`lazyvim.sh`, etc.)                                  |
+| **[`graphics/`](graphics/README.md)**        | Receitas    | Janelas (`windowing.sh`), Shaders (`shaders.sh`) e Suite 3D (`blender.sh`: Blender)                                          |
+| **[`wasm/`](wasm/README.md)**                | Receita     | Compilador WebAssembly (`emscripten.sh`: C/C++ para Wasm)                                                                    |
+| **[`media/`](media/README.md)**              | Receita     | Processamento de mídia (`cli.sh`: FFmpeg, ImageMagick, yt-dlp)                                                               |
+| **[`docs/`](docs/README.md)**                | Receita     | Editoração técnica e tipografia (`typesetting.sh`: Pandoc, TeX Live, PDFtk)                                                  |
+| **[`ai/`](ai/README.md)**                    | Receita     | Inteligência artificial local (`ollama.sh`: inferência Ollama e SDK Python)                                                  |
+| **[`security/`](security/README.md)**        | Receitas    | Análise binária (`re.sh`) e captura de pacotes (`wireshark.sh`)                                                              |
+| **[`fonts/`](fonts/README.md)**              | Receita     | Instalação de fontes tipográficas essenciais (`JetBrainsMono`, `RobotoMono`, `MesloLGS NF`)                                  |
+| **[`linters/`](linters/README.md)**          | Receitas    | Implantação de formatadores (`linters.sh`), Prettier (`prettier.sh`) e Mermaid (`mermaid.sh`)                                |
+| **[`office/`](office/README.md)**            | Receita     | Suíte de escritório Collabora Office Desktop (`collabora.sh`) com dispatch universal                                         |
+| **[`iso/`](iso/README.md)**                  | Subcatálogo | Imagens ISO dinâmicas e checksums oficiais (Alpine, Arch, Debian, Devuan, Fedora, Void, FreeBSD, OpenBSD, NetBSD, DragonFly) |
+| **[`system/nopass.sh`](system/nopass.sh)**   | Receita     | Elevação de privilégios (`doas` + `sudo`) **sem senha** (0440)                                                               |
+| **[`system/persist.sh`](system/persist.sh)** | Receita     | Elevação de privilégios (`doas` + `sudo`) **com senha e sessão de 5 minutos** (0440)                                         |
+| **[`system/strict.sh`](system/strict.sh)**   | Receita     | Elevação de privilégios (`doas` + `sudo`) **estrita (senha sempre / zero cache)** (0440)                                     |
 
 ---
 

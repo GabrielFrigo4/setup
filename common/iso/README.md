@@ -19,11 +19,16 @@ Automatizar a obtenção de mídias de instalação oficiais sem codificar vers�
 
 | Script                             | Sistema Operacional | Método de Descoberta                                         | Validação de Integridade   |
 | :--------------------------------- | :------------------ | :----------------------------------------------------------- | :------------------------- |
+| **[`alpine.sh`](alpine.sh)**       | Alpine Linux Virt   | `https://dl-cdn.alpinelinux.org/alpine/latest-stable/`       | SHA256 (`.iso.sha256`)     |
+| **[`arch.sh`](arch.sh)**           | Arch Linux Live     | `https://geo.mirror.pkgbuild.com/iso/latest/`                | SHA256 (`sha256sums.txt`)  |
 | **[`debian.sh`](debian.sh)**       | Debian GNU/Linux    | `https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/` | SHA256 (`SHA256SUMS`)      |
-| **[`freebsd.sh`](freebsd.sh)**     | FreeBSD             | `https://download.freebsd.org/releases/amd64/amd64/`         | SHA256 (`CHECKSUM.SHA256`) |
-| **[`openbsd.sh`](openbsd.sh)**     | OpenBSD             | `https://cdn.openbsd.org/pub/OpenBSD/`                       | SHA256 (`SHA256`)          |
-| **[`netbsd.sh`](netbsd.sh)**       | NetBSD              | `https://cdn.netbsd.org/pub/NetBSD/`                         | SHA512 (`SHA512`)          |
+| **[`devuan.sh`](devuan.sh)**       | Devuan GNU+Linux    | `https://files.devuan.org/devuan_daedalus/installer-iso/`    | SHA256 (`SHA256SUMS.txt`)  |
 | **[`dragonfly.sh`](dragonfly.sh)** | DragonFly BSD       | `https://mirror-master.dragonflybsd.org/iso-images/`         | MD5 (`md5.txt`)            |
+| **[`fedora.sh`](fedora.sh)**       | Fedora Server       | `https://fedoraproject.org/server/download`                  | SHA256 (`CHECKSUM`)        |
+| **[`freebsd.sh`](freebsd.sh)**     | FreeBSD             | `https://download.freebsd.org/releases/amd64/amd64/`         | SHA256 (`CHECKSUM.SHA256`) |
+| **[`netbsd.sh`](netbsd.sh)**       | NetBSD              | `https://cdn.netbsd.org/pub/NetBSD/`                         | SHA512 (`SHA512`)          |
+| **[`openbsd.sh`](openbsd.sh)**     | OpenBSD             | `https://cdn.openbsd.org/pub/OpenBSD/`                       | SHA256 (`SHA256`)          |
+| **[`void.sh`](void.sh)**           | Void Linux Base     | `https://repo-default.voidlinux.org/live/current/`           | SHA256 (`sha256sum.txt`)   |
 
 ---
 
@@ -47,11 +52,16 @@ Todos os scripts compartilham a mesma interface de linha de comando:
 
 ```sh
 # Validar se o espelho e a versão mais recente estão acessíveis
+./Setup/common/iso/alpine.sh -n
+./Setup/common/iso/arch.sh -n
 ./Setup/common/iso/debian.sh -n
-./Setup/common/iso/freebsd.sh -n
-./Setup/common/iso/openbsd.sh -n
-./Setup/common/iso/netbsd.sh -n
+./Setup/common/iso/devuan.sh -n
 ./Setup/common/iso/dragonfly.sh -n
+./Setup/common/iso/fedora.sh -n
+./Setup/common/iso/freebsd.sh -n
+./Setup/common/iso/netbsd.sh -n
+./Setup/common/iso/openbsd.sh -n
+./Setup/common/iso/void.sh -n
 ```
 
 ### 2. Baixar localmente para criação de Pendrive Bootável (`-l`)
