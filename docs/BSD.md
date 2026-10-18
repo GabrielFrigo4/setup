@@ -119,3 +119,13 @@ Em estações de trabalho com processadores Intel modernos (Gen 12 / Alder Lake)
 
 - O `/etc/rc.conf` deve carregar módulos essenciais sem duplicatas (ex: evitar carregar `/boot/kernel/fusefs.ko` simultaneamente com `fusefs`)[cite: 3].
 - Ordem limpa de carregamento: `/boot/modules/i915kms.ko /boot/kernel/cuse.ko /boot/kernel/fusefs.ko /boot/kernel/ext2fs.ko vmm nmdm`[cite: 3].
+
+---
+
+### 10. Console Virtual (`vt`), Cursor Estático & Modo Monousuário
+
+No FreeBSD, a gestão de consoles virtuais e telas de texto segue diretrizes estritas de estabilidade da base:
+
+- **Driver `vt(4)` & Tipografia Spleen 12x24:** O driver `vt(4)` gerencia os terminais virtuais (`ttyv0` a `ttyv7`). A receita [`freebsd/desktop/system/system.sh`](../freebsd/desktop/system/system.sh) configura a fonte de alta legibilidade `spleen-12x24` no `/etc/rc.conf` via `font12x24="spleen-12x24"`.
+- **Eliminação do Cursor Piscante:** Configura-se nativamente no `/etc/rc.conf` através da diretiva `allscreens_flags="-c normal,noblink"`. O comando nativo correspondente para aplicação imediata em runtime é `vidcontrol -c normal,noblink`.
+- **Invariante do Modo Monousuário (_Single-User Mode_):** Ao inicializar em modo monousuário (`boot -s`), o kernel e o `/sbin/init` executam **incondicionalmente o `/bin/sh` estático da base**, ignorando shells configurados no `/etc/passwd` ou `shell_target`. O sistema de arquivos raiz (`/`) está montado em modo somente-leitura (`ro`), `/usr/local` não está montado e os subsistemas PAM e `login` não entram em execução, garantindo que o operador nunca sofra _lock out_.

@@ -20,7 +20,7 @@ ${ELEVATE} pw groupmod webcamd -m "${TARGET_USER}" 2> "/dev/null" || true
 ${ELEVATE} pkg bootstrap --yes
 ${ELEVATE} pkg update
 
-${ELEVATE} sysrc allscreens_flags="-f spleen-16x32"
+${ELEVATE} sysrc allscreens_flags="-f spleen-12x24 -c normal,noblink"
 if [ -x "/etc/rc.d/allscreens" ]; then
 	${ELEVATE} /etc/rc.d/allscreens restart > "/dev/null" 2>&1 || true
 fi

@@ -8,9 +8,9 @@ _setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
-_ui_step "Configurando fonte Spleen 16x32 para console TTY Linux..."
+_ui_step "Configurando fonte Spleen 12x24 para console TTY Linux..."
 
-_target_font="spleen-16x32"
+_target_font="spleen-12x24"
 _spleen_version="2.2.0"
 
 _font_found=0
@@ -69,7 +69,7 @@ fi
 if [ -f "/etc/default/console-setup" ]; then
 	if grep -q "^[[:space:]]*FONTFACE=" "/etc/default/console-setup" 2> "/dev/null"; then
 		${ELEVATE} sed -i 's|^[[:space:]]*FONTFACE=.*|FONTFACE="Spleen"|' "/etc/default/console-setup"
-		${ELEVATE} sed -i 's|^[[:space:]]*FONTSIZE=.*|FONTSIZE="16x32"|' "/etc/default/console-setup"
+		${ELEVATE} sed -i 's|^[[:space:]]*FONTSIZE=.*|FONTSIZE="12x24"|' "/etc/default/console-setup"
 	fi
 	if command -v setupcon > "/dev/null" 2>&1; then
 		${ELEVATE} setupcon --save 2> "/dev/null" || true
@@ -79,14 +79,14 @@ fi
 ### --------------------------------
 ### Configuração do Cursor em Bloco
 ### --------------------------------
-_ui_sub "Configurando cursor em bloco padrão no console Linux (vt.cur_default=6)..."
+_ui_sub "Configurando cursor em bloco padrão no console Linux (vt.cur_default=0xee10)..."
 
 if [ -f "/etc/default/grub" ]; then
 	if ! grep -q "vt\.cur_default=" "/etc/default/grub" 2> "/dev/null"; then
 		if grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX=" "/etc/default/grub" 2> "/dev/null"; then
-			${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX="\(.*\)"|GRUB_CMDLINE_LINUX="\1 vt.cur_default=6"|' "/etc/default/grub"
+			${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX="\(.*\)"|GRUB_CMDLINE_LINUX="\1 vt.cur_default=0xee10"|' "/etc/default/grub"
 		elif grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT=" "/etc/default/grub" 2> "/dev/null"; then
-			${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"|GRUB_CMDLINE_LINUX_DEFAULT="\1 vt.cur_default=6"|' "/etc/default/grub"
+			${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"|GRUB_CMDLINE_LINUX_DEFAULT="\1 vt.cur_default=0xee10"|' "/etc/default/grub"
 		fi
 	fi
 
@@ -102,7 +102,7 @@ if [ -f "/etc/default/grub" ]; then
 	fi
 
 	if command -v grubby > "/dev/null" 2>&1; then
-		${ELEVATE} grubby --update-kernel=ALL --args="vt.cur_default=6" 2> "/dev/null" || true
+		${ELEVATE} grubby --update-kernel=ALL --args="vt.cur_default=0xee10" 2> "/dev/null" || true
 	fi
 
 	if [ -f "/boot/grub2/grub.cfg" ] && command -v grub2-mkconfig > "/dev/null" 2>&1; then
@@ -113,7 +113,13 @@ if [ -f "/etc/default/grub" ]; then
 fi
 
 if [ -d "/etc/tmpfiles.d" ]; then
-	echo "w /sys/class/graphics/fbcon/cursor_blink - - - - 0" | ${ELEVATE} tee "/etc/tmpfiles.d/console-cursor.conf" > "/dev/null"
+	cat <<- "EOF" | ${ELEVATE} tee "/etc/tmpfiles.d/console-cursor.conf" > "/dev/null"
+	w /sys/module/vt/parameters/cur_default - - - - 60944
+	w /sys/class/graphics/fbcon/cursor_blink - - - - 0
+	EOF
+fi
+if [ -f "/sys/module/vt/parameters/cur_default" ]; then
+	echo 60944 | ${ELEVATE} tee /sys/module/vt/parameters/cur_default > "/dev/null" 2>&1 || true
 fi
 if [ -f "/sys/class/graphics/fbcon/cursor_blink" ]; then
 	echo 0 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
@@ -149,8 +155,8 @@ fi
 
 if [ -f "/etc/issue" ]; then
 	_tmp_issue="$(mktemp)"
-	printf '\033%%G\033[?6c' > "${_tmp_issue}"
-	sed -e 's/\x1b%G//g' -e 's/\x1b\[?6c//g' -e 's/\x1b\[16;[0-9]*\]//g' "/etc/issue" >> "${_tmp_issue}"
+	printf '\033%%G\033[?16;238;0c' > "${_tmp_issue}"
+	sed -e 's/\x1b%G//g' -e 's/\x1b\[?6c//g' -e 's/\x1b\[?17;0;[0-9]*c//g' -e 's/\x1b\[?112;0;[0-9]*c//g' -e 's/\x1b\[?112c//g' -e 's/\x1b\[?16;[0-9]*;[0-9]*c//g' -e 's/\x1b\[?0c//g' -e 's/\x1b\[?12l//g' -e 's/\x1b\[16;[0-9]*\]//g' "/etc/issue" >> "${_tmp_issue}"
 	${ELEVATE} cp "${_tmp_issue}" "/etc/issue"
 	${ELEVATE} chmod 0644 "/etc/issue"
 	rm -f "${_tmp_issue}"
@@ -182,7 +188,7 @@ _unique_vts="$(echo "${_vts}" | tr ' ' '\n' | sort -u)"
 
 for _c in ${_unique_vts}; do
 	if [ -c "${_c}" ]; then
-		printf '\033%%G\033[?6c' | ${ELEVATE} tee "${_c}" > "/dev/null" 2>&1 || true
+		printf '\033%%G\033[?16;238;0c' | ${ELEVATE} tee "${_c}" > "/dev/null" 2>&1 || true
 		command -v stty > "/dev/null" 2>&1 && ${ELEVATE} stty -F "${_c}" iutf8 2> "/dev/null" || true
 	fi
 done
