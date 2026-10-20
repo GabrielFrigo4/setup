@@ -60,7 +60,7 @@ Em estações de trabalho e servidores, o provisionamento de consoles virtuais (
     - **Kernel Boot:** `vt.cur_default=0xee10` (decimal `60944`) no GRUB e `grubby`.
     - **Persistência sysfs:** `/etc/tmpfiles.d/console-cursor.conf` (`w /sys/module/vt/parameters/cur_default ... 60944`).
     - **Login Prompt:** `/etc/issue` configurado com `\033%G\033[?16;238;0c`.
-    - **FreeBSD:** `allscreens_flags="-f spleen-12x24"`.
+    - **FreeBSD:** `allscreens_flags="-f spleen-12x24"` (cursor inerentemente estático no driver `vt(4)` sem rotina de pisque no kernel).
 
 ---
 
