@@ -14,11 +14,11 @@ Organiza a configuração da VM servidora FreeBSD: agente de integração QEMU p
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo                                                                | Tipo       | Descrição                                                                  |
-| :--------------------------------------------------------------------- | :--------- | :------------------------------------------------------------------------- |
-| **[`system/guest.sh`](system/guest.sh)**                               | Receita    | QEMU Guest Agent, console de alta resolução Spleen 12x24 e cursor estático |
-| **[`../../common/system/persist.sh`](../../common/system/persist.sh)** | Receita    | Elevação com `doas` e `sudo` com senha e persistência de sessão (0440)     |
-| **[`connect.sh`](connect.sh)**                                         | Ferramenta | Conexão SSH e cópia SCP automática via detecção dinâmica de IP do `virsh`  |
+| Arquivo                                                                | Tipo       | Descrição                                                                 |
+| :--------------------------------------------------------------------- | :--------- | :------------------------------------------------------------------------ |
+| **[`system/guest.sh`](system/guest.sh)**                               | Receita    | QEMU Guest Agent e console de alta resolução Spleen 12x24                 |
+| **[`../../common/system/persist.sh`](../../common/system/persist.sh)** | Receita    | Elevação com `doas` e `sudo` com senha e persistência de sessão (0440)    |
+| **[`connect.sh`](connect.sh)**                                         | Ferramenta | Conexão SSH e cópia SCP automática via detecção dinâmica de IP do `virsh` |
 
 ---
 

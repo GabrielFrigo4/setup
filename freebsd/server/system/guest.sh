@@ -21,7 +21,7 @@ ${ELEVATE} sysrc qemu_guest_agent_enable="YES"
 ${ELEVATE} sysrc qemu_guest_agent_flags="-d -m virtio-serial -p /dev/ttyV0.1"
 ${ELEVATE} service qemu-guest-agent start 2> "/dev/null" || true
 
-${ELEVATE} sysrc allscreens_flags="-f spleen-12x24 -c normal,noblink"
+${ELEVATE} sysrc allscreens_flags="-f spleen-12x24"
 if [ -x "/etc/rc.d/syscons" ]; then
 	${ELEVATE} /etc/rc.d/syscons restart > "/dev/null" 2>&1 || true
 fi

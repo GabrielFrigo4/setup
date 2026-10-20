@@ -20,7 +20,7 @@ ${ELEVATE} pw groupmod webcamd -m "${TARGET_USER}" 2> "/dev/null" || true
 ${ELEVATE} pkg bootstrap --yes
 ${ELEVATE} pkg update
 
-${ELEVATE} sysrc allscreens_flags="-f spleen-12x24 -c normal,noblink"
+${ELEVATE} sysrc allscreens_flags="-f spleen-12x24"
 if [ -x "/etc/rc.d/syscons" ]; then
 	${ELEVATE} /etc/rc.d/syscons restart > "/dev/null" 2>&1 || true
 fi
@@ -66,7 +66,6 @@ _set_loader_tunable() {
 }
 
 if [ -f "/boot/loader.conf" ]; then
-	_set_loader_tunable "efi_max_resolution" "1080p"
 	_set_loader_tunable "compat.linuxkpi.i915_enable_psr" "0"
 	_set_loader_tunable "compat.linuxkpi.i915_enable_psr2_sel_fetch" "0"
 	_set_loader_tunable "compat.linuxkpi.i915_enable_fbc" "0"
