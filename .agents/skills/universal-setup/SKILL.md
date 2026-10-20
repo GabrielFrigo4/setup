@@ -58,9 +58,11 @@ Em estações de trabalho e servidores, o provisionamento de consoles virtuais (
     - Flags automáticas do kernel (`CUR_ALWAYS_BG` / `CUR_INVERT_FG_BG`) utilizam máscaras rígidas de 256 glifos (`0x7000`), corrompendo o background para ciano.
     - O padrão canônico adota `CUR_SW` exclusivo (16) com máscara XOR calibrada para 512 glifos (`p2 = 238` / `0xee`), invertendo o fundo para branco sólido (`7`) e o texto para preto (`0`) sem tinturas.
     - **Kernel Boot:** `vt.cur_default=0xee10` (decimal `60944`) no GRUB e `grubby`.
-    - **Persistência sysfs:** `/etc/tmpfiles.d/console-cursor.conf` (`w /sys/module/vt/parameters/cur_default ... 60944`).
-    - **Login Prompt:** `/etc/issue` configurado com `\033%G\033[?16;238;0c`.
-    - **FreeBSD:** `allscreens_flags="-f spleen-12x24"` (cursor inerentemente estático no driver `vt(4)` sem rotina de pisque no kernel).
+    - **Persistência sysfs:** `/etc/tmpfiles.d/console-cursor.conf` (`w /sys/module/vt/parameters/cur_default ... 60944` e arrays RGB `default_red`, `default_grn`, `default_blu`).
+    - **Paleta Hardware 16-Color de Alto Contraste (Linux `fbcon`):** Reprograma os 16 registradores DAC do console Linux (`\033]P0...` a `\033]PF...` em `/etc/issue` e VTs ativos, além de `vt.default_{red,grn,blu}` no sysfs) substituindo o azul VGA ilegível (`#0000aa`) por azul celeste (`#569cd6` / `#7dcfff`) e o cinza escuro (`#555555`) por `#858585` sobre fundo `#000000`.
+    - **Login Prompt:** `/etc/issue` configurado com `\033%G\033[?16;238;0c` + sequência de paleta `\033]P...`.
+    - **FreeBSD:** `allscreens_flags="-f spleen-12x24"` (cursor inerentemente estático e paleta legível nativa no driver `vt(4)`).
+    - **Sino de Console (Bell) Silencioso:** Desativado permanentemente via `kern.vt.enable_bell=0` (`/etc/sysctl.conf`) no FreeBSD e `set bell-style none` em `/etc/inputrc`.
 
 ---
 

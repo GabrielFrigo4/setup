@@ -118,6 +118,9 @@ if [ -d "/etc/tmpfiles.d" ]; then
 	cat <<- "EOF" | ${ELEVATE} tee "/etc/tmpfiles.d/console-cursor.conf" > "/dev/null"
 	w /sys/module/vt/parameters/cur_default - - - - 60944
 	w /sys/class/graphics/fbcon/cursor_blink - - - - 0
+	w /sys/module/vt/parameters/default_red - - - - 0,209,115,229,86,197,78,212,133,247,158,224,125,187,79,255
+	w /sys/module/vt/parameters/default_grn - - - - 0,105,201,192,156,134,201,212,133,118,206,175,207,154,193,255
+	w /sys/module/vt/parameters/default_blu - - - - 0,105,145,123,214,192,176,212,133,142,106,104,255,247,255,255
 	EOF
 fi
 if [ -f "/sys/module/vt/parameters/cur_default" ]; then
@@ -125,6 +128,11 @@ if [ -f "/sys/module/vt/parameters/cur_default" ]; then
 fi
 if [ -f "/sys/class/graphics/fbcon/cursor_blink" ]; then
 	echo 0 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
+fi
+if [ -f "/sys/module/vt/parameters/default_red" ]; then
+	echo "0,209,115,229,86,197,78,212,133,247,158,224,125,187,79,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_red > "/dev/null" 2>&1 || true
+	echo "0,105,201,192,156,134,201,212,133,118,206,175,207,154,193,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_grn > "/dev/null" 2>&1 || true
+	echo "0,105,145,123,214,192,176,212,133,142,106,104,255,247,255,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_blu > "/dev/null" 2>&1 || true
 fi
 ### --------------------------------
 ### Mapeamento Teclas F1-F5
@@ -155,10 +163,12 @@ if command -v systemctl > "/dev/null" 2>&1; then
 	${ELEVATE} systemctl daemon-reload 2> "/dev/null" || true
 fi
 
+_tty_palette='\033]P0000000\033]P1d16969\033]P273c991\033]P3e5c07b\033]P4569cd6\033]P5c586c0\033]P64ec9b0\033]P7d4d4d4\033]P8858585\033]P9f7768e\033]PA9ece6a\033]PBe0af68\033]PC7dcfff\033]PDbb9af7\033]PE4fc1ff\033]PFffffff'
+
 if [ -f "/etc/issue" ]; then
 	_tmp_issue="$(mktemp)"
-	printf '\033%%G\033[?16;238;0c' > "${_tmp_issue}"
-	sed -e 's/\x1b%G//g' -e 's/\x1b\[?6c//g' -e 's/\x1b\[?17;0;[0-9]*c//g' -e 's/\x1b\[?112;0;[0-9]*c//g' -e 's/\x1b\[?112c//g' -e 's/\x1b\[?16;[0-9]*;[0-9]*c//g' -e 's/\x1b\[?0c//g' -e 's/\x1b\[?12l//g' -e 's/\x1b\[16;[0-9]*\]//g' "/etc/issue" >> "${_tmp_issue}"
+	printf '\033%%G\033[?16;238;0c%b' "${_tty_palette}" > "${_tmp_issue}"
+	sed -e 's/\x1b%G//g' -e 's/\x1b\]P[0-9A-Fa-f]\{7\}//g' -e 's/\x1b\[?6c//g' -e 's/\x1b\[?17;0;[0-9]*c//g' -e 's/\x1b\[?112;0;[0-9]*c//g' -e 's/\x1b\[?112c//g' -e 's/\x1b\[?16;[0-9]*;[0-9]*c//g' -e 's/\x1b\[?0c//g' -e 's/\x1b\[?12l//g' -e 's/\x1b\[16;[0-9]*\]//g' "/etc/issue" >> "${_tmp_issue}"
 	${ELEVATE} cp "${_tmp_issue}" "/etc/issue"
 	${ELEVATE} chmod 0644 "/etc/issue"
 	rm -f "${_tmp_issue}"
@@ -190,7 +200,7 @@ _unique_vts="$(echo "${_vts}" | tr ' ' '\n' | sort -u)"
 
 for _c in ${_unique_vts}; do
 	if [ -c "${_c}" ]; then
-		printf '\033%%G\033[?16;238;0c' | ${ELEVATE} tee "${_c}" > "/dev/null" 2>&1 || true
+		printf '\033%%G\033[?16;238;0c%b' "${_tty_palette}" | ${ELEVATE} tee "${_c}" > "/dev/null" 2>&1 || true
 		command -v stty > "/dev/null" 2>&1 && ${ELEVATE} stty -F "${_c}" iutf8 2> "/dev/null" || true
 	fi
 done
