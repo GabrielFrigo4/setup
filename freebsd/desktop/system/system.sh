@@ -34,6 +34,9 @@ ${ELEVATE} sysrc sndiod_enable="YES" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysctl kern.coredump=0 > "/dev/null" 2>&1 || true
 grep -qxF "kern.coredump=0" "/etc/sysctl.conf" 2> "/dev/null" || echo "kern.coredump=0" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
 
+${ELEVATE} sysctl kern.vt.enable_bell=0 > "/dev/null" 2>&1 || true
+grep -qxF "kern.vt.enable_bell=0" "/etc/sysctl.conf" 2> "/dev/null" || echo "kern.vt.enable_bell=0" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
+
 ${ELEVATE} sysctl hw.snd.default_unit=2 > "/dev/null" 2>&1 || true
 ${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_0.val=0 > "/dev/null" 2>&1 || true
 ${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
