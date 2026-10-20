@@ -94,8 +94,10 @@ if [ -f "/etc/default/grub" ]; then
 		${ELEVATE} sed -i 's|^[[:space:]]*GRUB_TERMINAL_OUTPUT="console"|GRUB_TERMINAL_OUTPUT="gfxterm"|' "/etc/default/grub"
 	fi
 
-	if ! grep -q "^[[:space:]]*GRUB_GFXMODE=" "/etc/default/grub" 2> "/dev/null"; then
-		echo 'GRUB_GFXMODE="1920x1080,auto"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
+	if grep -q "^[[:space:]]*GRUB_GFXMODE=" "/etc/default/grub" 2> "/dev/null"; then
+		${ELEVATE} sed -i 's|^[[:space:]]*GRUB_GFXMODE=.*|GRUB_GFXMODE="auto"|' "/etc/default/grub"
+	else
+		echo 'GRUB_GFXMODE="auto"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
 	fi
 	if ! grep -q "^[[:space:]]*GRUB_GFXPAYLOAD_LINUX=" "/etc/default/grub" 2> "/dev/null"; then
 		echo 'GRUB_GFXPAYLOAD_LINUX="keep"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
