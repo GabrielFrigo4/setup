@@ -94,14 +94,11 @@ if [ -f "/etc/default/grub" ]; then
 		${ELEVATE} sed -i 's|^[[:space:]]*GRUB_TERMINAL_OUTPUT="console"|GRUB_TERMINAL_OUTPUT="gfxterm"|' "/etc/default/grub"
 	fi
 
-	if grep -q "^[[:space:]]*GRUB_GFXMODE=" "/etc/default/grub" 2> "/dev/null"; then
-		${ELEVATE} sed -i 's|^[[:space:]]*GRUB_GFXMODE=.*|GRUB_GFXMODE="auto"|' "/etc/default/grub"
-	else
-		echo 'GRUB_GFXMODE="auto"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
-	fi
-	if ! grep -q "^[[:space:]]*GRUB_GFXPAYLOAD_LINUX=" "/etc/default/grub" 2> "/dev/null"; then
-		echo 'GRUB_GFXPAYLOAD_LINUX="keep"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
-	fi
+	grep -q "^[[:space:]]*GRUB_GFXMODE=" "/etc/default/grub" 2> "/dev/null" \
+		&& ${ELEVATE} sed -i 's|^[[:space:]]*GRUB_GFXMODE=.*|GRUB_GFXMODE="auto"|' "/etc/default/grub" \
+		|| echo 'GRUB_GFXMODE="auto"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
+	grep -q "^[[:space:]]*GRUB_GFXPAYLOAD_LINUX=" "/etc/default/grub" 2> "/dev/null" \
+		|| echo 'GRUB_GFXPAYLOAD_LINUX="keep"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
 
 	if command -v grubby > "/dev/null" 2>&1; then
 		${ELEVATE} grubby --update-kernel=ALL --args="vt.cur_default=0xee10" 2> "/dev/null" || true
@@ -123,12 +120,8 @@ if [ -d "/etc/tmpfiles.d" ]; then
 	w /sys/module/vt/parameters/default_blu - - - - 0,105,145,123,214,192,176,212,133,142,106,104,255,247,255,255
 	EOF
 fi
-if [ -f "/sys/module/vt/parameters/cur_default" ]; then
-	echo 60944 | ${ELEVATE} tee /sys/module/vt/parameters/cur_default > "/dev/null" 2>&1 || true
-fi
-if [ -f "/sys/class/graphics/fbcon/cursor_blink" ]; then
-	echo 0 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
-fi
+[ -f "/sys/module/vt/parameters/cur_default" ] && echo 60944 | ${ELEVATE} tee /sys/module/vt/parameters/cur_default > "/dev/null" 2>&1 || true
+[ -f "/sys/class/graphics/fbcon/cursor_blink" ] && echo 0 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
 if [ -f "/sys/module/vt/parameters/default_red" ]; then
 	echo "0,209,115,229,86,197,78,212,133,247,158,224,125,187,79,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_red > "/dev/null" 2>&1 || true
 	echo "0,105,201,192,156,134,201,212,133,118,206,175,207,154,193,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_grn > "/dev/null" 2>&1 || true
@@ -177,7 +170,7 @@ fi
 ### --------------------------------
 ### Descoberta Dinâmica de Consoles
 ### --------------------------------
-_vts="/dev/tty0"
+_vts="/dev/tty0 /dev/tty1 /dev/tty2 /dev/tty3 /dev/tty4 /dev/tty5 /dev/tty6"
 
 for _t in $(ps -e -o tty= 2> "/dev/null" | sort -u | grep -E '^tty[0-9]+$'); do
 	_vts="${_vts} /dev/${_t}"
@@ -191,10 +184,6 @@ if command -v systemctl > "/dev/null" 2>&1; then
 		esac
 	done
 fi
-
-for _i in 1 2 3 4 5 6; do
-	_vts="${_vts} /dev/tty${_i}"
-done
 
 _unique_vts="$(echo "${_vts}" | tr ' ' '\n' | sort -u)"
 
@@ -234,13 +223,9 @@ fi
 ### Mouse de Console GPM
 ### --------------------------------
 if ! command -v gpm > "/dev/null" 2>&1; then
-	if command -v dnf > "/dev/null" 2>&1; then
-		${ELEVATE} dnf install --assumeyes gpm
-	elif command -v apt-get > "/dev/null" 2>&1; then
-		${ELEVATE} apt-get install --yes gpm 2> "/dev/null" || true
-	elif command -v pacman > "/dev/null" 2>&1; then
-		${ELEVATE} pacman -S --needed --noconfirm gpm
-	fi
+	command -v dnf > "/dev/null" 2>&1 && ${ELEVATE} dnf install --assumeyes gpm
+	command -v apt-get > "/dev/null" 2>&1 && ${ELEVATE} apt-get install --yes gpm 2> "/dev/null" || true
+	command -v pacman > "/dev/null" 2>&1 && ${ELEVATE} pacman -S --needed --noconfirm gpm
 fi
 
 if command -v gpm > "/dev/null" 2>&1; then
@@ -248,6 +233,23 @@ if command -v gpm > "/dev/null" 2>&1; then
 	if command -v systemctl > "/dev/null" 2>&1; then
 		${ELEVATE} systemctl enable --now gpm.service 2> "/dev/null" || true
 	fi
+fi
+
+### --------------------------------
+### Terminfo Sanitizado Console
+### --------------------------------
+if command -v tic > "/dev/null" 2>&1; then
+	_ui_sub "Instalando terminfo de console com cursores sanitizados..."
+	_tmp_ti="$(mktemp)"
+	cat <<- "EOF" > "${_tmp_ti}"
+	linux|linux console with sanitized non-destructive cursor,
+		cnorm=\E[?25h,
+		cvvis=\E[?25h,
+		civis=\E[?25l,
+		use=linux,
+	EOF
+	${ELEVATE} tic -o "/etc/terminfo" "${_tmp_ti}" 2> "/dev/null" || ${ELEVATE} tic -o "/usr/share/terminfo" "${_tmp_ti}" 2> "/dev/null" || tic -o "${HOME}/.terminfo" "${_tmp_ti}" 2> "/dev/null" || true
+	rm -f "${_tmp_ti}"
 fi
 
 _ui_ok "Console TTY configurado com sucesso (fonte ${_target_font} e cursor em bloco)!"
