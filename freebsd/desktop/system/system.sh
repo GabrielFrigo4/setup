@@ -21,6 +21,9 @@ ${ELEVATE} pkg bootstrap --yes
 ${ELEVATE} pkg update
 
 ${ELEVATE} sysrc allscreens_flags="-f spleen-12x24"
+${ELEVATE} sysrc moused_enable="YES" > "/dev/null" 2>&1 || true
+${ELEVATE} sysrc moused_flags="-A 1.5,1.5 -a 1.2" > "/dev/null" 2>&1 || true
+${ELEVATE} sysrc keyrate="fast" > "/dev/null" 2>&1 || true
 if [ -x "/etc/rc.d/syscons" ]; then
 	${ELEVATE} /etc/rc.d/syscons restart > "/dev/null" 2>&1 || true
 fi

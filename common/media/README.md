@@ -12,9 +12,10 @@ Esta pasta centraliza a instalação de ferramentas essenciais de multimídia: *
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo / Receita  | Descrição                                                   | Plataforma                                  |
-| :----------------- | :---------------------------------------------------------- | :------------------------------------------ |
-| [`cli.sh`](cli.sh) | Ferramentas de processamento de mídia (FFmpeg, ImageMagick) | Linux / FreeBSD / macOS / WSL / MSYS2 / Win |
+| Arquivo / Receita          | Descrição                                                   | Plataforma                                  |
+| :------------------------- | :---------------------------------------------------------- | :------------------------------------------ |
+| [`cli.sh`](cli.sh)         | Ferramentas de processamento de mídia (FFmpeg, ImageMagick) | Linux / FreeBSD / macOS / WSL / MSYS2 / Win |
+| [`players.sh`](players.sh) | Players de multimídia essenciais (MPV e VLC)                | Linux / FreeBSD / macOS / WSL / MSYS2 / Win |
 
 ---
 

@@ -230,4 +230,24 @@ if command -v systemctl > "/dev/null" 2>&1 && systemctl is-active --quiet system
 	${ELEVATE} systemctl restart systemd-vconsole-setup.service 2> "/dev/null" || true
 fi
 
+### --------------------------------
+### Mouse de Console GPM
+### --------------------------------
+if ! command -v gpm > "/dev/null" 2>&1; then
+	if command -v dnf > "/dev/null" 2>&1; then
+		${ELEVATE} dnf install --assumeyes gpm
+	elif command -v apt-get > "/dev/null" 2>&1; then
+		${ELEVATE} apt-get install --yes gpm 2> "/dev/null" || true
+	elif command -v pacman > "/dev/null" 2>&1; then
+		${ELEVATE} pacman -S --needed --noconfirm gpm
+	fi
+fi
+
+if command -v gpm > "/dev/null" 2>&1; then
+	[ -f "/etc/sysconfig/gpm" ] && ${ELEVATE} sed -i 's|^APPEND=.*|APPEND="-a 2 -r 100"|' "/etc/sysconfig/gpm" 2> "/dev/null" || true
+	if command -v systemctl > "/dev/null" 2>&1; then
+		${ELEVATE} systemctl enable --now gpm.service 2> "/dev/null" || true
+	fi
+fi
+
 _ui_ok "Console TTY configurado com sucesso (fonte ${_target_font} e cursor em bloco)!"

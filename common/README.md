@@ -25,6 +25,7 @@ Esta pasta abriga receitas de automação que são **100% puras em POSIX Shell (
 | **[`docs/`](docs/README.md)**                | Receita     | Editoração técnica e tipografia (`typesetting.sh`: Pandoc, TeX Live, PDFtk)                                                  |
 | **[`ai/`](ai/README.md)**                    | Receita     | Inteligência artificial local (`ollama.sh`: inferência Ollama e SDK Python)                                                  |
 | **[`security/`](security/README.md)**        | Receitas    | Análise binária (`re.sh`) e captura de pacotes (`wireshark.sh`)                                                              |
+| **[`languages/`](languages/README.md)**      | Receitas    | Toolchains de linguagens (`rust-ewm.sh`: Cargo, Rustc e dependências DRM/Wayland)                                            |
 | **[`fonts/`](fonts/README.md)**              | Receita     | Instalação de fontes tipográficas essenciais (`JetBrainsMono`, `RobotoMono`, `MesloLGS NF`)                                  |
 | **[`linters/`](linters/README.md)**          | Receitas    | Implantação de formatadores (`linters.sh`), Prettier (`prettier.sh`) e Mermaid (`mermaid.sh`)                                |
 | **[`office/`](office/README.md)**            | Receita     | Suíte de escritório Collabora Office Desktop (`collabora.sh`) com dispatch universal                                         |

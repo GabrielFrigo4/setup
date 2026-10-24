@@ -14,11 +14,12 @@ Esta pasta centraliza receitas universais para bibliotecas de janelas e multimí
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo / Receita              | Descrição                                                                                | Plataforma                            |
-| :----------------------------- | :--------------------------------------------------------------------------------------- | :------------------------------------ |
-| [`windowing.sh`](windowing.sh) | Bibliotecas de janelas e multimídia gráfica (GLFW, SDL3 e ecossistema)                   | Linux / FreeBSD / macOS / WSL / MSYS2 |
-| [`shaders.sh`](shaders.sh)     | Compiladores de shaders modernos (Vulkan SDK, Slang, DXC, glslang, shaderc, SPIRV-Cross) | Linux / FreeBSD / MSYS2               |
-| [`blender.sh`](blender.sh)     | Suite completa de modelagem, animação e renderização 3D (Blender)                        | Linux / FreeBSD / Windows (Winget)    |
+| Arquivo / Receita                  | Descrição                                                                                | Plataforma                            |
+| :--------------------------------- | :--------------------------------------------------------------------------------------- | :------------------------------------ |
+| [`windowing.sh`](windowing.sh)     | Bibliotecas de janelas e multimídia gráfica (GLFW, SDL3 e ecossistema)                   | Linux / FreeBSD / macOS / WSL / MSYS2 |
+| [`compositors.sh`](compositors.sh) | Tétrade de micro-compositores Wayland (Sway, River, Labwc, Cage), Seatd e Foot           | Linux / FreeBSD / Arch                |
+| [`shaders.sh`](shaders.sh)         | Compiladores de shaders modernos (Vulkan SDK, Slang, DXC, glslang, shaderc, SPIRV-Cross) | Linux / FreeBSD / MSYS2               |
+| [`blender.sh`](blender.sh)         | Suite completa de modelagem, animação e renderização 3D (Blender)                        | Linux / FreeBSD / Windows (Winget)    |
 
 ---
 

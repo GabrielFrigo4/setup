@@ -14,9 +14,10 @@ Esta pasta fornece o script para instalar as fontes de programação essenciais 
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo                | Plataforma                    | Descrição                                                                                  |
-| :--------------------- | :---------------------------- | :----------------------------------------------------------------------------------------- |
-| [`fonts.sh`](fonts.sh) | Linux / FreeBSD / macOS / WSL | Baixa Nerd Fonts em `~/.local/share/fonts` e atualiza o cache do `fontconfig` (`fc-cache`) |
+| Arquivo                      | Plataforma                    | Descrição                                                                                  |
+| :--------------------------- | :---------------------------- | :----------------------------------------------------------------------------------------- |
+| [`fonts.sh`](fonts.sh)       | Linux / FreeBSD / macOS / WSL | Baixa Nerd Fonts em `~/.local/share/fonts` e atualiza o cache do `fontconfig` (`fc-cache`) |
+| [`terminus.sh`](terminus.sh) | Linux / FreeBSD / Arch        | Fontes bitmap Terminus para consoles kernel TTY e TTF para emuladores gráficos             |
 
 ---
 

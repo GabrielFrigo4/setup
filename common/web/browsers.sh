@@ -23,6 +23,10 @@ elif command -v apt > "/dev/null" 2>&1; then
 	${ELEVATE} apt install --yes firefox chromium 2> "/dev/null" || ${ELEVATE} apt install --yes firefox-esr chromium 2> "/dev/null" || true
 elif command -v pacman > "/dev/null" 2>&1; then
 	${ELEVATE} pacman --sync --needed --noconfirm firefox chromium
+elif command -v winget.exe > "/dev/null" 2>&1; then
+	winget.exe install --id Mozilla.Firefox --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
+	winget.exe install --id Hibbiki.Chromium --accept-package-agreements --accept-source-agreements 2> "/dev/null" || \
+		winget.exe install --id eloston.ungoogled-chromium --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 fi
 
 _ui_ok "Firefox e Chromium instalados com sucesso!"
