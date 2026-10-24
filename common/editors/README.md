@@ -21,6 +21,7 @@ Esta pasta reúne scripts autônomos em POSIX Shell para provisionar editores de
 | **LazyVim** | [`lazyvim.sh`](lazyvim.sh) | Instala o starter completo do LazyVim com opções de cursor |
 | **SpaceVim** | [`spacevim.sh`](spacevim.sh) | Instala o SpaceVim com camadas de LSP, Git, Autocomplete e Shell |
 | **Pylance LSP** | [`pylance.sh`](pylance.sh) | Instala o Python Language Server (Pylance) no FreeBSD, Linux e Windows |
+| **EWM (Wayland)** | [`ewm.sh`](ewm.sh) | Clona, compila via Cargo e instala o módulo nativo libewm_core.so |
 
 ---
 

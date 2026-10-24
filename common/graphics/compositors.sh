@@ -23,7 +23,9 @@ if command -v pkg > "/dev/null" 2>&1; then
 		x11-wm/cage \
 		sysutils/seatd \
 		x11/foot \
-		x11/wlr-randr
+		x11/wlr-randr \
+		x11-themes/breeze-icons \
+		x11-themes/adwaita-icon-theme
 	${ELEVATE} sysrc seatd_enable="YES" > "/dev/null" 2>&1 || true
 	_target_user="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 	${ELEVATE} pw groupmod video -m "${_target_user}" 2> "/dev/null" || true
@@ -35,7 +37,9 @@ elif command -v dnf > "/dev/null" 2>&1; then
 		cage \
 		seatd \
 		foot \
-		wlr-randr
+		wlr-randr \
+		breeze-cursor-theme \
+		adwaita-icon-theme
 	if command -v systemctl > "/dev/null" 2>&1; then
 		${ELEVATE} systemctl enable --now seatd.service 2> "/dev/null" || true
 	fi
@@ -50,7 +54,9 @@ elif command -v apt-get > "/dev/null" 2>&1; then
 		cage \
 		seatd \
 		foot \
-		wlr-randr 2> "/dev/null" || true
+		wlr-randr \
+		breeze-cursor-theme \
+		adwaita-icon-theme 2> "/dev/null" || true
 	if command -v systemctl > "/dev/null" 2>&1; then
 		${ELEVATE} systemctl enable --now seatd.service 2> "/dev/null" || true
 	fi
@@ -64,7 +70,9 @@ elif command -v pacman > "/dev/null" 2>&1; then
 		cage \
 		seatd \
 		foot \
-		wlr-randr
+		wlr-randr \
+		breeze-cursors \
+		adwaita-icon-theme
 	if command -v systemctl > "/dev/null" 2>&1; then
 		${ELEVATE} systemctl enable --now seatd.service 2> "/dev/null" || true
 	fi
