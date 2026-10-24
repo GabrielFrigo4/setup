@@ -24,4 +24,10 @@
 ## 🛡️ Atributos Entregues
 
 - **Zero Pendências:** Sistema de provisionamento modular, idempotente e resiliente em 7 plataformas.
+- **Tétrade de Micro-Compositores Wayland:** Receitas idempotentes para `sway`, `river`, `labwc`, `cage`, `seatd`, `foot` e `wlr-randr` em Linux e FreeBSD.
+- **Players de Mídia Headless & Desktop:** `mpv`, `vlc` e `yt-dlp` provisionados de forma cross-platform.
+- **Tipografia Terminus Console & TTF:** Suporte integrado a `terminus-fonts`, `terminus-fonts-console` e `terminus-ttf`.
+- **Toolchain Rust & Headers C p/ EWM:** Instalação modular de `cargo`, `libinput`, `libxkbcommon`, `pixman`, `mesa-libgbm` e `hwdata`.
+- **Mouse & Teclado no Console Kernel (Raw TTY):** Configuração de `gpm` no Linux e `moused` ABNT2 acelerado no FreeBSD.
+- **Paridade Cross-Platform Winget:** Suporte a navegadores headless/desktop no Windows via Winget (`Mozilla.Firefox`, `Hibbiki.Chromium`).
 - **Sincronização:** Total aderência aos 22 Princípios de Engenharia UNIX do Universal Environment.
