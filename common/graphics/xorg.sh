@@ -31,7 +31,10 @@ elif command -v dnf > "/dev/null" 2>&1; then
 		xterm \
 		xrdb \
 		xdotool \
-		openbox 2> "/dev/null" || true
+		openbox \
+		xorg-x11-drv-intel \
+		xorg-x11-drv-amdgpu \
+		xorg-x11-drv-nouveau 2> "/dev/null" || true
 	${ELEVATE} dnf install --assumeyes matchbox-window-manager 2> "/dev/null" || true
 elif command -v apt-get > "/dev/null" 2>&1; then
 	${ELEVATE} apt-get update -qq 2> "/dev/null" || true
@@ -57,6 +60,14 @@ elif command -v pacman > "/dev/null" 2>&1; then
 else
 	_ui_err "Gerenciador de pacotes não suportado para instalação do ecossistema X11."
 	exit 1
+fi
+
+if [ -d "/etc/X11" ]; then
+	cat << EOF | ${ELEVATE} tee /etc/X11/Xwrapper.config > "/dev/null" 2>&1 || true
+allowed_users = anybody
+needs_root_rights = auto
+EOF
+	${ELEVATE} chmod 0644 /etc/X11/Xwrapper.config 2> "/dev/null" || true
 fi
 
 _ui_ok "Ecossistema gráfico X11 e micro-gerenciadores instalados com sucesso!"
