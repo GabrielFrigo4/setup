@@ -75,7 +75,20 @@ echo "✅ [Nome]: Configurado com sucesso!"
 - `chmod 0644` para arquivos de configuração e Markdown.
 - Redirecionamentos para `/dev/null` sempre com aspas: `> "/dev/null"` e `2> "/dev/null"`.
 
-## 8. Checklist de Validação Obrigatório
+## 8. Matriz Quádrupla de Runtimes e Inits (FreeBSD, Systemd, Devuan/Não-Systemd, OpenBSD)
+
+Toda automação de sistema, serviço ou daemon DEVE ser concebida respeitando a neutralidade de init e suporte multi-OS:
+
+- **FreeBSD (Host Soberano):** Scripts em `/usr/local/etc/rc.d/` com suporte canônico ao `/etc/rc.subr`, `sysrc`, `vidcontrol` e driver `vt(4)`.
+- **Debian / Fedora / Arch (Linux com Systemd):** Drop-ins canônicos em `/etc/systemd/system/*.d/`, `systemctl daemon-reload` e `localectl`.
+- **Devuan / Alpine / Gentoo (Linux Não-Systemd):**
+    - **Udev / Eudev Universal:** Regras em `/etc/udev/rules.d/` (`vtconsole`, `drm`) que operam independentemente do PID 1.
+    - **OpenRC:** Scripts `/etc/init.d/` com `depend()` e registro via `rc-update add <serviço> boot`.
+    - **SysVinit (Devuan):** Cabeçalho padrão LSB (`### BEGIN INIT INFO`) e registro via `update-rc.d <serviço> defaults`.
+    - **Console-Setup:** Sincronização em `/etc/default/console-setup` e recarga via `setupcon`.
+- **OpenBSD:** Validação do subsistema `wscons(4)` e suporte nativo ao kernel `rasops(9)`, com inspeção via `wsfontload(8)` e `wsconsctl(8)`.
+
+## 9. Checklist de Validação Obrigatório
 
 Antes de concluir qualquer alteração no Setup:
 

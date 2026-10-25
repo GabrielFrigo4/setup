@@ -49,8 +49,9 @@ Antes de escrever qualquer código, posicione a receita no diretório correto:
 Em estações de trabalho e servidores, o provisionamento de consoles virtuais (TTY) deve assegurar legibilidade em telas de alta densidade e estabilidade visual:
 
 1. **Seleção de Fonte Canônica & Escalonamento Dinâmico:**
-    - Família **Spleen** bitmap: `spleen-12x24` para resoluções até 1080p e `spleen-16x32` para telas HiDPI ($\ge 1440$p e 4K UHD), atingindo equilíbrio métrico ideal entre legibilidade e densidade de colunas.
-    - Escalonamento dinâmico via `vconsole-autofont` (`systemd-vconsole-setup.service.d/autofont.conf`) no Linux e `vt_autofont` no FreeBSD, sem truncamento artificial de resolução UEFI/GOP.
+    - Família **Spleen** bitmap: `spleen-12x24` para $\le 1080$p, `spleen-16x32` para $1081$ a $2159$p (1440p / 2K), e `spleen-32x64` para $\ge 2160$p (4K UHD) [ou `spleen-16x32` sob `SPLEEN_DENSE=1`], atingindo equilíbrio métrico ideal entre legibilidade e densidade de colunas.
+    - **Neutralidade de Init no Linux:** Escalonamento dinâmico via `vconsole-autofont` com suporte a Systemd (`systemd-vconsole-setup.service.d/autofont.conf`), Devuan SysVinit (`/etc/init.d/`), OpenRC (`/etc/init.d/` + `rc-update`) e regra universal `udev/eudev` (`90-vconsole-autofont.rules`), sincronizando `/etc/vconsole.conf` e `/etc/default/console-setup` (`setupcon`).
+    - **FreeBSD & OpenBSD:** Serviço `vt_autofont` no FreeBSD (`/usr/local/etc/rc.d/`) e suporte in-kernel `rasops(9)` no OpenBSD.
 2. **Invariante de 512 Glifos & Deslocamento de Atributos:**
     - Fontes Unicode como Spleen contêm 512 glifos, ativando `vc_hi_font_mask = 0x0100` no kernel Linux (`vt.c`).
     - O bit 8 é apropriado pelo índice do caractere, deslocando o foreground para os bits 9–11 e o background para os bits 13–15.

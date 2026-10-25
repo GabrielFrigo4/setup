@@ -103,9 +103,17 @@ Para servidores remotos (Oracle Cloud Infrastructure e Magalu Cloud):
 
 Para garantir legibilidade nítida e ergonomia visual em consoles de emergência e recuperação (`/dev/tty[1-6]`) em telas modernas (1080p a 4K):
 
-1. **Tipografia Spleen Dinâmica & Suporte Multi-Monitor:** A receita [`linux/common/system/console.sh`](../linux/common/system/console.sh) instala as variantes da fonte Spleen e integra o escalonador dinâmico [`vconsole-autofont`](../linux/common/system/vconsole-autofont.sh) via drop-in no `systemd-vconsole-setup.service`.
-    - **Algoritmo de Detecção:** Em cenários multi-monitor (onde o `fbcon` espelha o console), o script avalia todos os conectores ativos em `/sys/class/drm/card*-*/modes` e adota a **maior altura vertical detectada**, prevenindo texto microscópico em telas de alta densidade.
-    - **Mapeamento Proporcional:** Em painéis $\le 1080$p, aplica `spleen-12x24` ($160 \times 45$); em painéis HiDPI ($\ge 1440$p / 2K e 4K UHD), escala automaticamente para `spleen-16x32` ($160 \times 45$ em 1440p e $240 \times 67$ em 4K), atingindo o equilíbrio perfeito sem truncamento de resolução.
+1. **Tipografia Spleen Dinâmica & Suporte Multi-Monitor:** A receita [`linux/common/system/console.sh`](../linux/common/system/console.sh) instala as variantes da fonte Spleen e integra o escalonador dinâmico [`vconsole-autofont`](../linux/common/system/vconsole-autofont.sh).
+    - **A Tabela Canônica de Resoluções:**
+        - $\le 1080$p (Full HD / Standard): `spleen-12x24` ($160 \times 45$ caracteres)
+        - $1081$ a $2159$p (2K / QHD / 1440p): `spleen-16x32` ($160 \times 45$ caracteres)
+        - $\ge 2160$p (4K UHD): `spleen-32x64` ($120 \times 33$ caracteres) ou `spleen-16x32` ($240 \times 67$ denso via `SPLEEN_DENSE=1`)
+    - **Algoritmo de Detecção Multi-Monitor:** Em cenários com múltiplos monitores conectados (onde o `fbcon` clona o terminal), o script avalia todos os conectores ativos em `/sys/class/drm/card*-*/modes` e adota a **maior altura vertical detectada**, prevenindo texto microscópico em telas de alta densidade sem prejudicar monitores convencionais.
+    - **Neutralidade de Inits (Systemd e Não-Systemd / Devuan / OpenRC):**
+        - **Systemd:** Drop-in em `/etc/systemd/system/systemd-vconsole-setup.service.d/autofont.conf` com `ExecStartPre=-/usr/local/libexec/vconsole-autofont`.
+        - **Udev / Eudev Universal:** Regra `/etc/udev/rules.d/90-vconsole-autofont.rules` executando sob eventos `vtconsole` de DRM independente do init.
+        - **SysVinit (Devuan) & OpenRC (Alpine/Gentoo):** Instalação automática do serviço em `/etc/init.d/vconsole-autofont` integrado via `update-rc.d` ou `rc-update`.
+        - **Console-Setup:** Sincronização direta de `FONTSIZE` em `/etc/default/console-setup` e recarga via `setupcon`.
 2. **Prevenção do Bug Ciano em Fontes de 512 Glifos:** Fontes de 512 glifos ativam `vc_hi_font_mask = 0x0100` no kernel Linux, deslocando atributos de primeiro plano (bits 9-11) e fundo (bits 13-15). A macro do kernel `#define CUR_BG 0x7000` (bits 12-14) no driver VT assume 256 glifos, causando distorção ciano quando flags automáticas de fundo são usadas.
 3. **Parâmetro Canônico de Kernel:** Configurado no GRUB e `systemd-boot` como `vt.cur_default=0xee10` (`60944` em decimal), que corresponde matematicamente a `CUR_MAKE(16, 238, 0)`:
     - `p1 = 16` (`CUR_SW` isolado, sem invocar as flags de fundo com bug).
