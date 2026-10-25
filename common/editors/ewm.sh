@@ -12,7 +12,7 @@ _common="${_setup_root}/common"
 _target_lib="${HOME}/.local/lib/libewm_core.so"
 _target_lisp="${HOME}/.local/share/emacs/site-lisp/ewm"
 
-if ! command -v cargo > "/dev/null" 2>&1 || ! command -v rustc > "/dev/null" 2>&1 || ! pkg-config --exists libinput pixman-1 2> "/dev/null"; then
+if ! command -v cargo > "/dev/null" 2>&1 || ! command -v rustc > "/dev/null" 2>&1 || ! pkg-config --exists libinput pixman-1 gbm wayland-server glib-2.0 libdisplay-info 2> "/dev/null"; then
 	_ui_step "Instalando toolchain Rust e bibliotecas de compilação..."
 	sh "${_common}/languages/rust-ewm.sh"
 fi
@@ -22,8 +22,8 @@ _ui_step "Preparando repositório do EWM (Emacs Wayland Manager)..."
 _build_dir="${XDG_CACHE_HOME:-${HOME}/.cache}/ewm-build"
 mkdir -p "${_build_dir}"
 
-_ewm_repo="https://github.com/ezemtsov/ewm.git"
-_ewm_fallback="https://codeberg.org/ezemtsov/ewm.git"
+_ewm_repo="https://codeberg.org/ezemtsov/ewm.git"
+_ewm_fallback="https://github.com/ezemtsov/ewm.git"
 
 if [ -d "${_build_dir}/.git" ]; then
 	git -C "${_build_dir}" pull --quiet 2> "/dev/null" || true

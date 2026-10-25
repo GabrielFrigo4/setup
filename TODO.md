@@ -16,8 +16,9 @@
 | **Servidores Ubuntu**       | 🟢 Estável  | Baseline minimalista de servidor com apt-clone, tmux e full-upgrade        |
 | **Orquestrador Central**    | 🟢 Estável  | `setup.sh` desacoplado em receitas atômicas e modulares em `core/`         |
 | **Compositores Wayland**    | 🟢 Estável  | Tétrade `sway`, `river`, `labwc`, `cage` com `seatd`, `foot` e `wlr-randr` |
+| **Ecossistema X11 / Xorg**  | 🟢 Estável  | Servidor Xorg, xinit, xterm, xrdb, xdotool e micro-WMs de quiosque         |
 | **Mídia & Streaming**       | 🟢 Estável  | `mpv`, `vlc` e `yt-dlp` provisionados de forma cross-platform              |
-| **Toolchain Rust & EWM**    | 🟢 Estável  | Cargo, rustc e headers C (`libinput`, `libxkbcommon`, `pixman`, `libgbm`)  |
+| **Toolchain Rust & EWM**    | 🟢 Estável  | Compilação e setup de `libewm_core.so` e `ewm` Elisp via Smithay / Rust    |
 | **Mouse no Console**        | 🟢 Estável  | Suporte a `gpm` (Linux) e `moused` ABNT2 acelerado (FreeBSD)               |
 | **Segurança & Privilégios** | 🟢 Estável  | Detecção automática antifrágil de `sudo`/`doas` em `core/elevate.sh`       |
 | **Emissão Visual TUI**      | 🟢 Estável  | Biblioteca semântica canônica `core/ui.sh` (`_ui_*`) integrada             |
