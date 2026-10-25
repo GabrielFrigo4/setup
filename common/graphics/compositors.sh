@@ -43,7 +43,7 @@ elif command -v dnf > "/dev/null" 2>&1; then
 	if command -v systemctl > "/dev/null" 2>&1; then
 		${ELEVATE} systemctl enable --now seatd.service 2> "/dev/null" || true
 	fi
-	_target_user="${SUDO_USER:-$(id -un)}}"
+	_target_user="${SUDO_USER:-$(id -un)}"
 	${ELEVATE} usermod -aG video,input "${_target_user}" 2> "/dev/null" || true
 elif command -v apt-get > "/dev/null" 2>&1; then
 	${ELEVATE} apt-get update -qq 2> "/dev/null" || true
@@ -60,7 +60,7 @@ elif command -v apt-get > "/dev/null" 2>&1; then
 	if command -v systemctl > "/dev/null" 2>&1; then
 		${ELEVATE} systemctl enable --now seatd.service 2> "/dev/null" || true
 	fi
-	_target_user="${SUDO_USER:-$(id -un)}}"
+	_target_user="${SUDO_USER:-$(id -un)}"
 	${ELEVATE} usermod -aG video,input "${_target_user}" 2> "/dev/null" || true
 elif command -v pacman > "/dev/null" 2>&1; then
 	${ELEVATE} pacman -S --needed --noconfirm \
@@ -76,7 +76,7 @@ elif command -v pacman > "/dev/null" 2>&1; then
 	if command -v systemctl > "/dev/null" 2>&1; then
 		${ELEVATE} systemctl enable --now seatd.service 2> "/dev/null" || true
 	fi
-	_target_user="${SUDO_USER:-$(id -un)}}"
+	_target_user="${SUDO_USER:-$(id -un)}"
 	${ELEVATE} usermod -aG video,input "${_target_user}" 2> "/dev/null" || true
 else
 	_ui_err "Gerenciador de pacotes não suportado para instalação de micro-compositores."
