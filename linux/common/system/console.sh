@@ -73,15 +73,7 @@ _autofont_bin="/usr/local/libexec/vconsole-autofont"
 [ -d "/usr/local/libexec" ] || ${ELEVATE} mkdir -p "/usr/local/libexec"
 ${ELEVATE} cp "${_setup_root}/linux/common/system/vconsole-autofont.sh" "${_autofont_bin}"
 ${ELEVATE} chmod 0755 "${_autofont_bin}"
-
-if command -v systemctl > "/dev/null" 2>&1; then
-	_vconsole_dropin="/etc/systemd/system/systemd-vconsole-setup.service.d"
-	[ -d "${_vconsole_dropin}" ] || ${ELEVATE} mkdir -p "${_vconsole_dropin}"
-	cat <<- "EOF" | ${ELEVATE} tee "${_vconsole_dropin}/autofont.conf" > "/dev/null"
-	[Service]
-	ExecStartPre=-/usr/local/libexec/vconsole-autofont
-	EOF
-fi
+${ELEVATE} "${_autofont_bin}" --setup
 
 ### --------------------------------
 ### Configuração do Cursor em Bloco

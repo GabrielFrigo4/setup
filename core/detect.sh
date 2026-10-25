@@ -186,7 +186,13 @@ _detect_console_font() {
 		fi
 	fi
 
-	if [ "${_height}" -ge 1440 ]; then
+	if [ "${_height}" -ge 2160 ]; then
+		if [ "${SPLEEN_DENSE:-0}" = "1" ]; then
+			echo "spleen-16x32"
+		else
+			echo "spleen-32x64"
+		fi
+	elif [ "${_height}" -ge 1440 ]; then
 		echo "spleen-16x32"
 	else
 		echo "spleen-12x24"

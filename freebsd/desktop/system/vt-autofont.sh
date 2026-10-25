@@ -28,7 +28,11 @@ vt_autofont_start() {
 	fi
 
 	_font="spleen-12x24"
-	[ "${_height}" -ge 1440 ] && _font="spleen-16x32"
+	if [ "${_height}" -ge 2160 ]; then
+		[ "${SPLEEN_DENSE:-0}" = "1" ] && _font="spleen-16x32" || _font="spleen-32x64"
+	elif [ "${_height}" -ge 1440 ]; then
+		_font="spleen-16x32"
+	fi
 
 	_cur_flags="$(sysrc -n allscreens_flags 2> "/dev/null" || echo "")"
 	case "${_cur_flags}" in
