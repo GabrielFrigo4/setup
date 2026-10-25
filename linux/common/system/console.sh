@@ -115,17 +115,17 @@ if [ -d "/etc/tmpfiles.d" ]; then
 	cat <<- "EOF" | ${ELEVATE} tee "/etc/tmpfiles.d/console-cursor.conf" > "/dev/null"
 	w /sys/module/vt/parameters/cur_default - - - - 60944
 	w /sys/class/graphics/fbcon/cursor_blink - - - - 0
-	w /sys/module/vt/parameters/default_red - - - - 0,209,115,229,86,197,78,212,133,247,158,224,125,187,79,255
-	w /sys/module/vt/parameters/default_grn - - - - 0,105,201,192,156,134,201,212,133,118,206,175,207,154,193,255
-	w /sys/module/vt/parameters/default_blu - - - - 0,105,145,123,214,192,176,212,133,142,106,104,255,247,255,255
+	w /sys/module/vt/parameters/default_red - - - - 0,127,0,196,51,127,0,191,115,255,0,255,115,255,0,255
+	w /sys/module/vt/parameters/default_grn - - - - 0,0,127,161,102,0,127,191,130,0,255,255,158,0,255,255
+	w /sys/module/vt/parameters/default_blu - - - - 0,0,0,0,163,127,127,191,138,0,0,0,207,255,255,255
 	EOF
 fi
 [ -f "/sys/module/vt/parameters/cur_default" ] && echo 60944 | ${ELEVATE} tee /sys/module/vt/parameters/cur_default > "/dev/null" 2>&1 || true
 [ -f "/sys/class/graphics/fbcon/cursor_blink" ] && echo 0 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
 if [ -f "/sys/module/vt/parameters/default_red" ]; then
-	echo "0,209,115,229,86,197,78,212,133,247,158,224,125,187,79,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_red > "/dev/null" 2>&1 || true
-	echo "0,105,201,192,156,134,201,212,133,118,206,175,207,154,193,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_grn > "/dev/null" 2>&1 || true
-	echo "0,105,145,123,214,192,176,212,133,142,106,104,255,247,255,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_blu > "/dev/null" 2>&1 || true
+	echo "0,127,0,196,51,127,0,191,115,255,0,255,115,255,0,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_red > "/dev/null" 2>&1 || true
+	echo "0,0,127,161,102,0,127,191,130,0,255,255,158,0,255,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_grn > "/dev/null" 2>&1 || true
+	echo "0,0,0,0,163,127,127,191,138,0,0,0,207,255,255,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_blu > "/dev/null" 2>&1 || true
 fi
 ### --------------------------------
 ### Mapeamento Teclas F1-F5
