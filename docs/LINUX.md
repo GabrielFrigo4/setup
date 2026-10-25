@@ -103,7 +103,7 @@ Para servidores remotos (Oracle Cloud Infrastructure e Magalu Cloud):
 
 Para garantir legibilidade nítida e ergonomia visual em consoles de emergência e recuperação (`/dev/tty[1-6]`) em telas modernas (1080p a 4K):
 
-1. **Tipografia Spleen 12x24:** A receita [`linux/common/system/console.sh`](../linux/common/system/console.sh) instala e configura a fonte `spleen-12x24.psfu` no `/etc/vconsole.conf` (`FONT=spleen-12x24`), atingindo a proporção ideal entre densidade de informação e legibilidade em painéis de alta resolução.
+1. **Tipografia Spleen Dinâmica:** A receita [`linux/common/system/console.sh`](../linux/common/system/console.sh) instala as variantes da fonte Spleen e integra o escalonador dinâmico [`vconsole-autofont`](../linux/common/system/vconsole-autofont.sh) via drop-in no `systemd-vconsole-setup.service`. Em painéis $\le 1080$p, aplica `spleen-12x24` ($160 \times 45$); em painéis HiDPI ($\ge 1440$p / 2K e 4K UHD), escala automaticamente para `spleen-16x32`, atingindo a proporção ideal entre densidade de informação e legibilidade sem truncamento de resolução.
 2. **Prevenção do Bug Ciano em Fontes de 512 Glifos:** Fontes de 512 glifos ativam `vc_hi_font_mask = 0x0100` no kernel Linux, deslocando atributos de primeiro plano (bits 9-11) e fundo (bits 13-15). A macro do kernel `#define CUR_BG 0x7000` (bits 12-14) no driver VT assume 256 glifos, causando distorção ciano quando flags automáticas de fundo são usadas.
 3. **Parâmetro Canônico de Kernel:** Configurado no GRUB e `systemd-boot` como `vt.cur_default=0xee10` (`60944` em decimal), que corresponde matematicamente a `CUR_MAKE(16, 238, 0)`:
     - `p1 = 16` (`CUR_SW` isolado, sem invocar as flags de fundo com bug).

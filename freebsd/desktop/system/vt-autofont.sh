@@ -1,0 +1,45 @@
+#!/usr/bin/env sh
+# ----------------------------------------------------------------
+# Helper: FreeBSD Virtual Terminal Dynamic Console Font Scaler
+# ----------------------------------------------------------------
+# PROVIDE: vt_autofont
+# REQUIRE: syscons
+# BEFORE: LOGIN
+# KEYWORD: nojail
+set -eu
+
+. /etc/rc.subr
+
+name="vt_autofont"
+rcvar="vt_autofont_enable"
+start_cmd="vt_autofont_start"
+
+vt_autofont_start() {
+	_height=0
+	_mode="$(sysctl -n kern.vt.fb.default_mode 2> "/dev/null" || true)"
+	if [ -n "${_mode}" ]; then
+		_h="${_mode#*x}"
+		_h="${_h%%[^0-9]*}"
+		[ -n "${_h}" ] && _height="${_h}"
+	fi
+	if [ "${_height}" -eq 0 ] && [ -f "/var/run/dmesg.boot" ]; then
+		_h="$(grep -Eo "mode [0-9]{3,4}x[0-9]{3,4}" /var/run/dmesg.boot 2> "/dev/null" | tail -n 1 | cut -d'x' -f2 || true)"
+		[ -n "${_h}" ] && _height="${_h}"
+	fi
+
+	_font="spleen-12x24"
+	[ "${_height}" -ge 1440 ] && _font="spleen-16x32"
+
+	_cur_flags="$(sysrc -n allscreens_flags 2> "/dev/null" || echo "")"
+	case "${_cur_flags}" in
+		*"-f ${_font}"*) ;;
+		*)
+			sysrc allscreens_flags="-f ${_font}" > "/dev/null" 2>&1 || true
+			[ -f "/usr/share/vt/fonts/${_font}.fnt" ] && vidcontrol -f "/usr/share/vt/fonts/${_font}.fnt" > "/dev/null" 2>&1 || true
+			;;
+	esac
+}
+
+load_rc_config "${name}"
+: "${vt_autofont_enable:=YES}"
+run_rc_command "$1"

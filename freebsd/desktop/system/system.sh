@@ -7,6 +7,7 @@ set -eu
 _setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
+. "${_setup_root}/core/detect.sh"
 
 _ui_step "Iniciando configuração base do FreeBSD..."
 
@@ -20,7 +21,13 @@ ${ELEVATE} pw groupmod webcamd -m "${TARGET_USER}" 2> "/dev/null" || true
 ${ELEVATE} pkg bootstrap --yes
 ${ELEVATE} pkg update
 
-${ELEVATE} sysrc allscreens_flags="-f spleen-12x24"
+_target_font="${DETECTED_CONSOLE_FONT:-spleen-12x24}"
+${ELEVATE} sysrc allscreens_flags="-f ${_target_font}"
+_rcd_dir="/usr/local/etc/rc.d"
+[ -d "${_rcd_dir}" ] || ${ELEVATE} mkdir -p "${_rcd_dir}"
+${ELEVATE} cp "${_setup_root}/freebsd/desktop/system/vt-autofont.sh" "${_rcd_dir}/vt_autofont"
+${ELEVATE} chmod 0755 "${_rcd_dir}/vt_autofont"
+${ELEVATE} sysrc vt_autofont_enable="YES" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysrc moused_enable="YES" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysrc moused_flags="-A 1.5,1.5 -a 1.2" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysrc keyrate="fast" > "/dev/null" 2>&1 || true

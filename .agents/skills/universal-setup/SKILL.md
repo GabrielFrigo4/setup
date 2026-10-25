@@ -48,9 +48,9 @@ Antes de escrever qualquer código, posicione a receita no diretório correto:
 
 Em estações de trabalho e servidores, o provisionamento de consoles virtuais (TTY) deve assegurar legibilidade em telas de alta densidade e estabilidade visual:
 
-1. **Seleção de Fonte Canônica:**
-    - Fonte **Spleen 12x24** (`spleen-12x24`): equilíbrio métrico ideal entre legibilidade e densidade de colunas.
-    - Configurada via `/etc/vconsole.conf` (`FONT="spleen-12x24"`) no Linux e `allscreens_flags="-f spleen-12x24"` no FreeBSD.
+1. **Seleção de Fonte Canônica & Escalonamento Dinâmico:**
+    - Família **Spleen** bitmap: `spleen-12x24` para resoluções até 1080p e `spleen-16x32` para telas HiDPI ($\ge 1440$p e 4K UHD), atingindo equilíbrio métrico ideal entre legibilidade e densidade de colunas.
+    - Escalonamento dinâmico via `vconsole-autofont` (`systemd-vconsole-setup.service.d/autofont.conf`) no Linux e `vt_autofont` no FreeBSD, sem truncamento artificial de resolução UEFI/GOP.
 2. **Invariante de 512 Glifos & Deslocamento de Atributos:**
     - Fontes Unicode como Spleen contêm 512 glifos, ativando `vc_hi_font_mask = 0x0100` no kernel Linux (`vt.c`).
     - O bit 8 é apropriado pelo índice do caractere, deslocando o foreground para os bits 9–11 e o background para os bits 13–15.
@@ -61,7 +61,7 @@ Em estações de trabalho e servidores, o provisionamento de consoles virtuais (
     - **Persistência sysfs:** `/etc/tmpfiles.d/console-cursor.conf` (`w /sys/module/vt/parameters/cur_default ... 60944` e arrays RGB `default_red`, `default_grn`, `default_blu`).
     - **Paleta Hardware 16-Color de Alto Contraste (Linux `fbcon`):** Reprograma os 16 registradores DAC do console Linux (`\033]P0...` a `\033]PF...` em `/etc/issue` e VTs ativos, além de `vt.default_{red,grn,blu}` no sysfs) substituindo o azul VGA ilegível (`#0000aa`) por azul celeste (`#569cd6` / `#7dcfff`) e o cinza escuro (`#555555`) por `#858585` sobre fundo `#000000`.
     - **Login Prompt:** `/etc/issue` configurado com `\033%G\033[?16;238;0c` + sequência de paleta `\033]P...`.
-    - **FreeBSD:** `allscreens_flags="-f spleen-12x24"` (cursor inerentemente estático e paleta legível nativa no driver `vt(4)`).
+    - **FreeBSD:** `allscreens_flags` sincronizado dinamicamente via `vt_autofont` (cursor inerentemente estático e paleta legível nativa no driver `vt(4)`).
     - **Sino de Console (Bell) Silencioso:** Desativado permanentemente via `kern.vt.enable_bell=0` (`/etc/sysctl.conf`) no FreeBSD e `set bell-style none` em `/etc/inputrc`.
 
 ---

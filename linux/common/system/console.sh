@@ -7,18 +7,16 @@ set -eu
 _setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
+. "${_setup_root}/core/detect.sh"
 
-_ui_step "Configurando fonte Spleen 12x24 para console TTY Linux..."
-
-_target_font="spleen-12x24"
+_target_font="${DETECTED_CONSOLE_FONT:-spleen-12x24}"
 _spleen_version="2.2.0"
 
+_ui_step "Configurando fonte Spleen (${_target_font}) para console TTY Linux..."
+
 _font_found=0
-for _console_dir in "/usr/lib/kbd/consolefonts" "/usr/share/kbd/consolefonts" "/usr/share/consolefonts"; do
-	if [ -f "${_console_dir}/${_target_font}.psfu" ] || [ -f "${_console_dir}/${_target_font}.psfu.gz" ] || [ -f "${_console_dir}/${_target_font}.psf.gz" ]; then
-		_font_found=1
-		break
-	fi
+for _cd in "/usr/lib/kbd/consolefonts" "/usr/share/kbd/consolefonts" "/usr/share/consolefonts"; do
+	{ [ -f "${_cd}/${_target_font}.psfu" ] || [ -f "${_cd}/${_target_font}.psfu.gz" ] || [ -f "${_cd}/${_target_font}.psf.gz" ]; } && _font_found=1 && break
 done
 
 if [ "${_font_found}" -eq 0 ]; then
@@ -32,19 +30,13 @@ if [ "${_font_found}" -eq 0 ]; then
 	_primary_dir="/usr/lib/kbd/consolefonts"
 	[ -d "${_primary_dir}" ] || _primary_dir="/usr/share/kbd/consolefonts"
 	[ -d "${_primary_dir}" ] || _primary_dir="/usr/share/consolefonts"
-
-	if [ ! -d "${_primary_dir}" ]; then
-		${ELEVATE} mkdir -p "${_primary_dir}"
-	fi
+	[ -d "${_primary_dir}" ] || ${ELEVATE} mkdir -p "${_primary_dir}"
 
 	${ELEVATE} cp "${_tmp_dir}/spleen-${_spleen_version}"/spleen-*.psfu "${_primary_dir}/"
 	${ELEVATE} chmod 0644 "${_primary_dir}"/spleen-*.psfu
 
 	for _extra_dir in "/usr/lib/kbd/consolefonts" "/usr/share/kbd/consolefonts" "/usr/share/consolefonts"; do
-		if [ -d "${_extra_dir}" ] && [ "${_extra_dir}" != "${_primary_dir}" ]; then
-			${ELEVATE} cp "${_tmp_dir}/spleen-${_spleen_version}"/spleen-*.psfu "${_extra_dir}/"
-			${ELEVATE} chmod 0644 "${_extra_dir}"/spleen-*.psfu
-		fi
+		[ -d "${_extra_dir}" ] && [ "${_extra_dir}" != "${_primary_dir}" ] && ${ELEVATE} cp "${_tmp_dir}/spleen-${_spleen_version}"/spleen-*.psfu "${_extra_dir}/" && ${ELEVATE} chmod 0644 "${_extra_dir}"/spleen-*.psfu
 	done
 
 	rm -rf "${_tmp_dir}"
@@ -69,11 +61,26 @@ fi
 if [ -f "/etc/default/console-setup" ]; then
 	if grep -q "^[[:space:]]*FONTFACE=" "/etc/default/console-setup" 2> "/dev/null"; then
 		${ELEVATE} sed -i 's|^[[:space:]]*FONTFACE=.*|FONTFACE="Spleen"|' "/etc/default/console-setup"
-		${ELEVATE} sed -i 's|^[[:space:]]*FONTSIZE=.*|FONTSIZE="12x24"|' "/etc/default/console-setup"
+		${ELEVATE} sed -i 's|^[[:space:]]*FONTSIZE=.*|FONTSIZE="'"${_target_font#spleen-}"'"|' "/etc/default/console-setup"
 	fi
-	if command -v setupcon > "/dev/null" 2>&1; then
-		${ELEVATE} setupcon --save 2> "/dev/null" || true
-	fi
+	command -v setupcon > "/dev/null" 2>&1 && ${ELEVATE} setupcon --save 2> "/dev/null" || true
+fi
+
+### --------------------------------
+### Escalonamento Dinâmico de Fonte
+### --------------------------------
+_autofont_bin="/usr/local/libexec/vconsole-autofont"
+[ -d "/usr/local/libexec" ] || ${ELEVATE} mkdir -p "/usr/local/libexec"
+${ELEVATE} cp "${_setup_root}/linux/common/system/vconsole-autofont.sh" "${_autofont_bin}"
+${ELEVATE} chmod 0755 "${_autofont_bin}"
+
+if command -v systemctl > "/dev/null" 2>&1; then
+	_vconsole_dropin="/etc/systemd/system/systemd-vconsole-setup.service.d"
+	[ -d "${_vconsole_dropin}" ] || ${ELEVATE} mkdir -p "${_vconsole_dropin}"
+	cat <<- "EOF" | ${ELEVATE} tee "${_vconsole_dropin}/autofont.conf" > "/dev/null"
+	[Service]
+	ExecStartPre=-/usr/local/libexec/vconsole-autofont
+	EOF
 fi
 
 ### --------------------------------
@@ -83,11 +90,9 @@ _ui_sub "Configurando cursor em bloco padrão no console Linux (vt.cur_default=0
 
 if [ -f "/etc/default/grub" ]; then
 	if ! grep -q "vt\.cur_default=" "/etc/default/grub" 2> "/dev/null"; then
-		if grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX=" "/etc/default/grub" 2> "/dev/null"; then
-			${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX="\(.*\)"|GRUB_CMDLINE_LINUX="\1 vt.cur_default=0xee10"|' "/etc/default/grub"
-		elif grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT=" "/etc/default/grub" 2> "/dev/null"; then
-			${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"|GRUB_CMDLINE_LINUX_DEFAULT="\1 vt.cur_default=0xee10"|' "/etc/default/grub"
-		fi
+		grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX=" "/etc/default/grub" 2> "/dev/null" \
+			&& ${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX="\(.*\)"|GRUB_CMDLINE_LINUX="\1 vt.cur_default=0xee10"|' "/etc/default/grub" \
+			|| { grep -q "^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT=" "/etc/default/grub" 2> "/dev/null" && ${ELEVATE} sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"|GRUB_CMDLINE_LINUX_DEFAULT="\1 vt.cur_default=0xee10"|' "/etc/default/grub"; }
 	fi
 
 	if grep -q '^[[:space:]]*GRUB_TERMINAL_OUTPUT="console"' "/etc/default/grub" 2> "/dev/null"; then
@@ -100,9 +105,7 @@ if [ -f "/etc/default/grub" ]; then
 	grep -q "^[[:space:]]*GRUB_GFXPAYLOAD_LINUX=" "/etc/default/grub" 2> "/dev/null" \
 		|| echo 'GRUB_GFXPAYLOAD_LINUX="keep"' | ${ELEVATE} tee -a "/etc/default/grub" > "/dev/null"
 
-	if command -v grubby > "/dev/null" 2>&1; then
-		${ELEVATE} grubby --update-kernel=ALL --args="vt.cur_default=0xee10" 2> "/dev/null" || true
-	fi
+	command -v grubby > "/dev/null" 2>&1 && ${ELEVATE} grubby --update-kernel=ALL --args="vt.cur_default=0xee10" 2> "/dev/null" || true
 
 	if [ -f "/boot/grub2/grub.cfg" ] && command -v grub2-mkconfig > "/dev/null" 2>&1; then
 		${ELEVATE} grub2-mkconfig -o /boot/grub2/grub.cfg 2> "/dev/null" || true
@@ -122,11 +125,11 @@ if [ -d "/etc/tmpfiles.d" ]; then
 fi
 [ -f "/sys/module/vt/parameters/cur_default" ] && echo 60944 | ${ELEVATE} tee /sys/module/vt/parameters/cur_default > "/dev/null" 2>&1 || true
 [ -f "/sys/class/graphics/fbcon/cursor_blink" ] && echo 0 | ${ELEVATE} tee /sys/class/graphics/fbcon/cursor_blink > "/dev/null" 2>&1 || true
-if [ -f "/sys/module/vt/parameters/default_red" ]; then
-	echo "0,127,0,196,51,127,0,191,115,255,0,255,115,255,0,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_red > "/dev/null" 2>&1 || true
-	echo "0,0,127,161,102,0,127,191,130,0,255,255,158,0,255,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_grn > "/dev/null" 2>&1 || true
-	echo "0,0,0,0,163,127,127,191,138,0,0,0,207,255,255,255" | ${ELEVATE} tee /sys/module/vt/parameters/default_blu > "/dev/null" 2>&1 || true
-fi
+for _ch in red:0,127,0,196,51,127,0,191,115,255,0,255,115,255,0,255 grn:0,0,127,161,102,0,127,191,130,0,255,255,158,0,255,255 blu:0,0,0,0,163,127,127,191,138,0,0,0,207,255,255,255; do
+	_param="/sys/module/vt/parameters/default_${_ch%%:*}"
+	[ -f "${_param}" ] && echo "${_ch#*:}" | ${ELEVATE} tee "${_param}" > "/dev/null" 2>&1 || true
+done
+
 ### --------------------------------
 ### Mapeamento Teclas F1-F5
 ### --------------------------------
@@ -200,18 +203,14 @@ done
 if command -v setfont > "/dev/null" 2>&1; then
 	${ELEVATE} setfont "${_target_font}" 2> "/dev/null" || true
 	for _c in ${_unique_vts}; do
-		if [ -c "${_c}" ] && [ "${_c}" != "/dev/tty0" ]; then
-			${ELEVATE} setfont -C "${_c}" "${_target_font}" 2> "/dev/null" || true
-		fi
+		[ -c "${_c}" ] && [ "${_c}" != "/dev/tty0" ] && ${ELEVATE} setfont -C "${_c}" "${_target_font}" 2> "/dev/null" || true
 	done
 fi
 
 if command -v loadkeys > "/dev/null" 2>&1 && [ -f "${_keymap_dir}/standard-fkeys.map" ]; then
 	${ELEVATE} loadkeys -C /dev/tty0 "${_keymap_dir}/standard-fkeys.map" 2> "/dev/null" || true
 	for _c in ${_unique_vts}; do
-		if [ -c "${_c}" ] && [ "${_c}" != "/dev/tty0" ]; then
-			${ELEVATE} loadkeys -C "${_c}" "${_keymap_dir}/standard-fkeys.map" 2> "/dev/null" || true
-		fi
+		[ -c "${_c}" ] && [ "${_c}" != "/dev/tty0" ] && ${ELEVATE} loadkeys -C "${_c}" "${_keymap_dir}/standard-fkeys.map" 2> "/dev/null" || true
 	done
 fi
 
@@ -230,9 +229,7 @@ fi
 
 if command -v gpm > "/dev/null" 2>&1; then
 	[ -f "/etc/sysconfig/gpm" ] && ${ELEVATE} sed -i 's|^APPEND=.*|APPEND="-a 2 -r 100"|' "/etc/sysconfig/gpm" 2> "/dev/null" || true
-	if command -v systemctl > "/dev/null" 2>&1; then
-		${ELEVATE} systemctl enable --now gpm.service 2> "/dev/null" || true
-	fi
+	command -v systemctl > "/dev/null" 2>&1 && ${ELEVATE} systemctl enable --now gpm.service 2> "/dev/null" || true
 fi
 
 ### --------------------------------

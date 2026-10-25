@@ -152,7 +152,49 @@ _detect_pkg_mgr() {
 	esac
 }
 
+### ================================
+### CONSOLE FONT DETECTION
+### ================================
+_detect_console_font() {
+	_os="$(_detect_os)"
+	_height=0
+
+	if [ "${_os}" = "linux" ]; then
+		for _card in /sys/class/drm/card*-*; do
+			[ -f "${_card}/status" ] || continue
+			if [ "$(cat "${_card}/status" 2> "/dev/null")" = "connected" ] && [ -f "${_card}/modes" ]; then
+				read -r _mode < "${_card}/modes"
+				_h="${_mode#*x}"
+				_h="${_h%%[^0-9]*}"
+				[ -n "${_h}" ] && [ "${_h}" -gt "${_height}" ] && _height="${_h}"
+			fi
+		done
+		if [ "${_height}" -eq 0 ] && [ -f "/sys/class/graphics/fb0/virtual_size" ]; then
+			_fb_h="$(cut -d, -f2 "/sys/class/graphics/fb0/virtual_size" 2> "/dev/null" || true)"
+			[ -n "${_fb_h}" ] && _height="${_fb_h}"
+		fi
+	elif [ "${_os}" = "freebsd" ]; then
+		_mode="$(sysctl -n kern.vt.fb.default_mode 2> "/dev/null" || true)"
+		if [ -n "${_mode}" ]; then
+			_h="${_mode#*x}"
+			_h="${_h%%[^0-9]*}"
+			[ -n "${_h}" ] && _height="${_h}"
+		fi
+		if [ "${_height}" -eq 0 ] && [ -f "/var/run/dmesg.boot" ]; then
+			_h="$(grep -Eo "mode [0-9]{3,4}x[0-9]{3,4}" /var/run/dmesg.boot 2> "/dev/null" | tail -n 1 | cut -d'x' -f2 || true)"
+			[ -n "${_h}" ] && _height="${_h}"
+		fi
+	fi
+
+	if [ "${_height}" -ge 1440 ]; then
+		echo "spleen-16x32"
+	else
+		echo "spleen-12x24"
+	fi
+}
+
 DETECTED_OS="$(_detect_os)"
 DETECTED_DISTRO="$(_detect_distro)"
 DETECTED_PKG_MGR="$(_detect_pkg_mgr)"
-export DETECTED_OS DETECTED_DISTRO DETECTED_PKG_MGR
+DETECTED_CONSOLE_FONT="$(_detect_console_font)"
+export DETECTED_OS DETECTED_DISTRO DETECTED_PKG_MGR DETECTED_CONSOLE_FONT
