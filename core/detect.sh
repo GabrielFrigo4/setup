@@ -194,8 +194,10 @@ _detect_console_font() {
 		fi
 	elif [ "${_height}" -ge 1440 ]; then
 		echo "spleen-16x32"
-	else
+	elif [ "${_height}" -ge 1080 ]; then
 		echo "spleen-12x24"
+	else
+		echo "spleen-8x16"
 	fi
 }
 

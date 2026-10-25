@@ -105,8 +105,9 @@ Para garantir legibilidade nítida e ergonomia visual em consoles de emergência
 
 1. **Tipografia Spleen Dinâmica & Suporte Multi-Monitor:** A receita [`linux/common/system/console.sh`](../linux/common/system/console.sh) instala as variantes da fonte Spleen e integra o escalonador dinâmico [`vconsole-autofont`](../linux/common/system/vconsole-autofont.sh).
     - **A Tabela Canônica de Resoluções:**
-        - $\le 1080$p (Full HD / Standard): `spleen-12x24` ($160 \times 45$ caracteres)
-        - $1081$ a $2159$p (2K / QHD / 1440p): `spleen-16x32` ($160 \times 45$ caracteres)
+        - $< 1080$p (HD 720p / 768p / 900p): `spleen-8x16` ($160 \times 45$ caracteres em 720p)
+        - $1080$ a $1439$p (Full HD 1080p): `spleen-12x24` ($160 \times 45$ caracteres)
+        - $1440$ a $2159$p (2K / QHD 1440p): `spleen-16x32` ($160 \times 45$ caracteres)
         - $\ge 2160$p (4K UHD): `spleen-32x64` ($120 \times 33$ caracteres) ou `spleen-16x32` ($240 \times 67$ denso via `SPLEEN_DENSE=1`)
     - **Algoritmo de Detecção Multi-Monitor:** Em cenários com múltiplos monitores conectados (onde o `fbcon` clona o terminal), o script avalia todos os conectores ativos em `/sys/class/drm/card*-*/modes` e adota a **maior altura vertical detectada**, prevenindo texto microscópico em telas de alta densidade sem prejudicar monitores convencionais.
     - **Neutralidade de Inits (Systemd e Não-Systemd / Devuan / OpenRC):**

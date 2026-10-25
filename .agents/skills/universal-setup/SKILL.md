@@ -49,7 +49,7 @@ Antes de escrever qualquer código, posicione a receita no diretório correto:
 Em estações de trabalho e servidores, o provisionamento de consoles virtuais (TTY) deve assegurar legibilidade em telas de alta densidade e estabilidade visual:
 
 1. **Seleção de Fonte Canônica & Escalonamento Dinâmico:**
-    - Família **Spleen** bitmap: `spleen-12x24` para $\le 1080$p, `spleen-16x32` para $1081$ a $2159$p (1440p / 2K), e `spleen-32x64` para $\ge 2160$p (4K UHD) [ou `spleen-16x32` sob `SPLEEN_DENSE=1`], atingindo equilíbrio métrico ideal entre legibilidade e densidade de colunas.
+    - Família **Spleen** bitmap: `spleen-8x16` para $< 1080$p (HD 720p/768p), `spleen-12x24` para Full HD (1080p), `spleen-16x32` para 1440p (2K/QHD), e `spleen-32x64` para $\ge 2160$p (4K UHD) [ou `spleen-16x32` sob `SPLEEN_DENSE=1`], atingindo paridade simétrica de $160 \times 45$ caracteres nos 3 primeiros patamares.
     - **Neutralidade de Init no Linux:** Escalonamento dinâmico via `vconsole-autofont` com suporte a Systemd (`systemd-vconsole-setup.service.d/autofont.conf`), Devuan SysVinit (`/etc/init.d/`), OpenRC (`/etc/init.d/` + `rc-update`) e regra universal `udev/eudev` (`90-vconsole-autofont.rules`), sincronizando `/etc/vconsole.conf` e `/etc/default/console-setup` (`setupcon`).
     - **FreeBSD & OpenBSD:** Serviço `vt_autofont` no FreeBSD (`/usr/local/etc/rc.d/`) e suporte in-kernel `rasops(9)` no OpenBSD.
 2. **Invariante de 512 Glifos & Deslocamento de Atributos:**
