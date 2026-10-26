@@ -51,6 +51,30 @@ if command -v update-desktop-database > "/dev/null" 2>&1; then
 	update-desktop-database "${_apps_dir}" 2> "/dev/null" || true
 fi
 
+if [ -n "${ELEVATE:-}" ] || [ "$(id -u)" -eq 0 ]; then
+	if [ -w "/usr/local/share/applications" ] || [ "$(id -u)" -eq 0 ]; then
+		mkdir -p "/usr/local/share/applications" 2> "/dev/null" || true
+		cp -f "${_apps_dir}/emacs.desktop" "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
+		chmod 0644 "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
+		command -v update-desktop-database > "/dev/null" 2>&1 && update-desktop-database "/usr/local/share/applications" 2> "/dev/null" || true
+	elif [ -n "${ELEVATE:-}" ]; then
+		${ELEVATE} mkdir -p "/usr/local/share/applications" 2> "/dev/null" || true
+		${ELEVATE} cp -f "${_apps_dir}/emacs.desktop" "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
+		${ELEVATE} chmod 0644 "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
+		command -v update-desktop-database > "/dev/null" 2>&1 && ${ELEVATE} update-desktop-database "/usr/local/share/applications" 2> "/dev/null" || true
+	fi
+
+	if [ -f "/usr/share/applications/emacs.desktop" ]; then
+		if [ -w "/usr/share/applications/emacs.desktop" ]; then
+			sed -i 's|^Exec=emacs %F|Exec=emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || true
+			command -v update-desktop-database > "/dev/null" 2>&1 && update-desktop-database "/usr/share/applications" 2> "/dev/null" || true
+		elif [ -n "${ELEVATE:-}" ]; then
+			${ELEVATE} sed -i 's|^Exec=emacs %F|Exec=emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || true
+			command -v update-desktop-database > "/dev/null" 2>&1 && ${ELEVATE} update-desktop-database "/usr/share/applications" 2> "/dev/null" || true
+		fi
+	fi
+fi
+
 ### --------------------------------
 ### NeoVim Configuration
 ### --------------------------------
