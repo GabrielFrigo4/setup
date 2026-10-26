@@ -8,8 +8,15 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
-if command -v nvim > "/dev/null" 2>&1 && command -v hx > "/dev/null" 2>&1 && command -v emacs > "/dev/null" 2>&1; then
-	_ui_ok "Editores principais (nvim, hx, emacs) já instalados."
+_needs_lucid=0
+if command -v dnf > "/dev/null" 2>&1 || command -v apt-get > "/dev/null" 2>&1 || command -v pkg > "/dev/null" 2>&1; then
+	if ! command -v emacs-lucid > "/dev/null" 2>&1; then
+		_needs_lucid=1
+	fi
+fi
+
+if command -v nvim > "/dev/null" 2>&1 && command -v hx > "/dev/null" 2>&1 && command -v emacs > "/dev/null" 2>&1 && [ "${_needs_lucid}" -eq 0 ]; then
+	_ui_ok "Editores principais (nvim, hx, emacs, emacs-lucid) já instalados."
 	exit 0
 fi
 
@@ -20,6 +27,7 @@ if command -v pkg > "/dev/null" 2>&1; then
 		editors/neovim \
 		editors/vim \
 		editors/emacs \
+		editors/emacs-lucid \
 		editors/helix \
 		editors/micro \
 		editors/vscode 2> "/dev/null" || true
