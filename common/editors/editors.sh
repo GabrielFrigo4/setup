@@ -20,6 +20,37 @@ else
 	git -C "${HOME}/.emacs.d" pull || true
 fi
 
+_apps_dir="${XDG_DATA_HOME:-${HOME}/.local/share}/applications"
+mkdir -p "${_apps_dir}"
+cat << 'EOF' > "${_apps_dir}/emacs.desktop"
+[Desktop Entry]
+Name=Emacs
+GenericName=Text Editor
+Comment=Edit text (GNU Emacs Client & Server)
+MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;x-scheme-handler/org-protocol;
+Exec=emacsclient --create-frame --alternate-editor="" %F
+Icon=emacs
+Type=Application
+Terminal=false
+Categories=Development;TextEditor;
+StartupNotify=true
+StartupWMClass=Emacs
+Keywords=emacs;emacsclient;editor;daemon;server;
+Actions=new-frame;new-instance;
+
+[Desktop Action new-frame]
+Name=New Frame
+Exec=emacsclient --create-frame --alternate-editor="" %F
+
+[Desktop Action new-instance]
+Name=New Standalone Instance
+Exec=emacs %F
+EOF
+chmod 0644 "${_apps_dir}/emacs.desktop"
+if command -v update-desktop-database > "/dev/null" 2>&1; then
+	update-desktop-database "${_apps_dir}" 2> "/dev/null" || true
+fi
+
 ### --------------------------------
 ### NeoVim Configuration
 ### --------------------------------
