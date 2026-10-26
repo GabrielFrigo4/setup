@@ -28,6 +28,7 @@ elif command -v dnf > "/dev/null" 2>&1; then
 		neovim \
 		vim-enhanced \
 		emacs \
+		emacs-lucid \
 		helix \
 		micro 2> "/dev/null" || true
 elif command -v apt-get > "/dev/null" 2>&1; then
@@ -36,6 +37,7 @@ elif command -v apt-get > "/dev/null" 2>&1; then
 		neovim \
 		vim \
 		emacs \
+		emacs-lucid \
 		micro 2> "/dev/null" || true
 	${ELEVATE} apt-get install --yes helix 2> "/dev/null" || true
 elif command -v pacman > "/dev/null" 2>&1; then
