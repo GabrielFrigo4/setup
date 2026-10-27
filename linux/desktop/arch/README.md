@@ -26,9 +26,8 @@ Organiza a configuração do Arch Linux em módulos desacoplados: sistema base, 
 
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
-Copie os comandos da receita desejada e execute no terminal do Arch Linux:
+Configurar aceleração de hardware no Arch Linux:
 
 ```sh
-# Configurar aceleração de hardware
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/desktop/arch/desktop/hardware.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/desktop/arch/desktop/hardware.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/desktop/arch/desktop/hardware.sh) | sh
 ```

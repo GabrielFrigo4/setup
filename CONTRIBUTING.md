@@ -6,20 +6,28 @@
 
 ## 🚀 Setup Inicial da Bancada (Primeiros Passos)
 
-Para clonar e configurar o repositório localmente com todos os ganchos e quality gates ativados:
+1. Clonar o repositório:
 
 ```sh
-# 1. Clonar o repositório
-git clone "https://github.com/GabrielFrigo4/setup.git" "${HOME}/Documents/Setup"
+git clone "[https://github.com/GabrielFrigo4/setup.git](https://github.com/GabrielFrigo4/setup.git)" "${HOME}/Documents/Setup"
 cd "${HOME}/Documents/Setup"
+```
 
-# 2. Configurar ganchos Git e permissões canônicas
+2. Configurar ganchos Git e permissões canônicas:
+
+```sh
 make hooks
+```
 
-# 3. Validar a sintaxe POSIX de todas as receitas
+3. Validar a sintaxe POSIX de todas as receitas:
+
+```sh
 make test
+```
 
-# 4. Executar a suíte de auditoria estática e arquitetura
+4. Executar a suíte de auditoria estática e arquitetura:
+
+```sh
 make audit
 ```
 
@@ -62,11 +70,20 @@ make audit
 
 O repositório possui uma bateria completa de testes e auditorias:
 
+| Comando       | Descrição                                                                 |
+| :------------ | :------------------------------------------------------------------------ |
+| `make test`   | Valida sintaxe POSIX (`sh -n`)                                            |
+| `make audit`  | Executa a suíte Python: monoliths, nanos, syntax, banners, links, formats |
+| `make doctor` | Diagnóstico de integridade do host                                        |
+| `make ci`     | Executa bateria completa de CI local                                      |
+
+Para rodar todos os alvos em sequência:
+
 ```sh
-make test     # Valida sintaxe POSIX (sh -n)
-make audit    # Executa a suíte Python: monoliths, nanos, syntax, banners, links, formats
-make doctor   # Diagnóstico de integridade do host
-make ci       # Executa bateria completa de CI local
+make test
+make audit
+make doctor
+make ci
 ```
 
 Ganchos Git em `.githooks/`:

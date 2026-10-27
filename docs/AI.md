@@ -59,7 +59,7 @@ O [Ollama](https://ollama.com) é o servidor de inferência local que expõe uma
 Para instalar o Ollama e o SDK Python com um comando cross-platform:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/ai/ollama.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/ai/ollama.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/ai/ollama.sh) | sh
 ```
 
 Também disponível no catálogo local: [`../common/ai/ollama.sh`](../common/ai/ollama.sh).
@@ -75,7 +75,7 @@ pkg install misc/ollama
 #### Linux
 
 ```sh
-curl -fsSL https://ollama.com/install.sh | sh
+curl -fsSL [https://ollama.com/install.sh](https://ollama.com/install.sh) | sh
 ```
 
 #### Windows
@@ -124,7 +124,7 @@ O [llama.cpp](https://github.com/ggml-org/llama.cpp) é a engine de inferência 
 ### Compilação Manual (CMake)
 
 ```sh
-git clone https://github.com/ggml-org/llama.cpp.git
+git clone [https://github.com/ggml-org/llama.cpp.git](https://github.com/ggml-org/llama.cpp.git)
 cd llama.cpp
 cmake -B build -DGGML_VULKAN=ON
 cmake --build build --config Release
@@ -148,8 +148,9 @@ pkg install misc/llama-cpp
 
 ```sh
 ./build/bin/llama-cli --version
-# Deve exibir: Vulkan backend enabled
 ```
+
+A saída deve indicar que o backend Vulkan está habilitado (`Vulkan backend enabled`).
 
 ---
 

@@ -25,12 +25,14 @@ Esta pasta centraliza receitas universais para bibliotecas de janelas e multimí
 
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
-Execute diretamente no terminal:
+Provisionar suite de modelagem e animação 3D Blender:
 
 ```sh
-# Provisionar suite de modelagem e animação 3D Blender
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/blender.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/blender.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/blender.sh) | sh
+```
 
-# Provisionar bibliotecas de janelas e multimídia (GLFW e SDL3)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/windowing.sh | sh
+Provisionar bibliotecas de janelas e multimídia (GLFW e SDL3):
+
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/windowing.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/windowing.sh) | sh
 ```

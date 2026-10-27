@@ -22,12 +22,14 @@ Esta pasta organiza a ativação de containers de sistema e de aplicação no Fr
 
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
-Execute a receita desejada copiando o link RAW para o terminal:
+Provisionar Jails:
 
 ```sh
-# Provisionar Jails
-fetch -o - https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/container/jails.sh | sh
+fetch -o - [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/container/jails.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/container/jails.sh) | sh
+```
 
-# Instalar Podman nativo
-fetch -o - https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/container/podman.sh | sh
+Instalar Podman nativo:
+
+```sh
+fetch -o - [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/container/podman.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/container/podman.sh) | sh
 ```

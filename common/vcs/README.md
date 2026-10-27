@@ -27,15 +27,26 @@ Os scripts aplicam boas práticas recomendadas (branch padrão `main`, autocrlf 
 
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
-Execute diretamente via terminal:
+Instalar ferramentas de controle de versão (`git`, `gh`, `git-lfs`, `got`):
 
 ```sh
-# Configurar Git no UNIX
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/tools.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/tools.sh) | sh
+```
 
-# Configurar Got no UNIX
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/got.sh | sh
+Configurar Git no UNIX:
 
-# Instalar git-crypt no UNIX
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git-crypt.sh | sh
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git.sh) | sh
+```
+
+Configurar Got no UNIX:
+
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/got.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/got.sh) | sh
+```
+
+Instalar `git-crypt` no UNIX:
+
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git-crypt.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git-crypt.sh) | sh
 ```

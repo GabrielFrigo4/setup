@@ -35,12 +35,14 @@ Os arquivos estáticos puros no repositório **Profile** operam no macOS no espa
 
 ## 🚀 Como Usar no macOS (Zero-Clone)
 
-Execute qualquer receita diretamente via terminal no macOS:
+Sincronizar extensões do VS Code / Antigravity:
 
 ```sh
-# Sincronizar extensões do VS Code / Antigravity
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/sync-extensions.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/sync-extensions.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/sync-extensions.sh) | sh
+```
 
-# Configurar formatadores globais (.clang-format, prettier, stylua)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/linters/linters.sh | sh
+Configurar formatadores globais (`.clang-format`, `prettier`, `stylua`):
+
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/linters/linters.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/linters/linters.sh) | sh
 ```

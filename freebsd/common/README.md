@@ -23,15 +23,20 @@ Esta pasta centraliza as configurações essenciais do FreeBSD que independem de
 
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
-Execute qualquer receita diretamente via terminal no FreeBSD:
+Configurar elevação de privilégios sem senha (`doas` + `sudo`):
 
 ```sh
-# Configurar elevação de privilégios sem senha (doas + sudo)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/nopass.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/nopass.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/nopass.sh) | sh
+```
 
-# Ajustar parâmetros de kernel e áudio no sysctl.conf
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/system/sysctl.sh | sh
+Ajustar parâmetros de kernel e áudio no `sysctl.conf`:
 
-# Instalar utilitários CLI universais
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/cli/core.sh | sh
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/system/sysctl.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/system/sysctl.sh) | sh
+```
+
+Instalar utilitários CLI universais:
+
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/cli/core.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/cli/core.sh) | sh
 ```

@@ -50,8 +50,9 @@ Todos os scripts compartilham a mesma interface de linha de comando:
 
 ### 1. Testar resolução e links remotos (Dry-Run)
 
+Validar se o espelho e a versão mais recente estão acessíveis:
+
 ```sh
-# Validar se o espelho e a versão mais recente estão acessíveis
 ./Setup/common/iso/alpine.sh -n
 ./Setup/common/iso/arch.sh -n
 ./Setup/common/iso/debian.sh -n
@@ -66,22 +67,25 @@ Todos os scripts compartilham a mesma interface de linha de comando:
 
 ### 2. Baixar localmente para criação de Pendrive Bootável (`-l`)
 
+Baixar diretamente no diretório atual sem tocar nos discos de VM:
+
 ```sh
-# Baixa diretamente no diretório atual sem tocar nos discos de VM
 cd /mnt/pendrive || cd /tmp
 ~/Documents/Environment/Setup/common/iso/freebsd.sh -l
 ```
 
 ### 3. Provisionamento para Máquinas Virtuais (Bhyve / KVM)
 
+Salvar automaticamente em `/zroot/vm/.iso` se existir no FreeBSD:
+
 ```sh
-# Salva automaticamente em /zroot/vm/.iso se existir no FreeBSD
 ./Setup/common/iso/debian.sh
 ```
 
 ### 4. Execução Remota via GitHub (Zero-Clone)
 
+Baixar Debian mais recente sem clonar o repositório Setup:
+
 ```sh
-# Baixar Debian mais recente sem clonar o repositório Setup
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/iso/debian.sh | sh -s -- -l
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/iso/debian.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/iso/debian.sh) | sh -s -- -l
 ```

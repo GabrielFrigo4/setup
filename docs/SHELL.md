@@ -8,15 +8,16 @@ Enquanto o `Configuration` cuida do provisionamento estático e dotfiles do host
 
 ## 📂 Instalação e Caminhos Padrão
 
-O repositório Shell é clonado globalmente ou localmente por usuário:
+Instalação global recomendada (Linux / FreeBSD / macOS):
 
 ```sh
-# Instalação Global Recomendada (Linux / FreeBSD / macOS)
-sudo git clone "https://github.com/GabrielFrigo4/shell" "/usr/local/share/shell"
+sudo git clone "[https://github.com/GabrielFrigo4/shell](https://github.com/GabrielFrigo4/shell)" "/usr/local/share/shell"
+```
 
-# Executar a instalação escolhendo o contexto desejado:
+Executar a instalação escolhendo o contexto desejado (`desktop`, `server`, `container` ou `wsl`):
+
+```sh
 sh "/usr/local/share/shell/install.sh" --context desktop
-# Opções de contexto: desktop, server, container, wsl
 ```
 
 ---
@@ -25,15 +26,22 @@ sh "/usr/local/share/shell/install.sh" --context desktop
 
 O repositório Shell foi projetado seguindo estritamente os princípios de modularidade e separação de interesses:
 
-```
+```text
 Shell/
-├── core/             # Ciclo de vida principal e carregador do ambiente (environment.sh, vault.sh)
-├── context/          # Especializações por tipo de máquina (desktop, server, container, wsl)
-├── target/           # Especializações por sistema operacional (linux, freebsd, windows)
-├── library/          # Funções utilitárias reutilizáveis (detect.sh, functions.sh)
-├── theme/            # Temas visuais e prompts rápidos (bash.sh, zsh.sh)
-└── install.sh        # Instalador idempotente
+├── core/
+├── context/
+├── target/
+├── library/
+├── theme/
+└── install.sh
 ```
+
+- **`core/`:** Ciclo de vida principal e carregador do ambiente (`environment.sh`, `vault.sh`).
+- **`context/`:** Especializações por tipo de máquina (`desktop`, `server`, `container`, `wsl`).
+- **`target/`:** Especializações por sistema operacional (`linux`, `freebsd`, `windows`).
+- **`library/`:** Funções utilitárias reutilizáveis (`detect.sh`, `functions.sh`).
+- **`theme/`:** Temas visuais e prompts rápidos (`bash.sh`, `zsh.sh`).
+- **`install.sh`:** Instalador idempotente.
 
 ---
 

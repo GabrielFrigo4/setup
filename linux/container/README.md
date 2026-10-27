@@ -25,12 +25,14 @@ Esta pasta centraliza os provisionamentos de containers no Linux em perfeita sim
 
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
-Execute qualquer receita diretamente via terminal no Linux:
+Provisionar Incus (Containers de Sistema):
 
 ```sh
-# Provisionar Incus (Containers de Sistema)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/incus.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/incus.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/incus.sh) | sh
+```
 
-# Provisionar Podman (Containers de Aplicação)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/podman.sh | sh
+Provisionar Podman (Containers de Aplicação):
+
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/podman.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/podman.sh) | sh
 ```

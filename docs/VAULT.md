@@ -8,15 +8,17 @@ Sempre que um script de setup, configuração de Git ou ferramenta de terminal p
 
 ## 📂 Localização e Permissões de Instalação
 
-O Vault deve ser clonado e posicionado no seguinte caminho seguro:
+Em ambientes UNIX (Linux, FreeBSD, macOS, WSL2):
 
 ```sh
-# UNIX (Linux, FreeBSD, macOS, WSL2)
-git clone "https://github.com/GabrielFrigo4/vault" "${HOME}/.vault"
+git clone "[https://github.com/GabrielFrigo4/vault](https://github.com/GabrielFrigo4/vault)" "${HOME}/.vault"
 chmod 0700 "${HOME}/.vault"
+```
 
-# Windows Nativo (Prompt de Comando ou PowerShell)
-git clone "https://github.com/GabrielFrigo4/vault" "%USERPROFILE%\.vault"
+No Windows Nativo (Prompt de Comando ou PowerShell):
+
+```sh
+git clone "[https://github.com/GabrielFrigo4/vault](https://github.com/GabrielFrigo4/vault)" "%USERPROFILE%\.vault"
 ```
 
 > [!IMPORTANT]

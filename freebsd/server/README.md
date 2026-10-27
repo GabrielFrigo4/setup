@@ -24,12 +24,14 @@ Organiza a configuração da VM servidora FreeBSD: agente de integração QEMU p
 
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
-Inicie a VM FreeBSD e conecte-se com `connect.sh`:
+Conectar via SSH na VM FreeBSD:
 
 ```sh
-# Conectar via SSH
 sh freebsd/server/connect.sh
+```
 
-# Copiar arquivos via SCP
+Copiar arquivos via SCP:
+
+```sh
 sh freebsd/server/connect.sh scp ./meu_arquivo freebsd@vm:/tmp/
 ```

@@ -28,15 +28,20 @@ Esta pasta centraliza as receitas de infraestrutura de sistema, ferramentas e se
 
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
-Execute qualquer receita diretamente via terminal:
+Configurar fonte e cursor do console TTY Linux (Spleen 12x24 + Cursor Estático):
 
 ```sh
-# Configurar fonte e cursor do console TTY Linux (Spleen 12x24 + Cursor Estático)
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/system/console.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/system/console.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/system/console.sh) | sh
+```
 
-# Configurar Flatpak + Flathub
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/system/flatpak.sh | sh
+Configurar Flatpak + Flathub:
 
-# Configurar Antigravity IDE & CLI
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/tools/antigravity.sh | sh
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/system/flatpak.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/system/flatpak.sh) | sh
+```
+
+Configurar Antigravity IDE & CLI:
+
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/tools/antigravity.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/common/tools/antigravity.sh) | sh
 ```

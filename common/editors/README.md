@@ -14,41 +14,51 @@ Esta pasta reúne scripts autônomos em POSIX Shell para provisionar editores de
 
 ## 📂 Catálogo de Receitas
 
-| **Editor Packages** | [`install.sh`](install.sh) | Instalação de binários de editores (Neovim, Emacs, Vim, Helix, Micro) |
-| **All Custom Editors** | [`editors.sh`](editors.sh) | Clona e atualiza todos os perfis pessoais de editores (Neovim, Emacs, Vim, Helix, Micro) |
-| **IDE Extensions** | [`sync-extensions.sh`](sync-extensions.sh) | Sincroniza em lote a lista declarativa `extensions.txt` no VS Code, Antigravity ou VSCodium |
-| **Doom Emacs** | [`doom-emacs.sh`](doom-emacs.sh) | Instala o Doom Emacs completo com módulos Treesitter e Mermaid |
-| **LazyVim** | [`lazyvim.sh`](lazyvim.sh) | Instala o starter completo do LazyVim com opções de cursor |
-| **SpaceVim** | [`spacevim.sh`](spacevim.sh) | Instala o SpaceVim com camadas de LSP, Git, Autocomplete e Shell |
-| **Pylance LSP** | [`pylance.sh`](pylance.sh) | Instala o Python Language Server (Pylance) no FreeBSD, Linux e Windows |
-| **EWM (Wayland)** | [`ewm.sh`](ewm.sh) | Clona, compila via Cargo e instala o módulo nativo libewm_core.so |
+| Recurso                | Receita                                    | Descrição                                                                                   |
+| :--------------------- | :----------------------------------------- | :------------------------------------------------------------------------------------------ |
+| **Editor Packages**    | [`install.sh`](install.sh)                 | Instalação de binários de editores (Neovim, Emacs, Vim, Helix, Micro)                       |
+| **All Custom Editors** | [`editors.sh`](editors.sh)                 | Clona e atualiza todos os perfis pessoais de editores (Neovim, Emacs, Vim, Helix, Micro)    |
+| **IDE Extensions**     | [`sync-extensions.sh`](sync-extensions.sh) | Sincroniza em lote a lista declarativa `extensions.txt` no VS Code, Antigravity ou VSCodium |
+| **Doom Emacs**         | [`doom-emacs.sh`](doom-emacs.sh)           | Instala o Doom Emacs completo com módulos Treesitter e Mermaid                              |
+| **LazyVim**            | [`lazyvim.sh`](lazyvim.sh)                 | Instala o starter completo do LazyVim com opções de cursor                                  |
+| **SpaceVim**           | [`spacevim.sh`](spacevim.sh)               | Instala o SpaceVim com camadas de LSP, Git, Autocomplete e Shell                            |
+| **Pylance LSP**        | [`pylance.sh`](pylance.sh)                 | Instala o Python Language Server (Pylance) no FreeBSD, Linux e Windows                      |
+| **EWM (Wayland)**      | [`ewm.sh`](ewm.sh)                         | Clona, compila via Cargo e instala o módulo nativo libewm_core.so                           |
 
 ---
 
 ## 🚀 Como Usar via GitHub (Zero-Clone)
 
-### 1. Clonar Todos os Perfis Pessoais de Editores:
+### 1. Clonar Todos os Perfis Pessoais de Editores
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/editors.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/editors.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/editors.sh) | sh
 ```
 
-### 2. Sincronizar Extensões no VS Code / Antigravity / VSCodium:
+### 2. Sincronizar Extensões no VS Code / Antigravity / VSCodium
+
+Instalar todas as extensões declaradas:
 
 ```sh
-# Instala todas as extensões declaradas
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/sync-extensions.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/sync-extensions.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/sync-extensions.sh) | sh
+```
 
-# Exporta extensões atuais para o arquivo
+Exportar extensões atuais para o arquivo:
+
+```sh
 sh sync-extensions.sh export
 ```
 
-### 3. Instalar Frameworks:
+### 3. Instalar Frameworks
+
+Instalar LazyVim:
 
 ```sh
-# Instalar LazyVim
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/lazyvim.sh | sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/lazyvim.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/lazyvim.sh) | sh
+```
 
-# Instalar Doom Emacs
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/doom-emacs.sh | sh
+Instalar Doom Emacs:
+
+```sh
+curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/doom-emacs.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/doom-emacs.sh) | sh
 ```
