@@ -41,6 +41,23 @@ fi
 
 (
 	cd "${_cargo_dir}"
+	if [ "$(uname -s)" = "FreeBSD" ]; then
+		_pc_override="${_build_dir}/pkgconfig-override"
+		mkdir -p "${_pc_override}"
+		cat << 'EOF' > "${_pc_override}/libdisplay-info.pc"
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libdisplay-info
+Description: EDID and DisplayID library
+Version: 0.3.0
+Libs: -L${libdir} -ldisplay-info
+Cflags: -I${includedir}
+EOF
+		export PKG_CONFIG_PATH="${_pc_override}:/usr/local/libdata/pkgconfig:${PKG_CONFIG_PATH:-}"
+	fi
 	cargo build --release
 )
 

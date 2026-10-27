@@ -18,7 +18,6 @@ _ui_step "Instalando toolchain Rust e dependências de baixo nível para EWM..."
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
 		lang/rust \
-		devel/cargo \
 		devel/pkgconf \
 		devel/libffi \
 		devel/glib20 \
