@@ -24,7 +24,7 @@ if command -v pkg > "/dev/null" 2>&1; then
 		sysutils/seatd \
 		x11/foot \
 		x11/wlr-randr \
-		x11-themes/breeze-icons \
+		x11-themes/kf6-breeze-icons \
 		x11-themes/adwaita-icon-theme
 	${ELEVATE} sysrc seatd_enable="YES" > "/dev/null" 2>&1 || true
 	_target_user="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"

@@ -18,7 +18,7 @@ ${ELEVATE} pw groupmod operator -m "${TARGET_USER}" 2> "/dev/null" || true
 ${ELEVATE} pw groupmod video -m "${TARGET_USER}" 2> "/dev/null" || true
 ${ELEVATE} pw groupmod webcamd -m "${TARGET_USER}" 2> "/dev/null" || true
 
-${ELEVATE} pkg bootstrap --yes
+${ELEVATE} pkg bootstrap -y
 ${ELEVATE} pkg update
 
 _target_font="${DETECTED_CONSOLE_FONT:-spleen-12x24}"

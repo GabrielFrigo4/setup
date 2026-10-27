@@ -174,14 +174,14 @@ _detect_console_font() {
 			[ -n "${_fb_h}" ] && _height="${_fb_h}"
 		fi
 	elif [ "${_os}" = "freebsd" ]; then
-		_mode="$(sysctl -n kern.vt.fb.default_mode 2> "/dev/null" || true)"
+		_mode="$(sysctl -n kern.vt.fb.default_mode 2> "/dev/null" || kenv -q kern.vt.fb.default_mode 2> "/dev/null" || true)"
 		if [ -n "${_mode}" ]; then
 			_h="${_mode#*x}"
 			_h="${_h%%[^0-9]*}"
 			[ -n "${_h}" ] && _height="${_h}"
 		fi
-		if [ "${_height}" -eq 0 ] && [ -f "/var/run/dmesg.boot" ]; then
-			_h="$(grep -Eo "mode [0-9]{3,4}x[0-9]{3,4}" /var/run/dmesg.boot 2> "/dev/null" | tail -n 1 | cut -d'x' -f2 || true)"
+		if [ "${_height}" -eq 0 ]; then
+			_h="$({ dmesg 2> "/dev/null" || cat "/var/run/dmesg.boot" 2> "/dev/null" || true; } | grep -E "VT\(|drm|fb|mode|resolution" | grep -Eo "[0-9]{3,4}x[0-9]{3,4}" | tail -n 1 | cut -d'x' -f2 || true)"
 			[ -n "${_h}" ] && _height="${_h}"
 		fi
 	fi
