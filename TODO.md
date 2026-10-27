@@ -36,3 +36,12 @@
 - **Mouse & Teclado no Console Kernel (Raw TTY):** Configuração de `gpm` no Linux e `moused` ABNT2 acelerado no FreeBSD.
 - **Paridade Cross-Platform Winget:** Suporte a navegadores headless/desktop no Windows via Winget (`Mozilla.Firefox`, `Hibbiki.Chromium`).
 - **Sincronização:** Total aderência aos 22 Princípios de Engenharia UNIX do Universal Environment.
+
+---
+
+## 📌 Backlog & Próximos Passos
+
+---
+
+> [!TIP]
+> Para detalhes sobre a arquitetura e convenções de engenharia, consulte o [PRINCIPLES.md](PRINCIPLES.md) e o [ENVIRONMENT.md](ENVIRONMENT.md).
