@@ -43,7 +43,7 @@ if [ "${_font_found}" -eq 0 ]; then
 fi
 
 ### --------------------------------
-### Configuração vconsole.conf
+### CONFIGURACAO VCONSOLE.CONF
 ### --------------------------------
 if [ -f "/etc/vconsole.conf" ]; then
 	if grep -q "^[[:space:]]*FONT=" "/etc/vconsole.conf" 2> "/dev/null"; then
@@ -56,7 +56,7 @@ else
 fi
 
 ### --------------------------------
-### Configuração console-setup
+### CONFIGURACAO CONSOLE-SETUP
 ### --------------------------------
 if [ -f "/etc/default/console-setup" ]; then
 	if grep -q "^[[:space:]]*FONTFACE=" "/etc/default/console-setup" 2> "/dev/null"; then
@@ -67,7 +67,7 @@ if [ -f "/etc/default/console-setup" ]; then
 fi
 
 ### --------------------------------
-### Escalonamento Dinâmico de Fonte
+### ESCALONAMENTO DINAMICO DE FONTE
 ### --------------------------------
 _autofont_bin="/usr/local/libexec/vconsole-autofont"
 [ -d "/usr/local/libexec" ] || ${ELEVATE} mkdir -p "/usr/local/libexec"
@@ -76,7 +76,7 @@ ${ELEVATE} chmod 0755 "${_autofont_bin}"
 ${ELEVATE} "${_autofont_bin}" --setup
 
 ### --------------------------------
-### Configuração do Cursor em Bloco
+### CONFIGURACAO DO CURSOR EM BLOCO
 ### --------------------------------
 _ui_sub "Configurando cursor em bloco padrão no console Linux (vt.cur_default=0xee10)..."
 
@@ -123,7 +123,7 @@ for _ch in red:0,127,0,196,51,127,0,191,115,255,0,255,115,255,0,255 grn:0,0,127,
 done
 
 ### --------------------------------
-### Mapeamento Teclas F1-F5 e VT
+### MAPEAMENTO TECLAS F1-F5 E VT
 ### --------------------------------
 _keymap_dir="/usr/local/share/kbd/keymaps"
 [ -d "${_keymap_dir}" ] || ${ELEVATE} mkdir -p "${_keymap_dir}"
@@ -168,7 +168,7 @@ if [ -f "/etc/issue" ]; then
 fi
 
 ### --------------------------------
-### Descoberta Dinâmica de Consoles
+### DESCOBERTA DINAMICA DE CONSOLES
 ### --------------------------------
 _vts="/dev/tty0 /dev/tty1 /dev/tty2 /dev/tty3 /dev/tty4 /dev/tty5 /dev/tty6"
 
@@ -195,7 +195,7 @@ for _c in ${_unique_vts}; do
 done
 
 ### --------------------------------
-### Ativação Fonte e Teclado
+### ATIVACAO FONTE E TECLADO
 ### --------------------------------
 if command -v setfont > "/dev/null" 2>&1; then
 	${ELEVATE} setfont "${_target_font}" 2> "/dev/null" || true
@@ -216,7 +216,7 @@ if command -v systemctl > "/dev/null" 2>&1 && systemctl is-active --quiet system
 fi
 
 ### --------------------------------
-### Mouse de Console GPM
+### MOUSE DE CONSOLE GPM
 ### --------------------------------
 if ! command -v gpm > "/dev/null" 2>&1; then
 	command -v dnf > "/dev/null" 2>&1 && ${ELEVATE} dnf install --assumeyes gpm
@@ -230,7 +230,7 @@ if command -v gpm > "/dev/null" 2>&1; then
 fi
 
 ### --------------------------------
-### Terminfo Sanitizado Console
+### TERMINFO SANITIZADO CONSOLE
 ### --------------------------------
 if command -v tic > "/dev/null" 2>&1; then
 	_ui_sub "Instalando terminfo de console com cursores sanitizados..."

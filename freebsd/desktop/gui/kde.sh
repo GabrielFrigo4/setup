@@ -13,7 +13,7 @@ _ui_step "Configurando ambiente gráfico KDE Plasma..."
 ${ELEVATE} pkg install --yes sysutils/desktop-installer x11/wl-clipboard x11/xclip ports-mgmt/octopkg archivers/ark x11-themes/plasma6-breeze-gtk graphics/gimp3-app
 
 ### --------------------------------
-### Desativacao do Baloo Indexer
+### DESATIVACAO DO BALOO INDEXER
 ### --------------------------------
 _ui_sub "Desativando indexador de arquivos Baloo..."
 
@@ -53,7 +53,7 @@ if command -v balooctl6 > "/dev/null" 2>&1; then
 fi
 
 ### --------------------------------
-### Otimizacao Cache Mapeado KDE
+### OTIMIZACAO CACHE MAPEADO KDE
 ### --------------------------------
 _ui_sub "Configurando KDEVARTMP para contornar fallocate no ZFS..."
 

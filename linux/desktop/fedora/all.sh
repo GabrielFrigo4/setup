@@ -22,7 +22,7 @@ _run() {
 }
 
 ### --------------------------------
-### Execução Sequencial
+### EXECUCAO SEQUENCIAL
 ### --------------------------------
 _run "${_dir}/system/base.sh"
 _run "${_dir}/desktop/gnome.sh"

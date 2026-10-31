@@ -41,7 +41,7 @@ if command -v kbdcontrol > "/dev/null" 2>&1; then
 fi
 
 ### --------------------------------
-### Audio OSS and Sndiod Tuning
+### AUDIO OSS AND SNDIOD TUNING
 ### --------------------------------
 ${ELEVATE} pkg install --yes audio/sndiod 2> "/dev/null" || true
 ${ELEVATE} sysrc sndiod_enable="YES" > "/dev/null" 2>&1 || true
@@ -65,7 +65,7 @@ if ! grep -q "hw.snd.default_unit=2" "/etc/sysctl.conf" 2> "/dev/null"; then
 fi
 
 ### --------------------------------
-### DRM and KMS Graphics Tuning
+### DRM AND KMS GRAPHICS TUNING
 ### --------------------------------
 ${ELEVATE} pkg install --yes graphics/drm-kmod multimedia/libva-intel-media-driver multimedia/libva-utils 2> "/dev/null" || true
 if ! sysrc -n kld_list 2> "/dev/null" | grep -q "i915kms"; then
@@ -91,7 +91,7 @@ if [ -f "/boot/loader.conf" ]; then
 fi
 
 ### --------------------------------
-### Isolamento de Rede e Wi-Fi
+### ISOLAMENTO DE REDE E WI-FI
 ### --------------------------------
 if [ -f "/etc/rc.conf" ]; then
 	if grep -q "ifconfig_wlan0=" "/etc/rc.conf" 2> "/dev/null"; then

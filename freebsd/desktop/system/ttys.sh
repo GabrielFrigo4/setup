@@ -86,7 +86,7 @@ fi
 rm -f "${TMP_FILE}"
 
 ### --------------------------------
-### Keymap e Navegacao Console VT
+### KEYMAP E NAVEGACAO CONSOLE VT
 ### --------------------------------
 if command -v kbdcontrol > "/dev/null" 2>&1; then
 	_esc="$(printf '\x1b')"

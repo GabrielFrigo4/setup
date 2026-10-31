@@ -16,7 +16,7 @@ fi
 _ui_step "Provisionando suite de produtividade desktop Collabora Office..."
 
 ### --------------------------------
-### Package Manager Dispatch
+### PACKAGE MANAGER DISPATCH
 ### --------------------------------
 if command -v pkg > "/dev/null" 2>&1; then
 	if pkg search -q "^collabora-office$" > "/dev/null" 2>&1 || pkg search -q "^collabora$" > "/dev/null" 2>&1; then

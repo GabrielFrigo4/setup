@@ -10,14 +10,29 @@ _setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
 
 _ui_step "Configurando ambiente GNOME e atalhos..."
 
+### --------------------------------
+### 1. PACOTES E TEMAS GTK
+### --------------------------------
 ${ELEVATE} dnf install --assumeyes gnome-tweak-tool adw-gtk3-theme plasma-breeze-qt6
 
+### --------------------------------
+### 2. ENVIRONMENT.D CONFIG
+### --------------------------------
 mkdir -p "${HOME}/.config/environment.d"
 echo "QT_QPA_PLATFORMTHEME=qt6ct" > "${HOME}/.config/environment.d/qt.conf"
 
-command -v systemctl > "/dev/null" 2>&1 && systemctl --user set-environment QT_QPA_PLATFORMTHEME=qt6ct 2> "/dev/null" || true
-command -v dbus-update-activation-environment > "/dev/null" 2>&1 && dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME=qt6ct 2> "/dev/null" || true
+cat <<- "EOF" > "${HOME}/.config/environment.d/gtk-dark.conf"
+GTK_THEME=adw-gtk3-dark
+GTK_APPLICATION_PREFER_DARK_THEME=1
+SAL_USE_VCLPLUGIN=gtk3
+EOF
 
+command -v systemctl > "/dev/null" 2>&1 && systemctl --user set-environment QT_QPA_PLATFORMTHEME=qt6ct GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 SAL_USE_VCLPLUGIN=gtk3 2> "/dev/null" || true
+command -v dbus-update-activation-environment > "/dev/null" 2>&1 && dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME=qt6ct GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 SAL_USE_VCLPLUGIN=gtk3 2> "/dev/null" || true
+
+### --------------------------------
+### 3. CONFIGURACOES GSETTINGS
+### --------------------------------
 gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3-dark" 2> "/dev/null" || true
 gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close" 2> "/dev/null" || true
 
@@ -31,6 +46,9 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys www "['<Super>w']" 2>
 gsettings set org.gnome.settings-daemon.plugins.media-keys home "['<Super>h']" 2> "/dev/null" || true
 gsettings set org.gnome.settings-daemon.plugins.media-keys search "['<Super>f']" 2> "/dev/null" || true
 
+### --------------------------------
+### 4. ATALHOS CUSTOMIZADOS
+### --------------------------------
 create_launcher() {
 	KEY_PATH="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom${1}/"
 	gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KEY_PATH}" "name" "${2}"

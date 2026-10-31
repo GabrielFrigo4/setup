@@ -11,13 +11,13 @@ _setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 _ui_step "Configurando ambiente guest para integração com FreeBSD..."
 
 ### --------------------------------
-### 1. Pacotes Básicos do Guest
+### 1. PACOTES BASICOS DO GUEST
 ### --------------------------------
 ${ELEVATE} apt update
 ${ELEVATE} apt install --yes nfs-common curl sudo doas git-crypt
 
 ### --------------------------------
-### 2. Alinhamento POSIX 1001
+### 2. ALINHAMENTO POSIX 1001
 ### --------------------------------
 if id -u gabriel > "/dev/null" 2>&1; then
 	_current_uid="$(id -u gabriel)"
@@ -30,7 +30,7 @@ if id -u gabriel > "/dev/null" 2>&1; then
 fi
 
 ### --------------------------------
-### 3. Escalonamento sem Senha
+### 3. ESCALONAMENTO SEM SENHA
 ### --------------------------------
 echo "gabriel ALL=(ALL:ALL) NOPASSWD: ALL" | ${ELEVATE} tee /etc/sudoers.d/gabriel > "/dev/null"
 ${ELEVATE} chmod 0440 /etc/sudoers.d/gabriel
@@ -39,7 +39,7 @@ echo "permit nopass gabriel as root" | ${ELEVATE} tee /etc/doas.conf > "/dev/nul
 ${ELEVATE} chmod 0400 /etc/doas.conf
 
 ### --------------------------------
-### 4. Ponto de Montagem e NFSv3
+### 4. PONTO DE MONTAGEM E NFSV3
 ### --------------------------------
 ${ELEVATE} mkdir -p /home/gabrielf
 ${ELEVATE} chown 1001:1001 /home/gabrielf
@@ -52,7 +52,7 @@ fi
 ${ELEVATE} mount /home/gabrielf 2> "/dev/null" || true
 
 ### --------------------------------
-### 5. Binário do Agente Antigravity
+### 5. BINARIO DO AGENTE ANTIGRAVITY
 ### --------------------------------
 if [ -f "/home/gabrielf/.gemini/antigravity-cli/bin/agy" ]; then
 	${ELEVATE} ln -sf "/home/gabrielf/.gemini/antigravity-cli/bin/agy" "/usr/local/bin/agy"

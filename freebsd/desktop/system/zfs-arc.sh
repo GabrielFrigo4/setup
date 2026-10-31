@@ -11,7 +11,7 @@ _setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
 _ui_step "Calculando limites dinâmicos de memória ZFS ARC..."
 
 ### --------------------------------
-### 1. Deteccao de Memoria Fisica
+### 1. DETECCAO DE MEMORIA FISICA
 ### --------------------------------
 RAW_BYTES="$(sysctl -n hw.realmem 2> "/dev/null" || sysctl -n hw.physmem 2> "/dev/null" || echo 0)"
 
@@ -24,7 +24,7 @@ TOTAL_GB="$(echo "${RAW_BYTES}" | awk '{ printf "%.0f\n", $1 / 1073741824 }')"
 [ "${TOTAL_GB}" -lt 1 ] && TOTAL_GB=1
 
 ### --------------------------------
-### 2. Proporcao de Memoria
+### 2. PROPORCAO DE MEMORIA
 ### --------------------------------
 ARC_MAX_GB=$(( TOTAL_GB * 4 / 16 ))
 [ "${ARC_MAX_GB}" -lt 1 ] && ARC_MAX_GB=1
@@ -51,13 +51,13 @@ _ui_sub "Host FreeBSD: ${HOST_MEM_GB} GB"
 _ui_sub "Bhyve VM Guest: ${VM_MEM_GB} GB"
 
 ### --------------------------------
-### 3. Ajuste Imediato em Runtime
+### 3. AJUSTE IMEDIATO EM RUNTIME
 ### --------------------------------
 ${ELEVATE} sysctl vfs.zfs.arc.max="${ARC_MAX_BYTES}" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysctl vfs.zfs.arc.min="${ARC_MIN_BYTES}" > "/dev/null" 2>&1 || true
 
 ### --------------------------------
-### 4. Limpeza de Tunables Residuais
+### 4. LIMPEZA DE TUNABLES RESIDUAIS
 ### --------------------------------
 for _cfg in "/etc/sysctl.conf" "/boot/loader.conf" "/boot/loader.conf.local"; do
 	if [ -f "${_cfg}" ]; then
@@ -74,7 +74,7 @@ if [ -d "/boot/loader.conf.d" ]; then
 fi
 
 ### --------------------------------
-### 5. Persistencia em sysctl.conf
+### 5. PERSISTENCIA EM SYSCTL.CONF
 ### --------------------------------
 if [ -f "/etc/sysctl.conf" ]; then
 	cat <<- EOF | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
@@ -84,7 +84,7 @@ if [ -f "/etc/sysctl.conf" ]; then
 fi
 
 ### --------------------------------
-### 6. Persistencia em loader.conf
+### 6. PERSISTENCIA EM LOADER.CONF
 ### --------------------------------
 if [ -f "/boot/loader.conf" ]; then
 	cat <<- EOF | ${ELEVATE} tee -a "/boot/loader.conf" > "/dev/null"
@@ -94,7 +94,7 @@ if [ -f "/boot/loader.conf" ]; then
 fi
 
 ### --------------------------------
-### 7. Alinhamento Template Bhyve
+### 7. ALINHAMENTO TEMPLATE BHYVE
 ### --------------------------------
 if [ "${VM_MEM_GB}" -ge 1 ]; then
 	for _vm_conf in "/zroot/vm/.templates/debian.conf" "/zroot/vm/debian/debian.conf"; do
@@ -105,7 +105,7 @@ if [ "${VM_MEM_GB}" -ge 1 ]; then
 fi
 
 ### --------------------------------
-### 8. Diagnostico do ZFS ARC
+### 8. DIAGNOSTICO DO ZFS ARC
 ### --------------------------------
 _ui_step "Instalando utilitários de diagnóstico e py-sysctl..."
 ${ELEVATE} pkg install --yes devel/py-sysctl sysutils/arc_summary sysutils/zfs-stats 2> "/dev/null" || true

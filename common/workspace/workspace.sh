@@ -25,7 +25,7 @@ fi
 _ui_sub "Diretório de destino: ${_env_dir}"
 
 ### --------------------------------
-### Clonagem Hub e Submodulos
+### CLONAGEM HUB E SUBMODULOS
 ### --------------------------------
 _hub_url="https://github.com/GabrielFrigo4/environment.git"
 
@@ -38,7 +38,7 @@ else
 fi
 
 ### --------------------------------
-### Provisionamento do Vault
+### PROVISIONAMENTO DO VAULT
 ### --------------------------------
 _vault_dir="${_env_dir}/Vault"
 if [ ! -e "${_vault_dir}/.git" ]; then
@@ -53,7 +53,7 @@ else
 fi
 
 ### --------------------------------
-### Ganchos e Estado Git
+### GANCHOS E ESTADO GIT
 ### --------------------------------
 if [ -f "${_env_dir}/Makefile" ] && command -v make > "/dev/null" 2>&1; then
 	_ui_sub "Configurando ganchos do ecossistema..."

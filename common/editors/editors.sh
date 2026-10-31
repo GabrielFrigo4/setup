@@ -11,7 +11,7 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 _ui_step "Configurando perfis de editores de código..."
 
 ### --------------------------------
-### Emacs Configuration
+### EMACS CONFIGURATION
 ### --------------------------------
 if [ ! -d "${HOME}/.emacs.d/.git" ]; then
 	mkdir -p "${HOME}/.emacs.d"
@@ -28,7 +28,7 @@ Name=Emacs
 GenericName=Text Editor
 Comment=Edit text (GNU Emacs Client & Server)
 MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;x-scheme-handler/org-protocol;
-Exec=emacsclient --create-frame --alternate-editor="" %F
+Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F
 Icon=emacs
 Type=Application
 Terminal=false
@@ -40,13 +40,14 @@ Actions=new-frame;new-instance;
 
 [Desktop Action new-frame]
 Name=New Frame
-Exec=emacsclient --create-frame --alternate-editor="" %F
+Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F
 
 [Desktop Action new-instance]
 Name=New Standalone Instance
-Exec=emacs %F
+Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacs %F
 EOF
-chmod 0644 "${_apps_dir}/emacs.desktop"
+cp -f "${_apps_dir}/emacs.desktop" "${_apps_dir}/emacsclient.desktop"
+chmod 0644 "${_apps_dir}/emacs.desktop" "${_apps_dir}/emacsclient.desktop"
 if command -v update-desktop-database > "/dev/null" 2>&1; then
 	update-desktop-database "${_apps_dir}" 2> "/dev/null" || true
 fi
@@ -55,28 +56,32 @@ if [ -n "${ELEVATE:-}" ] || [ "$(id -u)" -eq 0 ]; then
 	if [ -w "/usr/local/share/applications" ] || [ "$(id -u)" -eq 0 ]; then
 		mkdir -p "/usr/local/share/applications" 2> "/dev/null" || true
 		cp -f "${_apps_dir}/emacs.desktop" "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
-		chmod 0644 "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
+		cp -f "${_apps_dir}/emacsclient.desktop" "/usr/local/share/applications/emacsclient.desktop" 2> "/dev/null" || true
+		chmod 0644 "/usr/local/share/applications/emacs.desktop" "/usr/local/share/applications/emacsclient.desktop" 2> "/dev/null" || true
 		command -v update-desktop-database > "/dev/null" 2>&1 && update-desktop-database "/usr/local/share/applications" 2> "/dev/null" || true
 	elif [ -n "${ELEVATE:-}" ]; then
 		${ELEVATE} mkdir -p "/usr/local/share/applications" 2> "/dev/null" || true
 		${ELEVATE} cp -f "${_apps_dir}/emacs.desktop" "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
-		${ELEVATE} chmod 0644 "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
+		${ELEVATE} cp -f "${_apps_dir}/emacsclient.desktop" "/usr/local/share/applications/emacsclient.desktop" 2> "/dev/null" || true
+		${ELEVATE} chmod 0644 "/usr/local/share/applications/emacs.desktop" "/usr/local/share/applications/emacsclient.desktop" 2> "/dev/null" || true
 		command -v update-desktop-database > "/dev/null" 2>&1 && ${ELEVATE} update-desktop-database "/usr/local/share/applications" 2> "/dev/null" || true
 	fi
 
 	if [ -f "/usr/share/applications/emacs.desktop" ]; then
 		if [ -w "/usr/share/applications/emacs.desktop" ]; then
-			sed -i 's|^Exec=emacs %F|Exec=emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || true
+			sed -i '' 's|^Exec=.*emacs.*|Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || \
+				sed -i 's|^Exec=.*emacs.*|Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || true
 			command -v update-desktop-database > "/dev/null" 2>&1 && update-desktop-database "/usr/share/applications" 2> "/dev/null" || true
 		elif [ -n "${ELEVATE:-}" ]; then
-			${ELEVATE} sed -i 's|^Exec=emacs %F|Exec=emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || true
+			${ELEVATE} sed -i '' 's|^Exec=.*emacs.*|Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || \
+				${ELEVATE} sed -i 's|^Exec=.*emacs.*|Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || true
 			command -v update-desktop-database > "/dev/null" 2>&1 && ${ELEVATE} update-desktop-database "/usr/share/applications" 2> "/dev/null" || true
 		fi
 	fi
 fi
 
 ### --------------------------------
-### NeoVim Configuration
+### NEOVIM CONFIGURATION
 ### --------------------------------
 if [ ! -d "${HOME}/.config/nvim/.git" ]; then
 	mkdir -p "${HOME}/.config/nvim"
@@ -86,7 +91,7 @@ else
 fi
 
 ### --------------------------------
-### Vim Configuration
+### VIM CONFIGURATION
 ### --------------------------------
 if [ ! -d "${HOME}/.vim/.git" ]; then
 	git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/.vim"
@@ -100,7 +105,7 @@ source ~/.vim/vimrc
 EOF
 
 ### --------------------------------
-### Helix Configuration
+### HELIX CONFIGURATION
 ### --------------------------------
 if [ ! -d "${HOME}/.config/helix/.git" ]; then
 	mkdir -p "${HOME}/.config/helix"
@@ -110,7 +115,7 @@ else
 fi
 
 ### --------------------------------
-### Micro Configuration
+### MICRO CONFIGURATION
 ### --------------------------------
 mkdir -p "${HOME}/.config/micro/colorschemes"
 if [ ! -f "${HOME}/.config/micro/colorschemes/dracula.micro" ]; then

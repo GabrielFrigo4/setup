@@ -20,7 +20,7 @@ _check_cmd() {
 }
 
 ### ================================
-### Ferramentas Essenciais
+### FERRAMENTAS ESSENCIAIS
 ### ================================
 echo "↳ 1. Ferramentas essenciais do ecossistema..."
 _check_cmd "git" "Controle de Versão"
@@ -28,7 +28,7 @@ _check_cmd "curl" "Download & API"
 _check_cmd "python3" "Auditorias & Scripts"
 
 ### ================================
-### Privilégios & Elevação
+### PRIVILEGIOS & ELEVACAO
 ### ================================
 echo "↳ 2. Mecanismo de elevação de privilégios..."
 if command -v doas > "/dev/null" 2>&1; then
@@ -43,7 +43,7 @@ else
 fi
 
 ### ================================
-### Protocolo Gráfico & Wayland
+### PROTOCOLO GRAFICO & WAYLAND
 ### ================================
 echo "↳ 3. Ambiente gráfico & compositor..."
 _session="${XDG_SESSION_TYPE:-unknown}"
@@ -56,7 +56,7 @@ else
 fi
 
 ### ================================
-### Aceleração de Vídeo & Som
+### ACELERACAO DE VIDEO & SOM
 ### ================================
 echo "↳ 4. Aceleração gráfica & subsistema de som..."
 if command -v vainfo > "/dev/null" 2>&1; then

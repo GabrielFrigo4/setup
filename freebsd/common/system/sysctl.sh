@@ -24,25 +24,25 @@ _set_sysctl() {
 ${ELEVATE} sed -i '' '/# Default USB Audio/d' "/etc/sysctl.conf" 2> "/dev/null" || true
 
 ### --------------------------------
-### Core Dump e Seguranca
+### CORE DUMP E SEGURANCA
 ### --------------------------------
 _set_sysctl "kern.coredump" "0"
 
 ### --------------------------------
-### Descritores de Arquivos
+### DESCRITORES DE ARQUIVOS
 ### --------------------------------
 _set_sysctl "kern.maxfiles" "1048576"
 _set_sysctl "kern.maxfilesperproc" "524288"
 
 ### --------------------------------
-### Memoria Compartilhada IPC SHM
+### MEMORIA COMPARTILHADA IPC SHM
 ### --------------------------------
 _set_sysctl "kern.ipc.shmmax" "2147483648"
 _set_sysctl "kern.ipc.shmall" "524288"
 _set_sysctl "kern.ipc.shm_allow_removed" "1"
 
 ### --------------------------------
-### Roteamento e Mixer de Audio
+### ROTEAMENTO E MIXER DE AUDIO
 ### --------------------------------
 _set_sysctl "hw.snd.default_unit" "2"
 _set_sysctl "dev.pcm.2.mixer.vol_0_0.val" "0"

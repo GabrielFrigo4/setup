@@ -22,7 +22,7 @@ _run() {
 }
 
 ### --------------------------------
-### Execução Sequencial
+### EXECUCAO SEQUENCIAL
 ### --------------------------------
 _run "${_dir}/system/system.sh"
 _run "${_dir}/system/toolchain.sh"
