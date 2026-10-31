@@ -39,7 +39,7 @@ rem --------------------------------
 winget install dnSpyEx.dnSpy
 winget install x64dbg.x64dbg
 winget install Hex-Rays.IDA.Free
-winget instalL Rizin.Cutter
+winget install Rizin.Cutter
 
 rem --------------------------------
 rem database
@@ -58,6 +58,7 @@ rem framework
 rem --------------------------------
 winget install Love2d.Love2d
 winget install Microsoft.Vcpkg
+winget install Kitware.CMake
 
 rem --------------------------------
 rem gnuwin32
@@ -185,6 +186,8 @@ rem browser
 rem --------------------------------
 winget install Google.Chrome
 winget install Mozilla.Firefox.pt-BR
+winget install Hibbiki.Chromium
+winget install Mozilla.Thunderbird.pt-BR
 winget install firefoxpwa
 
 rem --------------------------------

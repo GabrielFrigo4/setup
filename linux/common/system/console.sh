@@ -123,16 +123,21 @@ for _ch in red:0,127,0,196,51,127,0,191,115,255,0,255,115,255,0,255 grn:0,0,127,
 done
 
 ### --------------------------------
-### Mapeamento Teclas F1-F5
+### Mapeamento Teclas F1-F5 e VT
 ### --------------------------------
 _keymap_dir="/usr/local/share/kbd/keymaps"
 [ -d "${_keymap_dir}" ] || ${ELEVATE} mkdir -p "${_keymap_dir}"
-cat <<- "EOF" | ${ELEVATE} tee "${_keymap_dir}/standard-fkeys.map" > "/dev/null"
-string F1 = "\033[11~"
-string F2 = "\033[12~"
-string F3 = "\033[13~"
-string F4 = "\033[14~"
-string F5 = "\033[15~"
+_esc="$(printf '\x1b')"
+cat <<- EOF | ${ELEVATE} tee "${_keymap_dir}/standard-fkeys.map" > "/dev/null"
+control keycode 105 = F100
+control keycode 106 = F101
+string F100 = "${_esc}[1;5D"
+string F101 = "${_esc}[1;5C"
+string F1 = "${_esc}[11~"
+string F2 = "${_esc}[12~"
+string F3 = "${_esc}[13~"
+string F4 = "${_esc}[14~"
+string F5 = "${_esc}[15~"
 EOF
 ${ELEVATE} chmod 0644 "${_keymap_dir}/standard-fkeys.map"
 
@@ -151,11 +156,11 @@ if command -v systemctl > "/dev/null" 2>&1; then
 	${ELEVATE} systemctl daemon-reload 2> "/dev/null" || true
 fi
 
-_tty_palette='\033]P0000000\033]P1d16969\033]P273c991\033]P3e5c07b\033]P4569cd6\033]P5c586c0\033]P64ec9b0\033]P7d4d4d4\033]P8858585\033]P9f7768e\033]PA9ece6a\033]PBe0af68\033]PC7dcfff\033]PDbb9af7\033]PE4fc1ff\033]PFffffff'
+_tty_palette='\x1b]P0000000\x1b]P1d16969\x1b]P273c991\x1b]P3e5c07b\x1b]P4569cd6\x1b]P5c586c0\x1b]P64ec9b0\x1b]P7d4d4d4\x1b]P8858585\x1b]P9f7768e\x1b]PA9ece6a\x1b]PBe0af68\x1b]PC7dcfff\x1b]PDbb9af7\x1b]PE4fc1ff\x1b]PFffffff'
 
 if [ -f "/etc/issue" ]; then
 	_tmp_issue="$(mktemp)"
-	printf '\033%%G\033[?16;238;0c%b' "${_tty_palette}" > "${_tmp_issue}"
+	printf '\x1b%%G\x1b[?16;238;0c%b' "${_tty_palette}" > "${_tmp_issue}"
 	sed -e 's/\x1b%G//g' -e 's/\x1b\]P[0-9A-Fa-f]\{7\}//g' -e 's/\x1b\[?6c//g' -e 's/\x1b\[?17;0;[0-9]*c//g' -e 's/\x1b\[?112;0;[0-9]*c//g' -e 's/\x1b\[?112c//g' -e 's/\x1b\[?16;[0-9]*;[0-9]*c//g' -e 's/\x1b\[?0c//g' -e 's/\x1b\[?12l//g' -e 's/\x1b\[16;[0-9]*\]//g' "/etc/issue" >> "${_tmp_issue}"
 	${ELEVATE} cp "${_tmp_issue}" "/etc/issue"
 	${ELEVATE} chmod 0644 "/etc/issue"
@@ -184,7 +189,7 @@ _unique_vts="$(echo "${_vts}" | tr ' ' '\n' | sort -u)"
 
 for _c in ${_unique_vts}; do
 	if [ -c "${_c}" ]; then
-		printf '\033%%G\033[?16;238;0c%b' "${_tty_palette}" | ${ELEVATE} tee "${_c}" > "/dev/null" 2>&1 || true
+		printf '\x1b%%G\x1b[?16;238;0c%b' "${_tty_palette}" | ${ELEVATE} tee "${_c}" > "/dev/null" 2>&1 || true
 		command -v stty > "/dev/null" 2>&1 && ${ELEVATE} stty -F "${_c}" iutf8 2> "/dev/null" || true
 	fi
 done

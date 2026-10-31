@@ -20,6 +20,7 @@ ${ELEVATE} pkg install --yes sysutils/vm-bhyve sysutils/bhyve-firmware net/tiger
 ### --------------------------------
 ${ELEVATE} sysrc vm_enable="YES"
 ${ELEVATE} sysrc vm_dir="zfs:zroot/vm"
+${ELEVATE} sysrc vm_list=""
 ${ELEVATE} sysrc gateway_enable="YES"
 ${ELEVATE} sysrc pf_enable="YES"
 ${ELEVATE} sysrc pf_rules="/etc/pf.conf"
@@ -60,7 +61,7 @@ ${ELEVATE} mkdir -p /zroot/vm/.templates
 cat <<- "EOF" | ${ELEVATE} tee /zroot/vm/.templates/debian.conf > "/dev/null"
 	loader="uefi"
 	cpu=4
-	memory=2G
+	memory=1G
 	network0_type="virtio-net"
 	network0_switch="public"
 	disk0_type="virtio-blk"

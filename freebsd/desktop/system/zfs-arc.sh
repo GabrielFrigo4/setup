@@ -26,14 +26,22 @@ TOTAL_GB="$(echo "${RAW_BYTES}" | awk '{ printf "%.0f\n", $1 / 1073741824 }')"
 ### --------------------------------
 ### 2. Proporcao de Memoria
 ### --------------------------------
-ARC_MAX_GB=$(( TOTAL_GB * 4 / 8 ))
-HOST_MEM_GB=$(( TOTAL_GB * 3 / 8 ))
-VM_MEM_GB=$(( TOTAL_GB * 1 / 8 ))
-
-[ "${VM_MEM_GB}" -lt 1 ] && VM_MEM_GB=1
+ARC_MAX_GB=$(( TOTAL_GB * 4 / 16 ))
 [ "${ARC_MAX_GB}" -lt 1 ] && ARC_MAX_GB=1
+[ "${ARC_MAX_GB}" -gt 4 ] && ARC_MAX_GB=4
+
+VM_MEM_GB=$(( TOTAL_GB * 1 / 16 ))
+[ "${VM_MEM_GB}" -lt 1 ] && VM_MEM_GB=1
+[ "${VM_MEM_GB}" -gt 2 ] && VM_MEM_GB=2
+
+HOST_MEM_GB=$(( TOTAL_GB - ARC_MAX_GB - VM_MEM_GB ))
+[ "${HOST_MEM_GB}" -lt 1 ] && HOST_MEM_GB=1
 
 ARC_MAX_BYTES=$(( ARC_MAX_GB * 1024 * 1024 * 1024 ))
+ARC_MIN_BYTES=1073741824
+if [ "${ARC_MAX_BYTES}" -le "${ARC_MIN_BYTES}" ]; then
+	ARC_MIN_BYTES=$(( ARC_MAX_BYTES / 2 ))
+fi
 VM_MEM_BYTES=$(( VM_MEM_GB * 1024 * 1024 * 1024 ))
 HOST_MEM_BYTES=$(( HOST_MEM_GB * 1024 * 1024 * 1024 ))
 
@@ -45,46 +53,59 @@ _ui_sub "Bhyve VM Guest: ${VM_MEM_GB} GB"
 ### --------------------------------
 ### 3. Ajuste Imediato em Runtime
 ### --------------------------------
-${ELEVATE} sysctl vfs.zfs.arc_max="${ARC_MAX_BYTES}" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysctl vfs.zfs.arc.max="${ARC_MAX_BYTES}" > "/dev/null" 2>&1 || true
+${ELEVATE} sysctl vfs.zfs.arc.min="${ARC_MIN_BYTES}" > "/dev/null" 2>&1 || true
 
 ### --------------------------------
-### 4. Persistencia em sysctl.conf
+### 4. Limpeza de Tunables Residuais
+### --------------------------------
+for _cfg in "/etc/sysctl.conf" "/boot/loader.conf" "/boot/loader.conf.local"; do
+	if [ -f "${_cfg}" ]; then
+		${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc_max/d' -e '/vfs\.zfs\.arc\.max/d' -e '/vfs\.zfs\.arc\.min/d' "${_cfg}" 2> "/dev/null" || true
+	fi
+done
+
+if [ -d "/boot/loader.conf.d" ]; then
+	for _cfg in /boot/loader.conf.d/*; do
+		if [ -f "${_cfg}" ]; then
+			${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc_max/d' -e '/vfs\.zfs\.arc\.max/d' -e '/vfs\.zfs\.arc\.min/d' "${_cfg}" 2> "/dev/null" || true
+		fi
+	done
+fi
+
+### --------------------------------
+### 5. Persistencia em sysctl.conf
 ### --------------------------------
 if [ -f "/etc/sysctl.conf" ]; then
-	if grep -q "vfs.zfs.arc" "/etc/sysctl.conf" 2> "/dev/null"; then
-		${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc/d' "/etc/sysctl.conf" 2> "/dev/null" || true
-	fi
 	cat <<- EOF | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
-
-		# Default ZFS ARC Cache
-		vfs.zfs.arc_max=${ARC_MAX_BYTES}
+	vfs.zfs.arc.max=${ARC_MAX_BYTES}
+	vfs.zfs.arc.min=${ARC_MIN_BYTES}
 	EOF
 fi
 
 ### --------------------------------
-### 5. Persistencia em loader.conf
+### 6. Persistencia em loader.conf
 ### --------------------------------
 if [ -f "/boot/loader.conf" ]; then
-	if grep -q "vfs.zfs.arc" "/boot/loader.conf" 2> "/dev/null"; then
-		${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc/d' "/boot/loader.conf" 2> "/dev/null" || true
-	fi
 	cat <<- EOF | ${ELEVATE} tee -a "/boot/loader.conf" > "/dev/null"
-
-		# Default ZFS ARC Cache
-		vfs.zfs.arc_max="${ARC_MAX_BYTES}"
+	vfs.zfs.arc.max="${ARC_MAX_BYTES}"
+	vfs.zfs.arc.min="${ARC_MIN_BYTES}"
 	EOF
 fi
 
 ### --------------------------------
-### 6. Alinhamento Template Bhyve
+### 7. Alinhamento Template Bhyve
 ### --------------------------------
-if [ -f "/zroot/vm/.templates/debian.conf" ] && [ "${VM_MEM_GB}" -ge 1 ]; then
-	${ELEVATE} sed -i '' "s/^memory=.*/memory=${VM_MEM_GB}G/" "/zroot/vm/.templates/debian.conf" 2> "/dev/null" || true
+if [ "${VM_MEM_GB}" -ge 1 ]; then
+	for _vm_conf in "/zroot/vm/.templates/debian.conf" "/zroot/vm/debian/debian.conf"; do
+		if [ -f "${_vm_conf}" ]; then
+			${ELEVATE} sed -i '' "s/^memory=.*/memory=${VM_MEM_GB}G/" "${_vm_conf}" 2> "/dev/null" || true
+		fi
+	done
 fi
 
 ### --------------------------------
-### 7. Diagnostico do ZFS ARC
+### 8. Diagnostico do ZFS ARC
 ### --------------------------------
 _ui_step "Instalando utilitários de diagnóstico e py-sysctl..."
 ${ELEVATE} pkg install --yes devel/py-sysctl sysutils/arc_summary sysutils/zfs-stats 2> "/dev/null" || true

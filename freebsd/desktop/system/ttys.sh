@@ -85,4 +85,13 @@ fi
 
 rm -f "${TMP_FILE}"
 
+### --------------------------------
+### Keymap e Navegacao Console VT
+### --------------------------------
+if command -v kbdcontrol > "/dev/null" 2>&1; then
+	_esc="$(printf '\x1b')"
+	${ELEVATE} kbdcontrol -f 65 "${_esc}[1;5D" > "/dev/null" 2>&1 || true
+	${ELEVATE} kbdcontrol -f 66 "${_esc}[1;5C" > "/dev/null" 2>&1 || true
+fi
+
 _ui_ok "Configuração do /etc/ttys alinhada com sucesso!"

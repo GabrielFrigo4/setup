@@ -10,7 +10,12 @@ _setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
 
 _ui_step "Configurando sistema base, filesystems e workspace Fedora..."
 
-${ELEVATE} dnf install --assumeyes fuse-sshfs zsh
+${ELEVATE} dnf install --assumeyes \
+	fuse-sshfs \
+	zsh \
+	cmake \
+	cmake-gui \
+	cmake-doc
 
 if command -v zsh > "/dev/null" 2>&1; then
 	TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"

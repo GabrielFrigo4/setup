@@ -10,22 +10,42 @@ _setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 
 _ui_step "Aplicando otimizações de kernel FreeBSD..."
 
-${ELEVATE} sysctl kern.coredump=0 > "/dev/null" 2>&1 || true
-if ! grep -q "kern.coredump=0" "/etc/sysctl.conf" 2> "/dev/null"; then
-	echo "kern.coredump=0" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
-fi
+_set_sysctl() {
+	_key="$1"
+	_val="$2"
+	${ELEVATE} sysctl "${_key}=${_val}" > "/dev/null" 2>&1 || true
+	if grep -q "^[[:space:]]*${_key}=" "/etc/sysctl.conf" 2> "/dev/null"; then
+		${ELEVATE} sed -i '' "s|^[[:space:]]*${_key}=.*|${_key}=${_val}|" "/etc/sysctl.conf"
+	else
+		echo "${_key}=${_val}" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
+	fi
+}
 
-${ELEVATE} sysctl hw.snd.default_unit=2 > "/dev/null" 2>&1 || true
-${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_0.val=0 > "/dev/null" 2>&1 || true
-${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
+${ELEVATE} sed -i '' '/# Default USB Audio/d' "/etc/sysctl.conf" 2> "/dev/null" || true
 
-if ! grep -q "hw.snd.default_unit=2" "/etc/sysctl.conf" 2> "/dev/null"; then
-	cat <<- "EOF" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
-	# Default USB Audio
-	hw.snd.default_unit=2
-	dev.pcm.2.mixer.vol_0_0.val=0
-	dev.pcm.2.mixer.vol_0_1.val=0
-	EOF
-fi
+### --------------------------------
+### Core Dump e Seguranca
+### --------------------------------
+_set_sysctl "kern.coredump" "0"
+
+### --------------------------------
+### Descritores de Arquivos
+### --------------------------------
+_set_sysctl "kern.maxfiles" "1048576"
+_set_sysctl "kern.maxfilesperproc" "524288"
+
+### --------------------------------
+### Memoria Compartilhada IPC SHM
+### --------------------------------
+_set_sysctl "kern.ipc.shmmax" "2147483648"
+_set_sysctl "kern.ipc.shmall" "524288"
+_set_sysctl "kern.ipc.shm_allow_removed" "1"
+
+### --------------------------------
+### Roteamento e Mixer de Audio
+### --------------------------------
+_set_sysctl "hw.snd.default_unit" "2"
+_set_sysctl "dev.pcm.2.mixer.vol_0_0.val" "0"
+_set_sysctl "dev.pcm.2.mixer.vol_0_1.val" "0"
 
 _ui_ok "Otimizações aplicadas com sucesso!"

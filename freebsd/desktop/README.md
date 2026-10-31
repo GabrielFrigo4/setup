@@ -19,7 +19,7 @@ Esta pasta reúne scripts especializados para a estação de trabalho gráfica F
 | **`system/`**    | [`system/system.sh`](system/system.sh)                                     | Grupos essenciais, fontes Spleen 12x24, tunings de GPU Intel Gen 12 e Wi-Fi Realtek          |
 | **`system/`**    | [`system/toolchain.sh`](system/toolchain.sh)                               | Toolchain GNU: `gcc` e `coreutils`                                                           |
 | **`system/`**    | [`system/ttys.sh`](system/ttys.sh)                                         | Alinhamento canônico, auto-cura e formatação tabular do `/etc/ttys`                          |
-| **`system/`**    | [`system/zfs-arc.sh`](system/zfs-arc.sh)                                   | Dimensionamento dinâmico de memória ZFS ARC (4/8), Host (3/8) e Bhyve VM (1/8)               |
+| **`system/`**    | [`system/zfs-arc.sh`](system/zfs-arc.sh)                                   | Dimensionamento dinâmico de memória ZFS ARC (4/16), Host (11/16) e Bhyve VM (1/16)           |
 | **`gui/`**       | [`gui/kde.sh`](gui/kde.sh)                                                 | Ambiente gráfico KDE Plasma 6 Wayland, tema GTK (`plasma6-breeze-gtk`) e `desktop-installer` |
 | **`ports/`**     | [`ports/ports.sh`](ports/ports.sh)                                         | Clonagem e sincronização da árvore oficial de Ports via Git                                  |
 | **`devices/`**   | [`devices/audio.sh`](devices/audio.sh)                                     | Roteamento de áudio do sistema para celular Android via USB/RTP                              |

@@ -11,6 +11,7 @@ pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-binutils \
 	mingw-w64-ucrt-x86_64-ntldd \
 	mingw-w64-ucrt-x86_64-cmake \
+	mingw-w64-ucrt-x86_64-cmake-gui \
 	mingw-w64-ucrt-x86_64-ninja \
 	mingw-w64-ucrt-x86_64-meson \
 	mingw-w64-ucrt-x86_64-clang \

@@ -8,7 +8,13 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
-if command -v sway > "/dev/null" 2>&1 && command -v river > "/dev/null" 2>&1 && command -v labwc > "/dev/null" 2>&1 && command -v cage > "/dev/null" 2>&1 && command -v foot > "/dev/null" 2>&1 && command -v seatd > "/dev/null" 2>&1; then
+if command -v sway > "/dev/null" 2>&1 && \
+	command -v river > "/dev/null" 2>&1 && \
+	command -v labwc > "/dev/null" 2>&1 && \
+	command -v cage > "/dev/null" 2>&1 && \
+	command -v foot > "/dev/null" 2>&1 && \
+	command -v seatd > "/dev/null" 2>&1 && \
+	command -v wlr-randr > "/dev/null" 2>&1; then
 	_ui_ok "Micro-compositores Wayland já instalados."
 	exit 0
 fi
@@ -39,6 +45,7 @@ elif command -v dnf > "/dev/null" 2>&1; then
 		foot \
 		wlr-randr \
 		breeze-cursor-theme \
+		breeze-icon-theme \
 		adwaita-icon-theme
 	if command -v systemctl > "/dev/null" 2>&1; then
 		${ELEVATE} systemctl enable --now seatd.service 2> "/dev/null" || true
@@ -56,6 +63,7 @@ elif command -v apt-get > "/dev/null" 2>&1; then
 		foot \
 		wlr-randr \
 		breeze-cursor-theme \
+		breeze-icon-theme \
 		adwaita-icon-theme 2> "/dev/null" || true
 	if command -v systemctl > "/dev/null" 2>&1; then
 		${ELEVATE} systemctl enable --now seatd.service 2> "/dev/null" || true
@@ -72,6 +80,7 @@ elif command -v pacman > "/dev/null" 2>&1; then
 		foot \
 		wlr-randr \
 		breeze-cursors \
+		breeze-icons \
 		adwaita-icon-theme
 	if command -v systemctl > "/dev/null" 2>&1; then
 		${ELEVATE} systemctl enable --now seatd.service 2> "/dev/null" || true

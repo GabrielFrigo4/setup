@@ -11,7 +11,9 @@ _setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
 _ui_step "Configurando sistema base, SDDM e journald Arch Linux..."
 
 ${ELEVATE} pacman-mirrors --fasttrack 5 2> "/dev/null" || true
-${ELEVATE} pacman -Syyu --needed --noconfirm zsh
+${ELEVATE} pacman -Syyu --needed --noconfirm \
+	zsh \
+	cmake
 
 if command -v zsh > "/dev/null" 2>&1; then
 	TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"

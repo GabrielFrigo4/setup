@@ -18,7 +18,14 @@ if [ -f "/etc/apt/sources.list" ]; then
 fi
 
 ${ELEVATE} apt update
-${ELEVATE} apt install --yes gnupg ca-certificates apt-transport-https
+${ELEVATE} apt install --yes \
+	gnupg \
+	ca-certificates \
+	apt-transport-https \
+	cmake \
+	cmake-curses-gui \
+	cmake-qt-gui \
+	cmake-doc
 
 _console_recipe="${_setup_root}/linux/common/system/console.sh"
 if [ -f "${_console_recipe}" ]; then

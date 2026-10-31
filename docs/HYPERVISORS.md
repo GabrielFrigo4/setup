@@ -32,6 +32,7 @@ Em vez de usar arquivos de imagem soltos (`.qcow2`, `.vmdk`, `.raw`), todas as n
 
 - **O que é:** Hypervisor _Type-2_ nativo construído dentro do kernel do FreeBSD, ultraleve e sem bloatware.
 - **Uso Principal:** Provisionar a VM Linux de apoio para rodar Incus e OpenTofu, além de hospedar o guest Alpine do Wifibox (quando necessário).
+- **Gerenciamento de Recursos & Autostart Desativado (`vm_list=""`):** A alocação de memória segue a regra estrita de 16 partes: 1/16 para a VM Bhyve (1 GB em host de 16 GB, piso 1 GB e teto 2 GB), 4/16 para o ZFS ARC (4 GB, piso 1 GB e teto 4 GB) e 11/16 (11 GB) livres para o host e buffers gráficos GPU DRM. O autostart no boot é explicitamente desabilitado no `/etc/rc.conf` via `vm_list=""`, economizando 1 GB de memória RAM física cabeada (_wired_) durante a inicialização do host FreeBSD. A VM Linux (`lx`/`debian`) é iniciada sob demanda pelas rotinas e atalhos rápidos do subsistema `Shell` (`lx` e `agy`).
 
 ### 2. 🐧 Linux: KVM & Incus VMs
 

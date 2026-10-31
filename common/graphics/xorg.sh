@@ -8,7 +8,7 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
-if command -v xinit > "/dev/null" 2>&1 && command -v xterm > "/dev/null" 2>&1 && command -v xrdb > "/dev/null" 2>&1 && (command -v matchbox-window-manager > "/dev/null" 2>&1 || command -v openbox > "/dev/null" 2>&1 || command -v cwm > "/dev/null" 2>&1); then
+if command -v xinit > "/dev/null" 2>&1 && command -v xterm > "/dev/null" 2>&1 && command -v xrdb > "/dev/null" 2>&1 && command -v openbox > "/dev/null" 2>&1 && command -v cwm > "/dev/null" 2>&1 && command -v matchbox-window-manager > "/dev/null" 2>&1; then
 	_ui_ok "Servidor X11, utilitários e gerenciadores de quiosque já instalados."
 	exit 0
 fi
@@ -23,6 +23,7 @@ if command -v pkg > "/dev/null" 2>&1; then
 		x11/xrdb \
 		x11/xdotool \
 		x11-wm/openbox \
+		x11-wm/cwm \
 		x11-wm/matchbox-window-manager 2> "/dev/null" || true
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
@@ -32,6 +33,7 @@ elif command -v dnf > "/dev/null" 2>&1; then
 		xrdb \
 		xdotool \
 		openbox \
+		cwm \
 		xorg-x11-drv-intel \
 		xorg-x11-drv-amdgpu \
 		xorg-x11-drv-nouveau 2> "/dev/null" || true
@@ -44,8 +46,9 @@ elif command -v apt-get > "/dev/null" 2>&1; then
 		xterm \
 		x11-xserver-utils \
 		xdotool \
-		matchbox-window-manager \
-		openbox 2> "/dev/null" || true
+		openbox \
+		cwm \
+		matchbox-window-manager 2> "/dev/null" || true
 elif command -v pacman > "/dev/null" 2>&1; then
 	${ELEVATE} pacman -S --needed --noconfirm \
 		xorg-server \
@@ -53,7 +56,8 @@ elif command -v pacman > "/dev/null" 2>&1; then
 		xterm \
 		xorg-xrdb \
 		xdotool \
-		openbox
+		openbox \
+		cwm 2> "/dev/null" || true
 	if command -v yay > "/dev/null" 2>&1; then
 		yay -S --needed --noconfirm matchbox-window-manager 2> "/dev/null" || true
 	fi
