@@ -67,6 +67,28 @@ O Linux implementa a camada de isolamento do **Clean Host** através de três fe
 
 ---
 
+## 📄 Suítes de Escritório e Editores de Código
+
+### Provisão Completa do LibreOffice ([`common/office/office.sh`](../common/office/office.sh))
+
+A integração da suíte de escritório em distribuições Linux é executada pela receita modular universal:
+
+- **Instalação Nativa Modular:**
+    - **Fedora:** `libreoffice-writer`, `libreoffice-calc`, `libreoffice-impress`, `libreoffice-draw`, `libreoffice-math`, `libreoffice-base`, `libreoffice-gtk3`, `libreoffice-gtk4`.
+    - **Debian / Ubuntu:** `libreoffice`, `libreoffice-gtk3`, `libreoffice-gtk4`.
+    - **Arch Linux:** `libreoffice-fresh`.
+- **Tema Escuro GTK3 Injetado:** Para evitar fundos claros em desktops escuros, o script duplica e edita os arquivos `.desktop` em `~/.local/share/applications/`, injetando `env SAL_USE_VCLPLUGIN=gtk3 GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1` nas linhas de execução `Exec=`.
+- **Configuração de Sessão (`environment.d`):** Cria `~/.config/environment.d/gtk-dark.conf` contendo as variáveis de tema escuro e as exporta para o barramento do usuário via `systemctl --user set-environment` e `dbus-update-activation-environment`.
+- **Overrides Flatpak:** Aplica `flatpak override --user --env=GTK_THEME=Adwaita:dark` para garantir que empacotamentos sandbox respeitem o tema Adwaita Dark.
+
+### Padronização de Editores e Ícone Único do Emacs ([`common/editors/editors.sh`](../common/editors/editors.sh))
+
+- **Ícone Único (`emacs.desktop`):** Configura um lançador consolidado apontando para `emacsclient --create-frame --alternate-editor="" %F` com variáveis de tema escuro GTK3.
+- **Ocultação de Lançadores Secundários:** Gera arquivos com `NoDisplay=true` para `emacsclient.desktop`, `emacs-mail.desktop` e `emacsclient-mail.desktop`, impedindo que ações auxiliares poluam a lista de aplicativos.
+- **Suíte Modal:** Realiza o clone e sincronização canônica dos editores Neovim (`~/.config/nvim`), Vim (`~/.vim`), Helix (`~/.config/helix`) e Micro (`~/.config/micro`).
+
+---
+
 ## ⚡ Gerenciamento Python Moderno: Astral `uv`
 
 Para execução de scripts, criação de ambientes virtuais efêmeros e gerenciamento de ferramentas CLI Python com velocidade compilada em Rust:
@@ -82,10 +104,10 @@ Para execução de scripts, criação de ambientes virtuais efêmeros e gerencia
 
 Para compilação avançada de shaders HLSL/Slang para SPIR-V e pipelines gráficos modernos:
 
--- **Arch Linux:** `pacman -S shader-slang directx-shader-compiler shaderc glslang vulkan-icd-loader vulkan-headers vulkan-tools spirv-cross`
--- **Debian / Ubuntu:** `apt install slang-compiler libshaderc-dev glslang-tools libvulkan-dev vulkan-tools spirv-cross`
--- **Fedora:** `shader-slang` via COPR `rustyclanker/slang`, `shaderc`, `glslang`, `vulkan-loader-devel`, `spirv-cross-devel`
--- **Receita Canônica Universal:** [`common/graphics/shaders.sh`](../common/graphics/shaders.sh) provê auto-detecção via gerenciador de pacotes ou fallback dinâmico oficial via GitHub para `~/.local/opt/` com wrappers em `~/.local/bin/`.
+- **Arch Linux:** `pacman -S shader-slang directx-shader-compiler shaderc glslang vulkan-icd-loader vulkan-headers vulkan-tools spirv-cross`
+- **Debian / Ubuntu:** `apt install slang-compiler libshaderc-dev glslang-tools libvulkan-dev vulkan-tools spirv-cross`
+- **Fedora:** `shader-slang` via COPR `rustyclanker/slang`, `shaderc`, `glslang`, `vulkan-loader-devel`, `spirv-cross-devel`
+- **Receita Canônica Universal:** [`common/graphics/shaders.sh`](../common/graphics/shaders.sh) provê auto-detecção via gerenciador de pacotes ou fallback dinâmico oficial via GitHub para `~/.local/opt/` com wrappers em `~/.local/bin/`.
 
 ---
 
