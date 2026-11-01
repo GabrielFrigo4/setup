@@ -41,8 +41,9 @@ for _arg in "$@"; do
 			exit 0
 			;;
 		--help|-h|help)
-			echo "Uso: $0 [doctor|audit|test] [--dry-run] [--profile=<perfil>]"
-			echo "Perfis: fedora-desktop, arch-desktop, debian-desktop, freebsd-desktop, server, containers, common, doctor"
+			_ui_banner "Universal Setup Orchestrator"
+			_ui_info "Uso: $0 [doctor|audit|test] [--dry-run] [--profile=<perfil>]"
+			_ui_info "Perfis: fedora-desktop, arch-desktop, debian-desktop, freebsd-desktop, server, containers, common, doctor"
 			exit 0
 			;;
 	esac
@@ -70,15 +71,13 @@ _ui_info "Sistema detectado: ${DETECTED_OS} (${DETECTED_DISTRO})"
 ### PROFILE SELECTION
 ### ================================
 if [ -z "${_profile}" ]; then
-	echo ""
-	echo "Escolha o perfil de provisionamento desejado:"
-	echo "  1) Desktop Completo (${DETECTED_DISTRO})"
-	echo "  2) Servidor / Headless"
-	echo "  3) Containers & Virtualização"
-	echo "  4) Fontes & Linters Comuns"
-	echo "  5) Executar Diagnóstico (Setup Doctor)"
-	echo "  q) Sair"
-	echo ""
+	_ui_step "Escolha o perfil de provisionamento desejado:"
+	_ui_sub "1) Desktop Completo (${DETECTED_DISTRO})"
+	_ui_sub "2) Servidor / Headless"
+	_ui_sub "3) Containers & Virtualização"
+	_ui_sub "4) Fontes & Linters Comuns"
+	_ui_sub "5) Executar Diagnóstico (Setup Doctor)"
+	_ui_sub "q) Sair"
 	printf "Opção [1-5]: "
 	read -r _choice || _choice="q"
 else

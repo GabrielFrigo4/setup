@@ -22,6 +22,7 @@ fi
 
 _apps_dir="${XDG_DATA_HOME:-${HOME}/.local/share}/applications"
 mkdir -p "${_apps_dir}"
+rm -f "${_apps_dir}/emacs.desktop"
 cat << 'EOF' > "${_apps_dir}/emacs.desktop"
 [Desktop Entry]
 Name=Emacs
@@ -36,6 +37,7 @@ Categories=Development;TextEditor;
 StartupNotify=false
 StartupWMClass=Emacs
 Keywords=emacs;emacsclient;editor;daemon;server;
+NoDisplay=false
 Actions=new-frame;new-instance;
 
 [Desktop Action new-frame]
@@ -46,8 +48,17 @@ Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient
 Name=New Standalone Instance
 Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacs %F
 EOF
-cp -f "${_apps_dir}/emacs.desktop" "${_apps_dir}/emacsclient.desktop"
-chmod 0644 "${_apps_dir}/emacs.desktop" "${_apps_dir}/emacsclient.desktop"
+
+for _hidden_app in "emacsclient.desktop" "emacs-mail.desktop" "emacsclient-mail.desktop"; do
+	cat <<- EOF > "${_apps_dir}/${_hidden_app}"
+	[Desktop Entry]
+	Type=Application
+	Name=Emacs
+	NoDisplay=true
+	EOF
+done
+
+chmod 0644 "${_apps_dir}"/emacs*.desktop
 if command -v update-desktop-database > "/dev/null" 2>&1; then
 	update-desktop-database "${_apps_dir}" 2> "/dev/null" || true
 fi
@@ -56,14 +67,18 @@ if [ -n "${ELEVATE:-}" ] || [ "$(id -u)" -eq 0 ]; then
 	if [ -w "/usr/local/share/applications" ] || [ "$(id -u)" -eq 0 ]; then
 		mkdir -p "/usr/local/share/applications" 2> "/dev/null" || true
 		cp -f "${_apps_dir}/emacs.desktop" "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
-		cp -f "${_apps_dir}/emacsclient.desktop" "/usr/local/share/applications/emacsclient.desktop" 2> "/dev/null" || true
-		chmod 0644 "/usr/local/share/applications/emacs.desktop" "/usr/local/share/applications/emacsclient.desktop" 2> "/dev/null" || true
+		for _hidden_app in "emacsclient.desktop" "emacs-mail.desktop" "emacsclient-mail.desktop"; do
+			cp -f "${_apps_dir}/${_hidden_app}" "/usr/local/share/applications/${_hidden_app}" 2> "/dev/null" || true
+		done
+		chmod 0644 /usr/local/share/applications/emacs*.desktop 2> "/dev/null" || true
 		command -v update-desktop-database > "/dev/null" 2>&1 && update-desktop-database "/usr/local/share/applications" 2> "/dev/null" || true
 	elif [ -n "${ELEVATE:-}" ]; then
 		${ELEVATE} mkdir -p "/usr/local/share/applications" 2> "/dev/null" || true
 		${ELEVATE} cp -f "${_apps_dir}/emacs.desktop" "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
-		${ELEVATE} cp -f "${_apps_dir}/emacsclient.desktop" "/usr/local/share/applications/emacsclient.desktop" 2> "/dev/null" || true
-		${ELEVATE} chmod 0644 "/usr/local/share/applications/emacs.desktop" "/usr/local/share/applications/emacsclient.desktop" 2> "/dev/null" || true
+		for _hidden_app in "emacsclient.desktop" "emacs-mail.desktop" "emacsclient-mail.desktop"; do
+			${ELEVATE} cp -f "${_apps_dir}/${_hidden_app}" "/usr/local/share/applications/${_hidden_app}" 2> "/dev/null" || true
+		done
+		${ELEVATE} chmod 0644 /usr/local/share/applications/emacs*.desktop 2> "/dev/null" || true
 		command -v update-desktop-database > "/dev/null" 2>&1 && ${ELEVATE} update-desktop-database "/usr/local/share/applications" 2> "/dev/null" || true
 	fi
 
