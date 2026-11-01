@@ -8,12 +8,12 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
-if command -v pandoc > "/dev/null" 2>&1 && command -v pdftk > "/dev/null" 2>&1 && command -v ddjvu > "/dev/null" 2>&1; then
-	_ui_ok "Ferramentas de diagramação (Pandoc, PDFtk, DjVu) já instaladas."
+if command -v pandoc > "/dev/null" 2>&1 && command -v pdftk > "/dev/null" 2>&1 && command -v ddjvu > "/dev/null" 2>&1 && pkg-config --exists poppler-glib libpng > "/dev/null" 2>&1; then
+	_ui_ok "Ferramentas de diagramação (Pandoc, PDFtk, DjVu, PDF-Tools) já instaladas."
 	exit 0
 fi
 
-_ui_step "Instalando Pandoc, TeX Live, PDFtk e DjVu..."
+_ui_step "Instalando Pandoc, TeX Live, PDFtk, DjVu e dependências do PDF-Tools..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes \
@@ -21,14 +21,22 @@ if command -v pkg > "/dev/null" 2>&1; then
 		print/texlive-full \
 		print/pdftk \
 		graphics/poppler-utils \
-		graphics/djvulibre
+		graphics/djvulibre \
+		graphics/poppler-glib \
+		devel/autoconf \
+		devel/automake \
+		graphics/png
 elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
 		pandoc \
 		texlive-scheme-basic \
 		pdftk \
 		poppler-utils \
-		djvulibre 2> "/dev/null" || true
+		djvulibre \
+		poppler-glib-devel \
+		autoconf \
+		automake \
+		libpng-devel 2> "/dev/null" || true
 elif command -v apt-get > "/dev/null" 2>&1; then
 	${ELEVATE} apt-get update -qq 2> "/dev/null" || true
 	${ELEVATE} apt-get install --yes \
@@ -37,7 +45,11 @@ elif command -v apt-get > "/dev/null" 2>&1; then
 		texlive-lang-portuguese \
 		pdftk \
 		poppler-utils \
-		djvulibre-bin 2> "/dev/null" || true
+		djvulibre-bin \
+		libpoppler-glib-dev \
+		autoconf \
+		automake \
+		libpng-dev 2> "/dev/null" || true
 elif command -v pacman > "/dev/null" 2>&1; then
 	if [ -n "${MSYSTEM-}" ]; then
 		pacman --needed --noconfirm -S \
@@ -50,7 +62,11 @@ elif command -v pacman > "/dev/null" 2>&1; then
 			texlive-basic \
 			pdftk \
 			poppler \
-			djvulibre 2> "/dev/null" || true
+			djvulibre \
+			poppler-glib \
+			autoconf \
+			automake \
+			libpng 2> "/dev/null" || true
 	fi
 elif command -v pkg_add > "/dev/null" 2>&1; then
 	${ELEVATE} pkg_add -I \
