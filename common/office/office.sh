@@ -14,7 +14,7 @@ _ui_step "Provisionando suite LibreOffice e integração desktop..."
 ### 1. INSTALACAO DO PACOTE
 ### --------------------------------
 if command -v dnf > "/dev/null" 2>&1; then
-	${ELEVATE} dnf install --assumeyes libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-math libreoffice-gtk3 libreoffice-gtk4
+	${ELEVATE} dnf install --assumeyes libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-math libreoffice-base libreoffice-gtk3 libreoffice-gtk4
 elif command -v apt-get > "/dev/null" 2>&1; then
 	${ELEVATE} apt-get update -qq
 	${ELEVATE} apt-get install --yes libreoffice libreoffice-gtk3 libreoffice-gtk4
