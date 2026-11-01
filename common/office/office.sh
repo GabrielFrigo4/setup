@@ -68,8 +68,8 @@ for _src_dir in "/usr/share/applications" "/usr/local/share/applications"; do
 				_target="${_apps_dir}/${_base}"
 				cp -f "${_desktop}" "${_target}"
 				chmod 0644 "${_target}"
-				sed -i '' "s|^Exec=libreoffice|Exec=${_prefix}libreoffice|g" "${_target}" 2> "/dev/null" || \
-					sed -i "s|^Exec=libreoffice|Exec=${_prefix}libreoffice|g" "${_target}" 2> "/dev/null" || true
+				sed -i '' -e "s|^Exec=libreoffice|Exec=${_prefix}libreoffice|g" -e 's/^NoDisplay=true/NoDisplay=false/' "${_target}" 2> "/dev/null" || \
+					sed -i -e "s|^Exec=libreoffice|Exec=${_prefix}libreoffice|g" -e 's/^NoDisplay=true/NoDisplay=false/' "${_target}" 2> "/dev/null" || true
 			fi
 		done
 	fi
