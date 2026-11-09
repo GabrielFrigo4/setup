@@ -7,7 +7,7 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Setup Provisioning
 # ----------------------------------------------------------------
 
-.PHONY: help hooks audit test format prettier fix-banners doctor ci
+.PHONY: help hooks audit test format prettier fix-banners doctor ci clean
 
 ### ================================
 ### HELP & DOCUMENTATION
@@ -27,8 +27,9 @@ help:
 	cmd "format"         "Formata documentações Markdown com Prettier"; \
 	cmd "prettier"       "Formata documentações Markdown com Prettier"; \
 	cmd "ci"             "Executa suite completa de CI local"; \
-	sec "Diagnóstico:"; \
+	sec "Diagnóstico & Limpeza:"; \
 	cmd "doctor"         "Executa diagnóstico de saúde e sanity check pós-boot do sistema"; \
+	cmd "clean"          "Remove artefatos temporários, caches e ambientes virtuais (.venv)"; \
 	echo ""
 
 ### ================================
@@ -73,3 +74,12 @@ doctor:
 
 ci: test audit
 	echo "🚀 Setup 100% aprovado no CI local!"
+
+### ================================
+### CLEANUP
+### ================================
+clean:
+	echo "🧹 Limpando artefatos temporários, caches e ambientes virtuais..."
+	rm -rf .venv bin/ build/ dist/ .tmp/ *.log
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2> "/dev/null" || true
+	echo "✅ Workspace limpo!"
