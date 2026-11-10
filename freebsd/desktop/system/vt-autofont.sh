@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Helper: FreeBSD Virtual Terminal Dynamic Console Font Scaler
+# Utility: FreeBSD Virtual Terminal Dynamic Console Font Scaler
 # ----------------------------------------------------------------
 
 set -eu

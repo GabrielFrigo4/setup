@@ -18,7 +18,7 @@ ${ELEVATE} pw groupmod operator -m "${TARGET_USER}" 2> "/dev/null" || true
 ${ELEVATE} pw groupmod video -m "${TARGET_USER}" 2> "/dev/null" || true
 ${ELEVATE} pw groupmod webcamd -m "${TARGET_USER}" 2> "/dev/null" || true
 
-${ELEVATE} pkg bootstrap --yes
+${ELEVATE} pkg bootstrap -y
 ${ELEVATE} pkg update
 
 _target_font="${DETECTED_CONSOLE_FONT:-spleen-12x24}"
@@ -35,7 +35,7 @@ if [ -x "/etc/rc.d/syscons" ]; then
 	${ELEVATE} /etc/rc.d/syscons restart > "/dev/null" 2>&1 || true
 fi
 if command -v kbdcontrol > "/dev/null" 2>&1; then
-	_esc="$(printf '\x1b')"
+	_esc=$'\e'
 	${ELEVATE} kbdcontrol -f 65 "${_esc}[1;5D" > "/dev/null" 2>&1 || true
 	${ELEVATE} kbdcontrol -f 66 "${_esc}[1;5C" > "/dev/null" 2>&1 || true
 fi
@@ -43,7 +43,7 @@ fi
 ### --------------------------------
 ### AUDIO OSS AND SNDIOD TUNING
 ### --------------------------------
-${ELEVATE} pkg install --yes audio/sndiod 2> "/dev/null" || true
+${ELEVATE} pkg install -y audio/sndiod 2> "/dev/null" || true
 ${ELEVATE} sysrc sndiod_enable="YES" > "/dev/null" 2>&1 || true
 
 ${ELEVATE} sysctl kern.coredump=0 > "/dev/null" 2>&1 || true
@@ -67,9 +67,19 @@ fi
 ### --------------------------------
 ### DRM AND KMS GRAPHICS TUNING
 ### --------------------------------
-${ELEVATE} pkg install --yes graphics/drm-kmod multimedia/libva-intel-media-driver multimedia/libva-utils 2> "/dev/null" || true
-if ! sysrc -n kld_list 2> "/dev/null" | grep -q "i915kms"; then
-	${ELEVATE} sysrc kld_list+="i915kms" > "/dev/null" 2>&1 || true
+${ELEVATE} pkg delete -f -y drm-kmod drm-612-kmod > "/dev/null" 2>&1 || true
+${ELEVATE} pkg install -y \
+	graphics/drm-66-kmod \
+	graphics/gpu-firmware-intel-kmod-alderlake \
+	multimedia/libva-intel-media-driver \
+	multimedia/libva-utils 2> "/dev/null" || true
+${ELEVATE} pkg lock -y drm-66-kmod > "/dev/null" 2>&1 || true
+
+if ! sysrc -n kld_list 2> "/dev/null" | grep -q "/boot/modules/i915kms.ko"; then
+	if sysrc -n kld_list 2> "/dev/null" | grep -q "i915kms"; then
+		${ELEVATE} sysrc kld_list-="i915kms" > "/dev/null" 2>&1 || true
+	fi
+	${ELEVATE} sysrc kld_list+="/boot/modules/i915kms.ko" > "/dev/null" 2>&1 || true
 fi
 
 _set_loader_tunable() {
@@ -88,6 +98,10 @@ if [ -f "/boot/loader.conf" ]; then
 	_set_loader_tunable "compat.linuxkpi.i915_enable_fbc" "0"
 	_set_loader_tunable "compat.linuxkpi.i915_enable_dc" "0"
 	_set_loader_tunable "compat.linuxkpi.i915_enable_guc" "2"
+	_set_loader_tunable "compat.linuxkpi.i915_disable_power_well" "0"
+	_set_loader_tunable "kern.ipc.shmseg" "1024"
+	_set_loader_tunable "kern.ipc.shmmni" "1024"
+	_set_loader_tunable "kern.maxproc" "100000"
 fi
 
 ### --------------------------------

@@ -11,13 +11,37 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 _ui_step "Configurando perfis de editores de código..."
 
 ### --------------------------------
+### VTERM COMPILATION TOOLCHAIN
+### --------------------------------
+if command -v pkg > "/dev/null" 2>&1; then
+	${ELEVATE} pkg install -y devel/libtool devel/cmake 2> "/dev/null" || true
+elif command -v dnf > "/dev/null" 2>&1; then
+	${ELEVATE} dnf install --assumeyes libtool cmake 2> "/dev/null" || true
+elif command -v apt-get > "/dev/null" 2>&1; then
+	${ELEVATE} apt-get update -qq 2> "/dev/null" || true
+	${ELEVATE} apt-get install --yes libtool libtool-bin cmake 2> "/dev/null" || true
+elif command -v pacman > "/dev/null" 2>&1; then
+	if [ -n "${MSYSTEM-}" ]; then
+		pacman --needed --noconfirm -S \
+			mingw-w64-ucrt-x86_64-libtool \
+			mingw-w64-ucrt-x86_64-cmake 2> "/dev/null" || true
+	else
+		${ELEVATE} pacman -S --needed --noconfirm libtool cmake 2> "/dev/null" || true
+	fi
+fi
+
+### --------------------------------
 ### EMACS CONFIGURATION
 ### --------------------------------
-if [ ! -d "${HOME}/.emacs.d/.git" ]; then
-	mkdir -p "${HOME}/.emacs.d"
-	git clone "https://github.com/GabrielFrigo4/emacs.git" "${HOME}/.emacs.d"
+_target="${HOME}/.emacs.d"
+if [ -d "${_target}" ] && [ ! -d "${_target}/.git" ]; then
+	rm -rf "${_target}"
+fi
+if [ ! -d "${_target}/.git" ]; then
+	mkdir -p "${_target}"
+	git clone "https://github.com/GabrielFrigo4/emacs.git" "${_target}"
 else
-	git -C "${HOME}/.emacs.d" pull || true
+	git -C "${_target}" pull || true
 fi
 
 _apps_dir="${XDG_DATA_HOME:-${HOME}/.local/share}/applications"
@@ -98,20 +122,28 @@ fi
 ### --------------------------------
 ### NEOVIM CONFIGURATION
 ### --------------------------------
-if [ ! -d "${HOME}/.config/nvim/.git" ]; then
-	mkdir -p "${HOME}/.config/nvim"
-	git clone "https://github.com/GabrielFrigo4/neovim.git" "${HOME}/.config/nvim"
+_target="${HOME}/.config/nvim"
+if [ -d "${_target}" ] && [ ! -d "${_target}/.git" ]; then
+	rm -rf "${_target}"
+fi
+if [ ! -d "${_target}/.git" ]; then
+	mkdir -p "${_target}"
+	git clone "https://github.com/GabrielFrigo4/neovim.git" "${_target}"
 else
-	git -C "${HOME}/.config/nvim" pull || true
+	git -C "${_target}" pull || true
 fi
 
 ### --------------------------------
 ### VIM CONFIGURATION
 ### --------------------------------
-if [ ! -d "${HOME}/.vim/.git" ]; then
-	git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/.vim"
+_target="${HOME}/.vim"
+if [ -d "${_target}" ] && [ ! -d "${_target}/.git" ]; then
+	rm -rf "${_target}"
+fi
+if [ ! -d "${_target}/.git" ]; then
+	git clone "https://github.com/GabrielFrigo4/vim.git" "${_target}"
 else
-	git -C "${HOME}/.vim" pull || true
+	git -C "${_target}" pull || true
 fi
 
 cat << 'EOF' | tee "${HOME}/.vimrc" > "/dev/null"
@@ -122,11 +154,15 @@ EOF
 ### --------------------------------
 ### HELIX CONFIGURATION
 ### --------------------------------
-if [ ! -d "${HOME}/.config/helix/.git" ]; then
-	mkdir -p "${HOME}/.config/helix"
-	git clone "https://github.com/GabrielFrigo4/helix.git" "${HOME}/.config/helix"
+_target="${HOME}/.config/helix"
+if [ -d "${_target}" ] && [ ! -d "${_target}/.git" ]; then
+	rm -rf "${_target}"
+fi
+if [ ! -d "${_target}/.git" ]; then
+	mkdir -p "${_target}"
+	git clone "https://github.com/GabrielFrigo4/helix.git" "${_target}"
 else
-	git -C "${HOME}/.config/helix" pull || true
+	git -C "${_target}" pull || true
 fi
 
 ### --------------------------------

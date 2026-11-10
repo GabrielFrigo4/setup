@@ -4,7 +4,7 @@
 # ----------------------------------------------------------------
 set -eu
 
-_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
@@ -61,14 +61,14 @@ ${ELEVATE} sysctl vfs.zfs.arc.min="${ARC_MIN_BYTES}" > "/dev/null" 2>&1 || true
 ### --------------------------------
 for _cfg in "/etc/sysctl.conf" "/boot/loader.conf" "/boot/loader.conf.local"; do
 	if [ -f "${_cfg}" ]; then
-		${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc_max/d' -e '/vfs\.zfs\.arc\.max/d' -e '/vfs\.zfs\.arc\.min/d' "${_cfg}" 2> "/dev/null" || true
+		${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc_max/d' -e '/vfs\.zfs\.arc\.max/d' -e '/vfs\.zfs\.arc\.min/d' -e '/vfs\.zfs\.txg\.timeout/d' "${_cfg}" 2> "/dev/null" || true
 	fi
 done
 
 if [ -d "/boot/loader.conf.d" ]; then
 	for _cfg in /boot/loader.conf.d/*; do
 		if [ -f "${_cfg}" ]; then
-			${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc_max/d' -e '/vfs\.zfs\.arc\.max/d' -e '/vfs\.zfs\.arc\.min/d' "${_cfg}" 2> "/dev/null" || true
+			${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc_max/d' -e '/vfs\.zfs\.arc\.max/d' -e '/vfs\.zfs\.arc\.min/d' -e '/vfs\.zfs\.txg\.timeout/d' "${_cfg}" 2> "/dev/null" || true
 		fi
 	done
 fi
@@ -90,6 +90,7 @@ if [ -f "/boot/loader.conf" ]; then
 	cat <<- EOF | ${ELEVATE} tee -a "/boot/loader.conf" > "/dev/null"
 	vfs.zfs.arc.max="${ARC_MAX_BYTES}"
 	vfs.zfs.arc.min="${ARC_MIN_BYTES}"
+	vfs.zfs.txg.timeout="10"
 	EOF
 fi
 
@@ -108,7 +109,7 @@ fi
 ### 8. DIAGNOSTICO DO ZFS ARC
 ### --------------------------------
 _ui_step "Instalando utilitários de diagnóstico e py-sysctl..."
-${ELEVATE} pkg install --yes devel/py-sysctl sysutils/arc_summary sysutils/zfs-stats 2> "/dev/null" || true
+${ELEVATE} pkg install -y devel/py-sysctl sysutils/arc_summary sysutils/zfs-stats 2> "/dev/null" || true
 
 if [ ! -f "/usr/local/bin/arcstat" ]; then
 	if command -v fetch > "/dev/null" 2>&1; then

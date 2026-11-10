@@ -20,7 +20,9 @@ if [ -n "${VENTURE_SERVER_KEY-}" ] && [ -f "${VENTURE_SERVER_KEY}" ]; then
 	_ui_ok "Permissões de VENTURE_SERVER_KEY ajustadas para 0600."
 fi
 
-# Clean-break: expurgo de shims e wrappers legados de /usr/local/bin
+### --------------------------------
+### PURGE LEGACY SHIMS
+### --------------------------------
 _legacy_purged=0
 for _shim in freebsd-start freebsd-close freebsd-restart freebsd-server; do
 	if [ -f "/usr/local/bin/${_shim}" ]; then

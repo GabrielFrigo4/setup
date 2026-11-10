@@ -32,4 +32,5 @@ jobs:
 
             - name: Validate Recipe Syntax (POSIX sh -n)
               run: |
-                  find common freebsd linux windows .scripts setup.sh -name "*.sh" -exec sh -n {} +
+                  find . -name "*.sh" -not -path "./.git/*" -exec sh -n {} +
+                  find .githooks -type f -exec sh -n {} +

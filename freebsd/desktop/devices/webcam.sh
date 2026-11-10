@@ -4,13 +4,13 @@
 # ----------------------------------------------------------------
 set -eu
 
-_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
 _ui_step "Configurando serviço de webcam..."
 
-${ELEVATE} pkg install --yes multimedia/webcamd
+${ELEVATE} pkg install -y multimedia/webcamd
 ${ELEVATE} sysrc webcamd_enable="YES"
 ${ELEVATE} service webcamd start 2> "/dev/null" || true
 

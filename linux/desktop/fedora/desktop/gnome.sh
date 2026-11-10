@@ -13,7 +13,7 @@ _ui_step "Configurando ambiente GNOME e atalhos..."
 ### --------------------------------
 ### 1. PACOTES E TEMAS GTK
 ### --------------------------------
-${ELEVATE} dnf install --assumeyes gnome-tweak-tool adw-gtk3-theme plasma-breeze-qt6
+${ELEVATE} dnf install --assumeyes gnome-tweak-tool adw-gtk3-theme plasma-breeze-qt6 adwaita-icon-theme adwaita-icon-theme-legacy breeze-icon-theme xsettingsd
 
 ### --------------------------------
 ### 2. ENVIRONMENT.D CONFIG

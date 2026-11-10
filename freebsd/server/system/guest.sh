@@ -12,11 +12,11 @@ _ui_step "FreeBSD Guest: Configurando agente QEMU e console..."
 
 ${ELEVATE} pw groupmod wheel -m "$(id -un)"
 
-${ELEVATE} pkg bootstrap --yes
+${ELEVATE} pkg bootstrap -y
 ${ELEVATE} pkg update
-${ELEVATE} pkg upgrade --yes
+${ELEVATE} pkg upgrade -y
 
-${ELEVATE} pkg install --yes emulators/qemu-guest-agent
+${ELEVATE} pkg install -y emulators/qemu-guest-agent
 ${ELEVATE} sysrc qemu_guest_agent_enable="YES"
 ${ELEVATE} sysrc qemu_guest_agent_flags="-d -m virtio-serial -p /dev/ttyV0.1"
 ${ELEVATE} service qemu-guest-agent start 2> "/dev/null" || true

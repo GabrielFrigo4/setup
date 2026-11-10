@@ -10,7 +10,7 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 
 _ui_step "Configurando gerenciador BastilleBSD..."
 
-${ELEVATE} pkg install --yes sysutils/bastille
+${ELEVATE} pkg install -y sysutils/bastille
 ${ELEVATE} sysrc bastille_enable="YES"
 ${ELEVATE} service bastille start 2> "/dev/null" || true
 

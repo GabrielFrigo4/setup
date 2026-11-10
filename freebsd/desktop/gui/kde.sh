@@ -10,7 +10,7 @@ _setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 
 _ui_step "Configurando ambiente gráfico KDE Plasma..."
 
-${ELEVATE} pkg install --yes sysutils/desktop-installer x11/wl-clipboard x11/xclip ports-mgmt/octopkg archivers/ark x11-themes/plasma6-breeze-gtk graphics/gimp3-app
+${ELEVATE} pkg install -y sysutils/desktop-installer x11/wl-clipboard x11/xclip ports-mgmt/octopkg archivers/ark x11-themes/plasma6-breeze-gtk graphics/gimp3-app x11-themes/adwaita-icon-theme x11-themes/kf6-breeze-icons x11/xsettingsd
 
 ### --------------------------------
 ### DESATIVACAO DO BALOO INDEXER

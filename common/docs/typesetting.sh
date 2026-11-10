@@ -8,17 +8,23 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
-if command -v pandoc > "/dev/null" 2>&1 && command -v pdftk > "/dev/null" 2>&1 && command -v ddjvu > "/dev/null" 2>&1 && pkg-config --exists poppler-glib libpng > "/dev/null" 2>&1; then
-	_ui_ok "Ferramentas de diagramação (Pandoc, PDFtk, DjVu, PDF-Tools) já instaladas."
+if command -v pandoc > "/dev/null" 2>&1 && \
+	command -v pdftk > "/dev/null" 2>&1 && \
+	command -v ddjvu > "/dev/null" 2>&1 && \
+	pkg-config --exists poppler-glib libpng > "/dev/null" 2>&1 && \
+	command -v typst > "/dev/null" 2>&1; then
+	_ui_ok "Ferramentas de diagramação (Pandoc, PDFtk, DjVu, PDF-Tools, Typst) já instaladas."
 	exit 0
 fi
 
-_ui_step "Instalando Pandoc, TeX Live, PDFtk, DjVu e dependências do PDF-Tools..."
+_ui_step "Instalando Pandoc, TeX Live, PDFtk, DjVu, Typst e dependências do PDF-Tools..."
 
 if command -v pkg > "/dev/null" 2>&1; then
-	${ELEVATE} pkg install --yes \
+	${ELEVATE} pkg install -y \
 		textproc/hs-pandoc \
 		print/texlive-full \
+		print/texlive-texmf \
+		textproc/typst \
 		print/pdftk \
 		graphics/poppler-utils \
 		graphics/djvulibre \
@@ -30,6 +36,8 @@ elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes \
 		pandoc \
 		texlive-scheme-basic \
+		texlive-collection-plaingeneric \
+		typst \
 		pdftk \
 		poppler-utils \
 		djvulibre \
@@ -43,6 +51,8 @@ elif command -v apt-get > "/dev/null" 2>&1; then
 		pandoc \
 		texlive-latex-extra \
 		texlive-lang-portuguese \
+		texlive-plain-generic \
+		typst \
 		pdftk \
 		poppler-utils \
 		djvulibre-bin \
@@ -55,11 +65,15 @@ elif command -v pacman > "/dev/null" 2>&1; then
 		pacman --needed --noconfirm -S \
 			mingw-w64-ucrt-x86_64-pandoc \
 			mingw-w64-ucrt-x86_64-poppler \
-			mingw-w64-ucrt-x86_64-djvulibre 2> "/dev/null" || true
+			mingw-w64-ucrt-x86_64-djvulibre \
+			mingw-w64-ucrt-x86_64-texlive-plain-generic \
+			mingw-w64-ucrt-x86_64-typst 2> "/dev/null" || true
 	else
 		${ELEVATE} pacman -S --needed --noconfirm \
 			pandoc-cli \
 			texlive-basic \
+			texlive-plaingeneric \
+			typst \
 			pdftk \
 			poppler \
 			djvulibre \
@@ -75,6 +89,7 @@ elif command -v pkg_add > "/dev/null" 2>&1; then
 		djvulibre 2> "/dev/null" || true
 elif command -v winget.exe > "/dev/null" 2>&1; then
 	winget.exe install --id JohnMacFarlane.Pandoc --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
+	winget.exe install --id Typst.Typst --accept-package-agreements --accept-source-agreements 2> "/dev/null" || true
 else
 	_ui_err "Gerenciador de pacotes não suportado."
 	exit 1

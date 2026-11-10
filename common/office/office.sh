@@ -14,14 +14,14 @@ _ui_step "Provisionando suite LibreOffice e integração desktop..."
 ### 1. INSTALACAO DO PACOTE
 ### --------------------------------
 if command -v dnf > "/dev/null" 2>&1; then
-	${ELEVATE} dnf install --assumeyes libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-math libreoffice-base libreoffice-gtk3 libreoffice-gtk4
+	${ELEVATE} dnf install --assumeyes libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-math libreoffice-base libreoffice-gtk3 libreoffice-gtk4 hunspell hunspell-en hunspell-pt
 elif command -v apt-get > "/dev/null" 2>&1; then
 	${ELEVATE} apt-get update -qq
-	${ELEVATE} apt-get install --yes libreoffice libreoffice-gtk3 libreoffice-gtk4
+	${ELEVATE} apt-get install --yes libreoffice libreoffice-gtk3 libreoffice-gtk4 hunspell hunspell-en-us hunspell-pt-br
 elif command -v pacman > "/dev/null" 2>&1; then
-	${ELEVATE} pacman -S --needed --noconfirm libreoffice-fresh
+	${ELEVATE} pacman -S --needed --noconfirm libreoffice-fresh hunspell hunspell-en_us hunspell-pt-br
 elif command -v pkg > "/dev/null" 2>&1; then
-	${ELEVATE} pkg install --yes editors/libreoffice
+	${ELEVATE} pkg install -y editors/libreoffice textproc/hunspell textproc/en-hunspell portuguese/hunspell
 fi
 
 ### --------------------------------

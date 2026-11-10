@@ -10,7 +10,7 @@
 | Área                        |   Status    | Cobertura / Estado                                                         |
 | :-------------------------- | :---------: | :------------------------------------------------------------------------- |
 | **Linux Provisioning**      | 🟢 Estável  | Paridade Debian, Arch, Fedora, Void e Alpine com receitas idempotentes     |
-| **FreeBSD Provisioning**    | 🟢 Estável  | Pacotes `pkg`, áudio OSS, DRM/KMS e Bhyve automatizados via `sysrc`        |
+| **FreeBSD Provisioning**    | 🟢 Estável  | Pacotes `pkg -y`, DRM `drm-66-kmod`, áudio OSS, Bhyve e tunables de kernel |
 | **Windows Provisioning**    | 🟢 Estável  | Receitas nativas integradas via Winget e delegação ao motor do Shell       |
 | **Console & TTY**           | 🟢 Estável  | Fontes KMS Terminus 16x32, teclados ABNT2/US e locale soberano UTF-8       |
 | **Servidores Ubuntu**       | 🟢 Estável  | Baseline minimalista de servidor com apt-clone, tmux e full-upgrade        |
@@ -29,6 +29,11 @@
 ## 🛡️ Atributos Entregues
 
 - **Zero Pendências:** Sistema de provisionamento modular, idempotente e resiliente em 7 plataformas.
+- **Blindagem de GPU Intel Alder Lake (FreeBSD 15.1):** Downgrade seletivo para `drm-66-kmod` com `pkg lock`, desativação de deep sleep e alocação de tunables IPC SHM e ZFS ARC no `/boot/loader.conf`.
+- **Diagnóstico Técnico & Runbook FreeBSD:** Absorção integral da arquitetura LinuxKPI e matriz comparativa 15.0 / 15.1 / 15.2 / 16.0 em `docs/BSD.md`.
+- **Ecossistema X11 Estendido:** Suporte multiplataforma a `dwm`, `picom`, `xcompmgr`, `xsettingsd`, `gnome-keyring`, `libsecret`, ícones Adwaita/Breeze, `TearFree` e auto-unlock PAM.
+- **Clean-Break em Editores:** Idempotência estrita antes de clonagem em `editors.sh`, além de inclusão de `libtool` e `cmake` para compilação do `vterm`.
+- **Tipografia, Dicionários & Typesetting:** Dicionários Hunspell bilíngues (`portuguese/hunspell`, `textproc/en-hunspell`), suporte a `typst` e `texlive-plain-generic`.
 - **Tétrade de Micro-Compositores Wayland:** Receitas idempotentes para `sway`, `river`, `labwc`, `cage`, `seatd`, `foot` e `wlr-randr` em Linux e FreeBSD.
 - **Players de Mídia Headless & Desktop:** `mpv`, `vlc` e `yt-dlp` provisionados de forma cross-platform.
 - **Tipografia Terminus Console & TTF:** Suporte integrado a `terminus-fonts`, `terminus-fonts-console` e `terminus-ttf`.

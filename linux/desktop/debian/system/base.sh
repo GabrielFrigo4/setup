@@ -4,7 +4,7 @@
 # ----------------------------------------------------------------
 set -eu
 
-_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 

@@ -1,113 +1,127 @@
-# 🤝 Guia de Contribuição — Universal Setup
+# 🤝 Guia de Contribuição
 
-> Diretrizes de desenvolvimento, setup inicial da bancada, receitas de infraestrutura e quality gates para o **Universal Setup**.
+> Diretrizes de desenvolvimento, ciclo de contribuição, quality gates defensivos e convenções de engenharia para repositórios do ecossistema.
 
 ---
 
-## 🚀 Setup Inicial da Bancada (Primeiros Passos)
+## 🚀 Setup Inicial
 
-1. Clonar o repositório:
+Para configurar o repositório local e ativar as barreiras de qualidade com auto-cura:
 
-```sh
-git clone "[https://github.com/GabrielFrigo4/setup.git](https://github.com/GabrielFrigo4/setup.git)" "${HOME}/Documents/Setup"
-cd "${HOME}/Documents/Setup"
-```
-
-2. Configurar ganchos Git e permissões canônicas:
+1. Ativar os ganchos Git defensivos com permissões canônicas:
 
 ```sh
 make hooks
 ```
 
-3. Validar a sintaxe POSIX de todas as receitas:
+2. Validar a integridade local e os quality gates integrados:
 
 ```sh
-make test
-```
-
-4. Executar a suíte de auditoria estática e arquitetura:
-
-```sh
-make audit
-```
-
-> [!IMPORTANT]
-> O comando `make hooks` configura `core.hooksPath -> .githooks` e aplica permissões canônicas `0755` aos ganchos de pre-commit e commit-msg. Execute-o sempre após um novo clone.
-
----
-
-## 🛡️ Invariantes de Engenharia no Setup
-
-1. **Idempotência Absoluta:**
-    - Toda receita DEVE ser reexecutável repetidamente sem gerar efeitos colaterais, duplicação de linhas ou erros de "arquivo já existe".
-
-2. **Invariante de Clonagem "Out-of-the-Box" (Zero-Tweaks Invariant):**
-    - Receitas de provisionamento e scripts de auditoria devem ter modo octal canônico `100755` no Git Index.
-    - Arquivos estáticos (documentações, templates `.md`, configurações) devem ter modo `100644`.
-    - Se cometer um erro de modo no Git Index, corrija com:
-        ```sh
-        git update-index --chmod=+x caminho/receita.sh
-        git update-index --chmod=-x caminho/arquivo.md
-        ```
-
-3. **Conformidade Estrita com POSIX `/bin/sh`:**
-    - Shebang obrigatório: `#!/usr/bin/env sh`.
-    - Proibidos bashismos (`[[ ]]`, arrays, `&>`, `source`).
-    - Redirecionamentos de segurança com aspas obrigatórias: `> "/dev/null" 2>&1`.
-
-4. **Orçamento de Linhas (Regra 8 - 16 - 128 - 256):**
-    - Mínimo de 8 linhas úteis (erro fatal para scripts < 8 linhas).
-    - Teto máximo de 256 linhas úteis (monólitos proibidos).
-    - Faixa ideal: 17 a 128 linhas.
-
-5. **Padrão Canônico de Banners:**
-    - Topo: exatamente 64 hífens (`# ----------------------------------------------------------------`).
-    - Seções internas: exatamente 32 caracteres (`### ================================` ou `### --------------------------------`).
-
----
-
-## 🪝 Quality Gates & Validação Local
-
-O repositório possui uma bateria completa de testes e auditorias:
-
-| Comando       | Descrição                                                                 |
-| :------------ | :------------------------------------------------------------------------ |
-| `make test`   | Valida sintaxe POSIX (`sh -n`)                                            |
-| `make audit`  | Executa a suíte Python: monoliths, nanos, syntax, banners, links, formats |
-| `make doctor` | Diagnóstico de integridade do host                                        |
-| `make ci`     | Executa bateria completa de CI local                                      |
-
-Para rodar todos os alvos em sequência:
-
-```sh
-make test
-make audit
-make doctor
 make ci
 ```
 
-Ganchos Git em `.githooks/`:
+---
 
-- **`pre-commit`:** Verifica whitespace, modos octais no Git Index (0755 vs 0644), sintaxe de shell, redirecionamentos e Prettier.
-- **`commit-msg`:** Valida formato semântico da mensagem de commit.
+## 🔄 Ciclo Canônico de Contribuição
+
+Todo o fluxo de desenvolvimento segue o desacoplamento estrito entre a bancada de trabalho e os runtimes de produção:
+
+1. **Bancada de Edição:** Alterações devem ocorrer exclusivamente na bancada em `~/Documents/`. Nunca altere clones ou diretórios de produção diretamente.
+2. **Implementação Limpa:** Desenvolva mantendo o código autoexplicativo, respeitando a Taxonomia Tripartite de Comentários e a portabilidade POSIX.
+3. **Quality Gates Locais:** Valide seu trabalho localmente executando `make format`, `make audit`, `make test` e `make ci`.
+4. **Commit Semântico:** Registre alterações atômicas seguindo a convenção de commits semânticos, protegida pelos ganchos Git com auto-cura.
+5. **Deploy Canônico:** Envie as alterações via `git push`. Ambientes de produção recebem atualizações unicamente via `git pull`.
+
+---
+
+## 🛡️ Invariantes de Engenharia
+
+Toda contribuição deve respeitar rigorosamente as diretrizes em [PRINCIPLES.md](PRINCIPLES.md) e [AGENTS.md](AGENTS.md):
+
+1. **Taxonomia Tripartite de Comentários:**
+    - _Comentários de Sistema:_ PERMITIDOS (shebangs, pragmas, diretivas de linters).
+    - _Comentários Estruturais de 64/32 colunas:_ PERMITIDOS (cabeçalhos de 64 `-` `# ----------------------------------------------------------------`, réguas de 32 caracteres `### ================================` e `### --------------------------------` com títulos em MAIÚSCULO, réguas de 64 `=` em `.gitignore` com títulos em MAIÚSCULO).
+    - _Comentários Explicativos/Narrativos:_ PROIBIDOS em código-fonte, configurações e blocos de código dentro de arquivos Markdown.
+
+2. **Invariante de Modos no Git Index (`0755` vs `0644`):**
+    - Scripts executáveis e ganchos Git devem manter permissão `0755` (`100755` no Git Index).
+    - Arquivos de configuração, documentações, manifestos e fontes devem manter `0644` (`100644` no Git Index).
+    - Permissões no índice podem ser ajustadas manualmente quando necessário:
+        ```sh
+        git update-index --chmod=+x scripts/util.sh
+        git update-index --chmod=-x README.md
+        ```
+
+3. **Hermetismo de Produção (`rm -rf .agents`):**
+    - Nenhum build, script de produção ou execução de aplicação pode depender de arquivos em `.agents/` ou `skills/`.
+
+4. **Portabilidade POSIX e Makefiles Silenciosos:**
+    - Scripts de automação devem adotar POSIX `/bin/sh` estrito, cabeçalho `#!/usr/bin/env sh` e redirecionamento seguro `> "/dev/null" 2>&1`.
+    - Makefiles devem conter `.POSIX: .SILENT:` e flags de supressão de ruído.
+
+---
+
+## 🪝 Quality Gates & Ganchos Git com Auto-Cura
+
+O repositório adota ganchos defensivos com auto-cura ativa em `.githooks/`:
+
+- **`.githooks/pre-commit`:**
+    - _Auto-cura de Modos:_ Detecta scripts e binários ajustando permissões para `0755` no disco e no Git Index; normaliza arquivos de texto para `0644`.
+    - _Auto-cura de Formatação:_ Remove trailing whitespaces, executa Prettier em Markdowns e manifestos estruturados, corrige cabeçalhos de banners estruturais e re-adiciona ao stage.
+    - _Quality Gates Estáticos:_ Bloqueia escapes octais (`\033`), redirecionamentos não aspeados (`> /dev/null`), inconsistências de whitespace/conflito e falhas de sintaxe POSIX (`sh -n`).
+- **`.githooks/commit-msg`:**
+    - _Auto-cura de Prefixo:_ Valida o prefixo semântico e formata automaticamente a mensagem com `chore:` se o tipo for omitido ou inválido.
+    - _Validação de Comprimento:_ Garante mensagens significativas com comprimento mínimo de 8 caracteres.
+
+Para executar os quality gates manualmente:
+
+| Comando       | Finalidade Operacional                                           |
+| :------------ | :--------------------------------------------------------------- |
+| `make hooks`  | Instala e ativa os ganchos Git locais com permissão `0755`       |
+| `make format` | Formata todo o repositório com Prettier e ferramentas canônicas  |
+| `make audit`  | Executa suíte estática de integridade, banners e taxonomia       |
+| `make test`   | Executa testes unitários e de integração locais                  |
+| `make ci`     | Executa o pipeline completo de verificação local antes de commit |
 
 ---
 
 ## 📝 Convenção de Commits Semânticos
 
-As mensagens de commit devem seguir o formato:
+As mensagens de commit devem seguir o padrão:
 
 ```text
 <tipo>(<escopo>): <descrição objetiva>
 ```
 
-Tipos permitidos: `feat`, `fix`, `refactor`, `docs`, `style`, `test`, `ci`, `chore`.
+ou
+
+```text
+<tipo>: <descrição objetiva>
+```
+
+### Tipos Permitidos:
+
+| Tipo       | Descrição                                                    |
+| :--------- | :----------------------------------------------------------- |
+| `feat`     | Nova funcionalidade de produto ou sistema                    |
+| `fix`      | Correção de bug ou falha de execução                         |
+| `docs`     | Alterações estritamente em documentação                      |
+| `style`    | Ajustes visuais, formatação de código ou Prettier            |
+| `refactor` | Refatoração de código sem alteração funcional externa        |
+| `perf`     | Otimização de desempenho, latência ou consumo de recursos    |
+| `test`     | Adição ou refatoração de testes automatizados                |
+| `build`    | Alterações no sistema de compilação ou dependências externas |
+| `ci`       | Ajustes em pipelines de CI ou ganchos Git locais             |
+| `chore`    | Tarefas rotineiras de manutenção ou infraestrutura           |
+| `revert`   | Reversão de commit anterior                                  |
+| `sec`      | Correções ou aprimoramentos de segurança e criptografia      |
+| `init`     | Inicialização de repositório, módulo ou estrutura inicial    |
 
 ---
 
-## 📖 Referências Canônicas
+## 📖 Referências Obrigatórias
 
-- [README.md](README.md) — Visão geral e catálogo de perfis
-- [PRINCIPLES.md](PRINCIPLES.md) — Princípios de Engenharia e Clean Code
-- [AGENTS.md](AGENTS.md) — Briefing para agentes autônomos de IA
-- [TODO.md](TODO.md) — Roadmap operacional do Setup
+- [README.md](README.md) — Documentação e visão geral do repositório
+- [TODO.md](TODO.md) — Roadmap de desenvolvimento e status operacional
+- [PRINCIPLES.md](PRINCIPLES.md) — Os 22 Princípios de Engenharia Soberanos
+- [AGENTS.md](AGENTS.md) — Manual operacional e briefing para agentes de IA

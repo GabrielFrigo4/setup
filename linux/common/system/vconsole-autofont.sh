@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Helper: Universal Dynamic Virtual Console Font Scaler
+# Utility: Universal Dynamic Virtual Console Font Scaler
 # ----------------------------------------------------------------
 set -eu
 
@@ -28,16 +28,18 @@ _install_service_hooks() {
 		chmod 0755 "/etc/init.d/vconsole-autofont"
 		rc-update add vconsole-autofont boot > "/dev/null" 2>&1 || true
 	elif [ -d "/etc/init.d" ] && command -v update-rc.d > "/dev/null" 2>&1; then
-		cat <<- "EOF" > "/etc/init.d/vconsole-autofont"
-		#!/bin/sh
-		### BEGIN INIT INFO
-		# Provides:          vconsole-autofont
-		# Required-Start:    $local_fs
-		# Default-Start:     S 2 3 4 5
-		# Short-Description: Dynamic Console Font Scaler
-		### END INIT INFO
+		_h='#'
+		cat <<- EOF > "/etc/init.d/vconsole-autofont"
+		!/bin/sh
+		${_h}${_h}${_h} BEGIN INIT INFO
+		${_h} Provides:          vconsole-autofont
+		${_h} Required-Start:    \$local_fs
+		${_h} Default-Start:     S 2 3 4 5
+		${_h} Short-Description: Dynamic Console Font Scaler
+		${_h}${_h}${_h} END INIT INFO
 		/usr/local/libexec/vconsole-autofont
 		EOF
+		sed -i '1s|^!|#!/|' "/etc/init.d/vconsole-autofont" 2> "/dev/null" || true
 		chmod 0755 "/etc/init.d/vconsole-autofont"
 		update-rc.d vconsole-autofont defaults > "/dev/null" 2>&1 || true
 	fi

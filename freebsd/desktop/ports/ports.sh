@@ -4,13 +4,13 @@
 # ----------------------------------------------------------------
 set -eu
 
-_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
 _ui_step "Sincronizando árvore de Ports FreeBSD..."
 
-${ELEVATE} pkg install --yes devel/git
+${ELEVATE} pkg install -y devel/git
 
 PORTS_DIR="${PORTSDIR:-}"
 if [ -z "${PORTS_DIR}" ]; then

@@ -10,6 +10,6 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 
 _ui_step "Instalando Podman nativo no FreeBSD..."
 
-${ELEVATE} pkg install --yes sysutils/podman
+${ELEVATE} pkg install -y sysutils/podman
 
 _ui_ok "Engine Podman nativa instalada com sucesso!"

@@ -4,7 +4,7 @@
 # ----------------------------------------------------------------
 set -eu
 
-_setup_root="$(cd "$(dirname "$0")/../../../.." && pwd)"
+_setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
@@ -89,7 +89,7 @@ rm -f "${TMP_FILE}"
 ### KEYMAP E NAVEGACAO CONSOLE VT
 ### --------------------------------
 if command -v kbdcontrol > "/dev/null" 2>&1; then
-	_esc="$(printf '\x1b')"
+	_esc=$'\e'
 	${ELEVATE} kbdcontrol -f 65 "${_esc}[1;5D" > "/dev/null" 2>&1 || true
 	${ELEVATE} kbdcontrol -f 66 "${_esc}[1;5C" > "/dev/null" 2>&1 || true
 fi

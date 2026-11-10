@@ -61,11 +61,8 @@ EOF
 		export PKG_CONFIG_PATH="${_pc_override}:/usr/local/libdata/pkgconfig:${PKG_CONFIG_PATH:-}"
 
 		### --------------------------------
-		### drm-rs FreeBSD Node Type Patch
+		### DRM-RS FREEBSD NODE TYPE PATCH
 		### --------------------------------
-		# devfs assigns arbitrary minors, so drm-rs misclassifies /dev/dri/card0
-		# as a Control node and EWM skips it (0 outputs). Derive the type from
-		# the devname suffix (drm/0, dri/renderD128) instead of minor(dev).
 		cargo fetch
 		_drm_ver="$(awk '/^name = "drm"$/ { getline; gsub(/[^0-9.]/, ""); print; exit }' Cargo.lock 2> "/dev/null" || true)"
 		_drm_src="$(find "${CARGO_HOME:-${HOME}/.cargo}/registry/src" -maxdepth 2 -type d -name "drm-${_drm_ver}" 2> "/dev/null" | head -n 1)"
@@ -76,16 +73,26 @@ EOF
 			cp -R "${_drm_src}" "${_drm_patched}"
 			chmod -R u+w "${_drm_patched}"
 			_node_rs="${_drm_patched}/src/node/mod.rs"
-			sed -i '' \
-				-e 's|^        let ty = match minor(dev) >> 6 {|        #[cfg(target_os = "freebsd")]\
-        let minor_id = devname(dev)\
-            .and_then(\|n\| n.trim_start_matches(\|c: char\| !c.is_numeric()).parse::<u32>().ok())\
-            .ok_or(CreateDrmNodeError::NotDrmNode)?;\
-        #[cfg(not(target_os = "freebsd"))]\
-        let minor_id = minor(dev);\
-        let ty = match minor_id >> 6 {|' \
-				-e 's|let id = old_id & id_mask + ty.minor_base();|let id = (old_id \& id_mask) + ty.minor_base();|' \
-				"${_node_rs}"
+			python3 -c '
+import sys
+p = sys.argv[1]
+with open(p, "r", encoding="utf-8") as f:
+    c = f.read()
+h = chr(35)
+t = "        let ty = match minor(dev) >> 6 {"
+r = f"""        {h}[cfg(target_os = "freebsd")]
+        let minor_id = devname(dev)
+            .and_then(|n| n.trim_start_matches(|c: char| !c.is_numeric()).parse::<u32>().ok())
+            .ok_or(CreateDrmNodeError::NotDrmNode)?;
+        {h}[cfg(not(target_os = "freebsd"))]
+        let minor_id = minor(dev);
+        let ty = match minor_id >> 6 {"""
+if t in c:
+    c = c.replace(t, r)
+    c = c.replace("let id = old_id & id_mask + ty.minor_base();", "let id = (old_id & id_mask) + ty.minor_base();")
+    with open(p, "w", encoding="utf-8") as f:
+        f.write(c)
+' "${_node_rs}"
 			if grep -q "let minor_id = devname(dev)" "${_node_rs}"; then
 				_cargo_extra="patch.crates-io.drm.path=\"${_drm_patched}\""
 				_ui_ok "drm-rs ${_drm_ver} corrigido para detecção de nós DRM no FreeBSD."

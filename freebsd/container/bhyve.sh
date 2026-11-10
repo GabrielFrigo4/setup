@@ -13,7 +13,7 @@ _ui_step "Configurando hipervisor Bhyve e rede virtual..."
 ### --------------------------------
 ### 1. PACOTES E FIRMWARE
 ### --------------------------------
-${ELEVATE} pkg install --yes sysutils/vm-bhyve sysutils/bhyve-firmware net/tigervnc-viewer
+${ELEVATE} pkg install -y sysutils/vm-bhyve sysutils/bhyve-firmware net/tigervnc-viewer
 
 ### --------------------------------
 ### 2. PERSISTENCIA DE SERVICOS
