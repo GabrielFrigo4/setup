@@ -142,7 +142,7 @@ Para restabelecer estabilidade imediata e determinística no FreeBSD 15.1-RELEAS
    O módulo `i915kms.ko` não deve ser carregado prematuramente no `/boot/loader.conf` (onde reside na `module_blacklist`), mas sim através da infraestrutura de inicialização de serviços:
 
     ```sh
-    sysrc kld_list+="/boot/modules/i915kms.ko"
+    sysrc kld_list+="i915kms"
     ```
 
 4. **Parametrização Consolidada no `/boot/loader.conf`:**

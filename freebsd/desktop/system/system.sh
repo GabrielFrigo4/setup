@@ -18,19 +18,21 @@ ${ELEVATE} pw groupmod operator -m "${TARGET_USER}" 2> "/dev/null" || true
 ${ELEVATE} pw groupmod video -m "${TARGET_USER}" 2> "/dev/null" || true
 ${ELEVATE} pw groupmod webcamd -m "${TARGET_USER}" 2> "/dev/null" || true
 
-${ELEVATE} pkg bootstrap -y
+command -v pkg > "/dev/null" 2>&1 || ${ELEVATE} pkg bootstrap -y
 ${ELEVATE} pkg update
 
 _target_font="${DETECTED_CONSOLE_FONT:-spleen-12x24}"
-${ELEVATE} sysrc allscreens_flags="-f ${_target_font}"
+if [ "$(sysrc -n allscreens_flags 2> "/dev/null" || true)" != "-f ${_target_font}" ]; then
+	${ELEVATE} sysrc allscreens_flags="-f ${_target_font}" > "/dev/null" 2>&1 || true
+fi
 _rcd_dir="/usr/local/etc/rc.d"
 [ -d "${_rcd_dir}" ] || ${ELEVATE} mkdir -p "${_rcd_dir}"
 ${ELEVATE} cp "${_setup_root}/freebsd/desktop/system/vt-autofont.sh" "${_rcd_dir}/vt_autofont"
 ${ELEVATE} chmod 0755 "${_rcd_dir}/vt_autofont"
-${ELEVATE} sysrc vt_autofont_enable="YES" > "/dev/null" 2>&1 || true
-${ELEVATE} sysrc moused_enable="YES" > "/dev/null" 2>&1 || true
-${ELEVATE} sysrc moused_flags="-A 1.5,1.5 -a 1.2" > "/dev/null" 2>&1 || true
-${ELEVATE} sysrc keyrate="fast" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n vt_autofont_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc vt_autofont_enable="YES" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n moused_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc moused_enable="YES" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n moused_flags 2> "/dev/null" || true)" != "-A 1.5,1.5 -a 1.2" ] && ${ELEVATE} sysrc moused_flags="-A 1.5,1.5 -a 1.2" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n keyrate 2> "/dev/null" || true)" != "fast" ] && ${ELEVATE} sysrc keyrate="fast" > "/dev/null" 2>&1 || true
 if [ -x "/etc/rc.d/syscons" ]; then
 	${ELEVATE} /etc/rc.d/syscons restart > "/dev/null" 2>&1 || true
 fi
@@ -43,8 +45,10 @@ fi
 ### --------------------------------
 ### AUDIO OSS AND SNDIOD TUNING
 ### --------------------------------
-${ELEVATE} pkg install -y audio/sndiod 2> "/dev/null" || true
-${ELEVATE} sysrc sndiod_enable="YES" > "/dev/null" 2>&1 || true
+if ! pkg info -e sndiod > "/dev/null" 2>&1; then
+	${ELEVATE} pkg install -y audio/sndiod 2> "/dev/null" || true
+fi
+[ "$(sysrc -n sndiod_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc sndiod_enable="YES" > "/dev/null" 2>&1 || true
 
 ${ELEVATE} sysctl kern.coredump=0 > "/dev/null" 2>&1 || true
 grep -qxF "kern.coredump=0" "/etc/sysctl.conf" 2> "/dev/null" || echo "kern.coredump=0" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
@@ -67,20 +71,30 @@ fi
 ### --------------------------------
 ### DRM AND KMS GRAPHICS TUNING
 ### --------------------------------
-${ELEVATE} pkg delete -f -y drm-kmod drm-612-kmod > "/dev/null" 2>&1 || true
-${ELEVATE} pkg install -y \
-	graphics/drm-66-kmod \
-	graphics/gpu-firmware-intel-kmod-alderlake \
-	multimedia/libva-intel-media-driver \
-	multimedia/libva-utils 2> "/dev/null" || true
-${ELEVATE} pkg lock -y drm-66-kmod > "/dev/null" 2>&1 || true
-
-if ! sysrc -n kld_list 2> "/dev/null" | grep -q "/boot/modules/i915kms.ko"; then
-	if sysrc -n kld_list 2> "/dev/null" | grep -q "i915kms"; then
-		${ELEVATE} sysrc kld_list-="i915kms" > "/dev/null" 2>&1 || true
-	fi
-	${ELEVATE} sysrc kld_list+="/boot/modules/i915kms.ko" > "/dev/null" 2>&1 || true
+if ! pkg info -e drm-66-kmod > "/dev/null" 2>&1; then
+	${ELEVATE} pkg delete -f -y drm-kmod drm-612-kmod > "/dev/null" 2>&1 || true
+	${ELEVATE} pkg install -y \
+		graphics/drm-66-kmod \
+		graphics/gpu-firmware-intel-kmod-alderlake \
+		multimedia/libva-intel-media-driver \
+		multimedia/libva-utils 2> "/dev/null" || true
 fi
+if ! pkg lock -l 2> "/dev/null" | grep -q "drm-66-kmod"; then
+	${ELEVATE} pkg lock -y drm-66-kmod > "/dev/null" 2>&1 || true
+fi
+
+_kld_current="$(sysrc -n kld_list 2> "/dev/null" || true)"
+if echo "${_kld_current}" | grep -q "/boot/modules/i915kms.ko"; then
+	${ELEVATE} sysrc kld_list-="/boot/modules/i915kms.ko" > "/dev/null" 2>&1 || true
+	_kld_current="$(sysrc -n kld_list 2> "/dev/null" || true)"
+fi
+case " ${_kld_current} " in
+	*" i915kms "*)
+		;;
+	*)
+		${ELEVATE} sysrc kld_list+="i915kms" > "/dev/null" 2>&1 || true
+		;;
+esac
 
 _set_loader_tunable() {
 	_tunable="$1"

@@ -108,8 +108,10 @@ fi
 ### --------------------------------
 ### 8. DIAGNOSTICO DO ZFS ARC
 ### --------------------------------
-_ui_step "Instalando utilitários de diagnóstico e py-sysctl..."
-${ELEVATE} pkg install -y devel/py-sysctl sysutils/arc_summary sysutils/zfs-stats 2> "/dev/null" || true
+if ! pkg info -e py-sysctl > "/dev/null" 2>&1 || ! pkg info -e arc_summary > "/dev/null" 2>&1 || ! pkg info -e zfs-stats > "/dev/null" 2>&1; then
+	_ui_step "Instalando utilitários de diagnóstico e py-sysctl..."
+	${ELEVATE} pkg install -y devel/py-sysctl sysutils/arc_summary sysutils/zfs-stats 2> "/dev/null" || true
+fi
 
 if [ ! -f "/usr/local/bin/arcstat" ]; then
 	if command -v fetch > "/dev/null" 2>&1; then
