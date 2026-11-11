@@ -2,6 +2,9 @@
 # ----------------------------------------------------------------
 # Utility: FreeBSD Virtual Terminal Dynamic Console Font Scaler
 # ----------------------------------------------------------------
+# PROVIDE: vt_autofont
+# REQUIRE: kld syscons
+# KEYWORD: nojail
 
 set -eu
 set +u 2> "/dev/null" || true

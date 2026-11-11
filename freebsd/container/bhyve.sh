@@ -60,10 +60,12 @@ jail_net = "192.168.10.0/24"
 table <jails> persist
 table <cni-nat> persist
 
+### --------------------------------
+### OPTIONS
+### --------------------------------
 set block-policy return
-set skip on { lo, vm-switch, bastille0 }
-
-scrub in all fragment reassemble
+set skip on { lo0, vm-switch, bastille0 }
+set reassemble yes
 
 ### --------------------------------
 ### TRANSLATION
@@ -72,12 +74,13 @@ nat-anchor "cni-rdr/*"
 rdr-anchor "cni-rdr/*"
 rdr-anchor "rdr/*"
 
-nat on $wired_if inet from { $vm_net, $jail_net, <jails>, <cni-nat> } to any -> ($wired_if:0)
-nat on $wifi_if  inet from { $vm_net, $jail_net, <jails>, <cni-nat> } to any -> ($wifi_if:0)
-
 ### --------------------------------
 ### FILTERING
 ### --------------------------------
+match in all scrub (no-df max-mss 1440)
+match out on $wired_if inet from { $vm_net, $jail_net, <jails>, <cni-nat> } to any nat-to ($wired_if:0)
+match out on $wifi_if  inet from { $vm_net, $jail_net, <jails>, <cni-nat> } to any nat-to ($wifi_if:0)
+
 block in all
 pass out quick all keep state
 
@@ -92,7 +95,8 @@ pass in quick inet6 proto ipv6-icmp all
 EOF
 
 if command -v pfctl > "/dev/null" 2>&1; then
-	${ELEVATE} pfctl -nf /etc/pf.conf > "/dev/null" 2>&1 && ${ELEVATE} service pf reload > "/dev/null" 2>&1 || true
+	${ELEVATE} pfctl -nf /etc/pf.conf
+	${ELEVATE} service pf reload > "/dev/null" 2>&1 || true
 fi
 
 ### --------------------------------

@@ -31,11 +31,14 @@ ${ELEVATE} cp "${_setup_root}/freebsd/desktop/system/vt-autofont.sh" "${_rcd_dir
 ${ELEVATE} chmod 0755 "${_rcd_dir}/vt_autofont"
 [ "$(sysrc -n vt_autofont_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc vt_autofont_enable="YES" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n moused_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc moused_enable="YES" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n moused_port 2> "/dev/null" || true)" != "auto" ] && ${ELEVATE} sysrc moused_port="auto" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n moused_type 2> "/dev/null" || true)" != "evdev" ] && ${ELEVATE} sysrc moused_type="evdev" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n moused_nondefault_enable 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc moused_nondefault_enable="NO" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n moused_nondefault_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc moused_nondefault_enable="YES" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n moused_flags 2> "/dev/null" || true)" != "-A 1.5,1.5 -a 1.2" ] && ${ELEVATE} sysrc moused_flags="-A 1.5,1.5 -a 1.2" > "/dev/null" 2>&1 || true
+${ELEVATE} sysrc -x moused_port > "/dev/null" 2>&1 || true
+${ELEVATE} sysrc -x moused_type > "/dev/null" 2>&1 || true
 [ "$(sysrc -n keyrate 2> "/dev/null" || true)" != "fast" ] && ${ELEVATE} sysrc keyrate="fast" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n background_dhclient 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc background_dhclient="NO" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n defaultroute_delay 2> "/dev/null" || true)" != "5" ] && ${ELEVATE} sysrc defaultroute_delay="5" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n ifconfig_re0 2> "/dev/null" || true)" != "DHCP" ] && ${ELEVATE} sysrc ifconfig_re0="DHCP" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n ntpdate_enable 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc ntpdate_enable="NO" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n ntpd_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc ntpd_enable="YES" ntpd_sync_on_start="YES" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n autofs_enable 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc autofs_enable="NO" rpc_statd_enable="NO" rpc_lockd_enable="NO" > "/dev/null" 2>&1 || true
@@ -132,13 +135,90 @@ fi
 ### ISOLAMENTO DE REDE E WI-FI
 ### --------------------------------
 if [ -f "/etc/rc.conf" ]; then
-	if grep -q "^[[:space:]]*ifconfig_wlan0=" "/etc/rc.conf" 2> "/dev/null"; then
-		${ELEVATE} sysrc ifconfig_wlan0="WPA DHCP metric 10" > "/dev/null" 2>&1 || true
+	${ELEVATE} sed -i '' '/^[[:space:]]*#[[:space:]]*ifconfig_wlan0=/d' "/etc/rc.conf" 2> "/dev/null" || true
+	if grep -q "wlans_rtw880" "/etc/rc.conf" 2> "/dev/null" || grep -q "ifconfig_wlan0" "/etc/rc.conf" 2> "/dev/null"; then
+		${ELEVATE} sysrc ifconfig_wlan0="WPA DHCP" > "/dev/null" 2>&1 || true
 	fi
+	${ELEVATE} sysrc -x ifconfig_ue0 > "/dev/null" 2>&1 || true
 	if grep -q "/boot/kernel/fusefs.ko" "/etc/rc.conf" 2> "/dev/null" && grep -q " fusefs" "/etc/rc.conf" 2> "/dev/null"; then
 		${ELEVATE} sed -i '' 's| fusefs||g' "/etc/rc.conf"
 	fi
 fi
+
+cat <<- "EOF" | ${ELEVATE} tee "/usr/local/sbin/net-auto-switch" > "/dev/null"
+#!/usr/bin/env sh
+# ----------------------------------------------------------------
+# Utility: Ethernet / Wi-Fi Dual-Link Auto Switcher
+# ----------------------------------------------------------------
+set -eu
+
+_action="${1:-auto}"
+
+_is_wired_active() {
+	ifconfig re0 2> "/dev/null" | grep -q "status: active"
+}
+
+_switch_wired() {
+	service dhclient stop wlan0 > "/dev/null" 2>&1 || true
+	ifconfig wlan0 down > "/dev/null" 2>&1 || true
+	if ! ifconfig re0 2> "/dev/null" | grep -q "inet "; then
+		service dhclient quietstart re0 > "/dev/null" 2>&1 || true
+	fi
+}
+
+_switch_wifi() {
+	if ! _is_wired_active; then
+		service dhclient stop re0 > "/dev/null" 2>&1 || true
+		ifconfig re0 inet 0.0.0.0 > "/dev/null" 2>&1 || true
+		ifconfig wlan0 up > "/dev/null" 2>&1 || true
+		service wpa_supplicant restart wlan0 > "/dev/null" 2>&1 || true
+	fi
+}
+
+case "${_action}" in
+	wired)
+		_switch_wired
+		;;
+	wifi)
+		_switch_wifi
+		;;
+	auto|*)
+		if _is_wired_active; then
+			_switch_wired
+		fi
+		;;
+esac
+EOF
+${ELEVATE} chmod 0755 "/usr/local/sbin/net-auto-switch"
+
+cat <<- "EOF" | ${ELEVATE} tee "/usr/local/etc/rc.d/net_isolation" > "/dev/null"
+#!/usr/bin/env sh
+#
+# PROVIDE: net_isolation
+# REQUIRE: NETWORKING
+# BEFORE: DAEMON
+# KEYWORD: nojail
+#
+
+. /etc/rc.subr
+
+name="net_isolation"
+rcvar="net_isolation_enable"
+start_cmd="net_isolation_start"
+
+net_isolation_start() {
+	set -eu
+	if [ -x "/usr/local/sbin/net-auto-switch" ]; then
+		/usr/local/sbin/net-auto-switch auto
+	fi
+}
+
+load_rc_config "${name}"
+: "${net_isolation_enable:=YES}"
+run_rc_command "$1"
+EOF
+${ELEVATE} chmod 0755 "/usr/local/etc/rc.d/net_isolation"
+[ "$(sysrc -n net_isolation_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc net_isolation_enable="YES" > "/dev/null" 2>&1 || true
 
 _devd_dir="/usr/local/etc/devd"
 [ -d "${_devd_dir}" ] || ${ELEVATE} mkdir -p "${_devd_dir}"
@@ -147,14 +227,14 @@ notify 100 {
 	match "system" "IFNET";
 	match "subsystem" "re[0-9]+";
 	match "type" "LINK_UP";
-	action "ifconfig wlan0 down > '/dev/null' 2>&1 || true";
+	action "/usr/local/sbin/net-auto-switch wired";
 };
 
 notify 100 {
 	match "system" "IFNET";
 	match "subsystem" "re[0-9]+";
 	match "type" "LINK_DOWN";
-	action "ifconfig wlan0 up > '/dev/null' 2>&1 || true";
+	action "/usr/local/sbin/net-auto-switch wifi";
 };
 EOF
 ${ELEVATE} chmod 0644 "${_devd_dir}/ethernet-wifi-isolation.conf"
