@@ -31,8 +31,14 @@ ${ELEVATE} cp "${_setup_root}/freebsd/desktop/system/vt-autofont.sh" "${_rcd_dir
 ${ELEVATE} chmod 0755 "${_rcd_dir}/vt_autofont"
 [ "$(sysrc -n vt_autofont_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc vt_autofont_enable="YES" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n moused_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc moused_enable="YES" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n moused_port 2> "/dev/null" || true)" != "auto" ] && ${ELEVATE} sysrc moused_port="auto" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n moused_type 2> "/dev/null" || true)" != "evdev" ] && ${ELEVATE} sysrc moused_type="evdev" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n moused_nondefault_enable 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc moused_nondefault_enable="NO" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n moused_flags 2> "/dev/null" || true)" != "-A 1.5,1.5 -a 1.2" ] && ${ELEVATE} sysrc moused_flags="-A 1.5,1.5 -a 1.2" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n keyrate 2> "/dev/null" || true)" != "fast" ] && ${ELEVATE} sysrc keyrate="fast" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n ntpdate_enable 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc ntpdate_enable="NO" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n ntpd_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc ntpd_enable="YES" ntpd_sync_on_start="YES" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n autofs_enable 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc autofs_enable="NO" rpc_statd_enable="NO" rpc_lockd_enable="NO" > "/dev/null" 2>&1 || true
 if [ -x "/etc/rc.d/syscons" ]; then
 	${ELEVATE} /etc/rc.d/syscons restart > "/dev/null" 2>&1 || true
 fi
@@ -116,14 +122,18 @@ if [ -f "/boot/loader.conf" ]; then
 	_set_loader_tunable "kern.ipc.shmseg" "1024"
 	_set_loader_tunable "kern.ipc.shmmni" "1024"
 	_set_loader_tunable "kern.maxproc" "100000"
+	_set_loader_tunable "compat.linuxkpi.skb.mem_limit" "1"
+	_set_loader_tunable "compat.linuxkpi.rtw88_disable_lps_deep" "1"
+	_set_loader_tunable "compat.linuxkpi.rtw88_pci_disable_aspm" "1"
+	_set_loader_tunable "hw.pci.enable_aspm" "0"
 fi
 
 ### --------------------------------
 ### ISOLAMENTO DE REDE E WI-FI
 ### --------------------------------
 if [ -f "/etc/rc.conf" ]; then
-	if grep -q "ifconfig_wlan0=" "/etc/rc.conf" 2> "/dev/null"; then
-		${ELEVATE} sysrc ifconfig_wlan0="WPA DHCP -bgscan powersave" > "/dev/null" 2>&1 || true
+	if grep -q "^[[:space:]]*ifconfig_wlan0=" "/etc/rc.conf" 2> "/dev/null"; then
+		${ELEVATE} sysrc ifconfig_wlan0="WPA DHCP metric 10" > "/dev/null" 2>&1 || true
 	fi
 	if grep -q "/boot/kernel/fusefs.ko" "/etc/rc.conf" 2> "/dev/null" && grep -q " fusefs" "/etc/rc.conf" 2> "/dev/null"; then
 		${ELEVATE} sed -i '' 's| fusefs||g' "/etc/rc.conf"
@@ -135,15 +145,15 @@ _devd_dir="/usr/local/etc/devd"
 cat <<- "EOF" | ${ELEVATE} tee "${_devd_dir}/ethernet-wifi-isolation.conf" > "/dev/null"
 notify 100 {
 	match "system" "IFNET";
+	match "subsystem" "re[0-9]+";
 	match "type" "LINK_UP";
-	media-type "ethernet";
 	action "ifconfig wlan0 down > '/dev/null' 2>&1 || true";
 };
 
 notify 100 {
 	match "system" "IFNET";
+	match "subsystem" "re[0-9]+";
 	match "type" "LINK_DOWN";
-	media-type "ethernet";
 	action "ifconfig wlan0 up > '/dev/null' 2>&1 || true";
 };
 EOF

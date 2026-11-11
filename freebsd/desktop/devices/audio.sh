@@ -11,8 +11,8 @@ _setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 _ui_step "Iniciando roteamento de áudio..."
 
 if ! ifconfig ue0 > "/dev/null" 2>&1; then
-	_ui_err "Interface 'ue0' não encontrada! Conecte o USB com tethering ativo."
-	exit 1
+	_ui_warn "Interface 'ue0' não encontrada. Conecte o dispositivo USB para roteamento de áudio."
+	exit 0
 fi
 
 ${ELEVATE} dhclient ue0 > "/dev/null" 2>&1 || true

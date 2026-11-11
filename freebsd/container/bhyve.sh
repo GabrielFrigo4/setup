@@ -43,8 +43,57 @@ ${ELEVATE} sysctl net.link.bridge.pfil_bridge=0 > "/dev/null" 2>&1 || true
 ### --------------------------------
 ### 4. SWITCH VIRTUAL E REDE
 ### --------------------------------
+${ELEVATE} zfs create -o mountpoint=/zroot/vm zroot/vm 2> "/dev/null" || true
+${ELEVATE} vm init 2> "/dev/null" || true
 ${ELEVATE} vm switch create public 2> "/dev/null" || true
 ${ELEVATE} vm switch address public 192.168.8.1/24 2> "/dev/null" || true
+${ELEVATE} vm switch remove public re0 2> "/dev/null" || true
+${ELEVATE} ifconfig vm-public deletem re0 2> "/dev/null" || true
+
+cat <<- "EOF" | ${ELEVATE} tee /etc/pf.conf > "/dev/null"
+wired_if = "re0"
+wifi_if  = "wlan0"
+vm_if    = "vm-public"
+vm_net   = "192.168.8.0/24"
+jail_net = "192.168.10.0/24"
+
+table <jails> persist
+table <cni-nat> persist
+
+set block-policy return
+set skip on { lo, vm-switch, bastille0 }
+
+scrub in all fragment reassemble
+
+### --------------------------------
+### TRANSLATION
+### --------------------------------
+nat-anchor "cni-rdr/*"
+rdr-anchor "cni-rdr/*"
+rdr-anchor "rdr/*"
+
+nat on $wired_if inet from { $vm_net, $jail_net, <jails>, <cni-nat> } to any -> ($wired_if:0)
+nat on $wifi_if  inet from { $vm_net, $jail_net, <jails>, <cni-nat> } to any -> ($wifi_if:0)
+
+### --------------------------------
+### FILTERING
+### --------------------------------
+block in all
+pass out quick all keep state
+
+anchor "bastille/*"
+
+pass quick on $vm_if all
+pass quick on cni-podman0 all
+
+pass in quick inet proto udp from any port 67 to any port 68
+pass in quick inet proto icmp all
+pass in quick inet6 proto ipv6-icmp all
+EOF
+
+if command -v pfctl > "/dev/null" 2>&1; then
+	${ELEVATE} pfctl -nf /etc/pf.conf > "/dev/null" 2>&1 && ${ELEVATE} service pf reload > "/dev/null" 2>&1 || true
+fi
 
 ### --------------------------------
 ### 5. EXPORTACAO NFSV3

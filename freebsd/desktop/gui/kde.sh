@@ -10,7 +10,23 @@ _setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 
 _ui_step "Configurando ambiente gráfico KDE Plasma..."
 
-${ELEVATE} pkg install -y sysutils/desktop-installer x11/wl-clipboard x11/xclip ports-mgmt/octopkg archivers/ark x11-themes/plasma6-breeze-gtk graphics/gimp3-app x11-themes/adwaita-icon-theme x11-themes/kf6-breeze-icons x11/xsettingsd
+${ELEVATE} pkg install -y \
+	x11/plasma6-plasma \
+	x11/konsole \
+	sysutils/seatd \
+	devel/dbus \
+	x11/wl-clipboard \
+	x11/xclip \
+	ports-mgmt/octopkg \
+	archivers/ark \
+	x11-themes/plasma6-breeze-gtk \
+	graphics/gimp3-app \
+	x11-themes/adwaita-icon-theme \
+	x11-themes/kf6-breeze-icons \
+	x11/xsettingsd
+
+[ "$(sysrc -n dbus_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc dbus_enable="YES" > "/dev/null" 2>&1 || true
+[ "$(sysrc -n seatd_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc seatd_enable="YES" > "/dev/null" 2>&1 || true
 
 ### --------------------------------
 ### DESATIVACAO DO BALOO INDEXER
@@ -66,4 +82,4 @@ export KDEVARTMP="/tmp"
 EOF
 ${ELEVATE} chmod 0755 "${_plasma_env_dir}/kdevartmp.sh"
 
-_ui_ok "Ambiente pronto! Execute 'desktop-installer' para seleção interativa se necessário."
+_ui_ok "Ambiente KDE Plasma Wayland configurado com sucesso!"
