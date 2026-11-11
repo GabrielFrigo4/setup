@@ -19,7 +19,6 @@ ${ELEVATE} pw groupmod video -m "${TARGET_USER}" 2> "/dev/null" || true
 ${ELEVATE} pw groupmod webcamd -m "${TARGET_USER}" 2> "/dev/null" || true
 
 command -v pkg > "/dev/null" 2>&1 || ${ELEVATE} pkg bootstrap -y
-${ELEVATE} pkg update
 
 _target_font="${DETECTED_CONSOLE_FONT:-spleen-12x24}"
 if [ "$(sysrc -n allscreens_flags 2> "/dev/null" || true)" != "-f ${_target_font}" ]; then
@@ -238,9 +237,6 @@ notify 100 {
 };
 EOF
 ${ELEVATE} chmod 0644 "${_devd_dir}/ethernet-wifi-isolation.conf"
-if [ -x "/etc/rc.d/devd" ]; then
-	${ELEVATE} /etc/rc.d/devd restart > "/dev/null" 2>&1 || true
-fi
 
 mkdir -p "${HOME}/Workspace"
 
