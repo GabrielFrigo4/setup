@@ -30,7 +30,7 @@ _install_service_hooks() {
 	elif [ -d "/etc/init.d" ] && command -v update-rc.d > "/dev/null" 2>&1; then
 		_h='#'
 		cat <<- EOF > "/etc/init.d/vconsole-autofont"
-		!/bin/sh
+		#!/usr/bin/env sh
 		${_h}${_h}${_h} BEGIN INIT INFO
 		${_h} Provides:          vconsole-autofont
 		${_h} Required-Start:    \$local_fs
@@ -39,7 +39,6 @@ _install_service_hooks() {
 		${_h}${_h}${_h} END INIT INFO
 		/usr/local/libexec/vconsole-autofont
 		EOF
-		sed -i '1s|^!|#!/|' "/etc/init.d/vconsole-autofont" 2> "/dev/null" || true
 		chmod 0755 "/etc/init.d/vconsole-autofont"
 		update-rc.d vconsole-autofont defaults > "/dev/null" 2>&1 || true
 	fi

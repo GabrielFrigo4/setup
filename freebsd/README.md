@@ -6,7 +6,7 @@
 
 ## 🎯 Finalidade
 
-Reúne o ferramental de provisionamento para FreeBSD seguindo a especificação POSIX e o `/bin/sh` nativo, dividido por contexto:
+Reúne o ferramental de provisionamento para FreeBSD seguindo a especificação POSIX e o `sh` nativo, dividido por contexto:
 
 - **`common/`**: Infraestrutura base universal (elevação `doas`, otimizações de kernel e ferramentas CLI essenciais).
 - **`desktop/`**: Estação de trabalho pessoal com interface KDE Plasma 6 Wayland, aceleração de áudio, rede e ports.
