@@ -19,8 +19,22 @@ for _devd_dir in "/etc/devd" "/usr/local/etc/devd"; do
 	if [ -d "${_devd_dir}" ]; then
 		for _devd_file in "${_devd_dir}"/*.conf; do
 			if [ -f "${_devd_file}" ] && grep -Eq "virtual_oss_cmd|virtual_oss_default_control_device" "${_devd_file}" 2> "/dev/null"; then
+				_bak="$(mktemp "/tmp/devd.conf.XXXXXX")"
+				cp "${_devd_file}" "${_bak}"
 				${ELEVATE} sed -i '' -e ':a' -e '/\\$/N; s/\\\n[[:space:]]*/ /; ta' "${_devd_file}" 2> "/dev/null" || true
-				${ELEVATE} sed -i '' -E 's|(/usr/sbin/)?virtual_oss_cmd[[:space:]]*/dev/\$\(sysrc[[:space:]]+(-[a-zA-Z]*n[a-zA-Z]*[[:space:]]+)?virtual_oss_default_control_device\)|ctl=\$(sysrc -qn virtual_oss_default_control_device 2>/dev/null \|\| true); [ -n "\${ctl}" ] \&\& [ -e "/dev/\${ctl}" ] \&\& \1virtual_oss_cmd /dev/\${ctl}|g' "${_devd_file}" 2> "/dev/null" || true
+				${ELEVATE} sed -i '' -E \
+					-e 's|ctl=\$\(sysrc[[:space:]]+-qn[[:space:]]+virtual_oss_default_control_device[^;]*;[[:space:]]*\[[[:space:]]*-n[[:space:]]+\\?"\$\{ctl\}\\?"[[:space:]]*\][[:space:]]*&&[[:space:]]*\[[[:space:]]*-e[[:space:]]+\\?"/dev/\$\{ctl\}\\?"[[:space:]]*\][[:space:]]*&&[[:space:]]*(/usr/sbin/)?virtual_oss_cmd[[:space:]]+/dev/\$\{ctl\}|ctl=$(sysrc -qn virtual_oss_default_control_device 2>'\''/dev/null'\''); [ -c /dev/${ctl:-nonexistent} ] \&\& /usr/sbin/virtual_oss_cmd /dev/${ctl}|g' \
+					-e 's|(/usr/sbin/)?virtual_oss_cmd[[:space:]]+/dev/\$\(sysrc[[:space:]]+(-[a-zA-Z]*n[a-zA-Z]*[[:space:]]+)?virtual_oss_default_control_device\)|ctl=$(sysrc -qn virtual_oss_default_control_device 2>'\''/dev/null'\''); [ -c /dev/${ctl:-nonexistent} ] \&\& /usr/sbin/virtual_oss_cmd /dev/${ctl}|g' \
+					"${_devd_file}" 2> "/dev/null" || true
+				if command -v devd > "/dev/null" 2>&1 && command -v timeout > "/dev/null" 2>&1; then
+					_st=0
+					${ELEVATE} timeout 1 devd -d -f "${_devd_file}" > "/dev/null" 2>&1 || _st=$?
+					if [ "${_st}" -ne 0 ] && [ "${_st}" -ne 124 ]; then
+						${ELEVATE} cp "${_bak}" "${_devd_file}"
+						${ELEVATE} chmod 0644 "${_devd_file}"
+					fi
+				fi
+				rm -f "${_bak}"
 			fi
 		done
 	fi
@@ -29,10 +43,10 @@ done
 ### --------------------------------
 ### 2. LIMPEZA DE ESTADO DO MIXER
 ### --------------------------------
+${ELEVATE} sysrc mixer_enable="NO" > "/dev/null" 2>&1 || true
+
 for _mixer_state in /var/db/mixer*-state; do
-	if [ -f "${_mixer_state}" ]; then
-		${ELEVATE} sed -i '' '/^mic\.volume=/d' "${_mixer_state}" 2> "/dev/null" || true
-	fi
+	[ -f "${_mixer_state}" ] && ${ELEVATE} sed -i '' '/^mic\.volume=/d' "${_mixer_state}" 2> "/dev/null" || true
 done
 
 ### --------------------------------

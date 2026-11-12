@@ -26,11 +26,16 @@ ${ELEVATE} chmod 0755 \
 	"/usr/local/bastille/releases" 2> "/dev/null" || true
 
 if [ -f "/usr/local/etc/rc.d/bastille" ]; then
-	${ELEVATE} sed -i '' \
-		-e 's|find /usr/local/bastille/jails/\*|find /usr/local/bastille/jails -mindepth 1 -maxdepth 1 2> \"/dev/null\"|g' \
-		-e 's|find \${bastille_jailsdir}/\*|find \${bastille_jailsdir} -mindepth 1 -maxdepth 1 2> \"/dev/null\"|g' \
-		-e 's|find "\${bastille_jailsdir}"/\*|find "\${bastille_jailsdir}" -mindepth 1 -maxdepth 1 2> \"/dev/null\"|g' \
-		-e 's|find "\${bastille_jailsdir}/\*"|find "\${bastille_jailsdir}" -mindepth 1 -maxdepth 1 2> \"/dev/null\"|g' \
+	${ELEVATE} sed -i '' -E \
+		-e 's|[[:space:]]*2>[[:space:]]*\\"/dev/null\\"||g' \
+		-e 's|find[[:space:]]+/usr/local/bastille/jails/\*([[:space:]]+-maxdepth[[:space:]]+0)?|find /usr/local/bastille/jails -mindepth 1 -maxdepth 1|g' \
+		-e 's|find[[:space:]]+\$\{bastille_jailsdir\}/\*([[:space:]]+-maxdepth[[:space:]]+0)?|find ${bastille_jailsdir} -mindepth 1 -maxdepth 1|g' \
+		-e 's|find[[:space:]]+"\$\{bastille_jailsdir\}"/\*([[:space:]]+-maxdepth[[:space:]]+0)?|find "${bastille_jailsdir}" -mindepth 1 -maxdepth 1|g' \
+		-e 's|find[[:space:]]+"\$\{bastille_jailsdir\}/\*"([[:space:]]+-maxdepth[[:space:]]+0)?|find "${bastille_jailsdir}" -mindepth 1 -maxdepth 1|g' \
+		-e 's|find[[:space:]]+\$\{jailsdir\}/\*([[:space:]]+-maxdepth[[:space:]]+0)?|find ${jailsdir} -mindepth 1 -maxdepth 1|g' \
+		-e 's|find[[:space:]]+"\$\{jailsdir\}"/\*([[:space:]]+-maxdepth[[:space:]]+0)?|find "${jailsdir}" -mindepth 1 -maxdepth 1|g' \
+		-e 's|find[[:space:]]+"\$\{jailsdir\}/\*"([[:space:]]+-maxdepth[[:space:]]+0)?|find "${jailsdir}" -mindepth 1 -maxdepth 1|g' \
+		-e 's|-mindepth[[:space:]]+1[[:space:]]+-maxdepth[[:space:]]+1[[:space:]]+-maxdepth[[:space:]]+0|-mindepth 1 -maxdepth 1|g' \
 		"/usr/local/etc/rc.d/bastille" 2> "/dev/null" || true
 fi
 

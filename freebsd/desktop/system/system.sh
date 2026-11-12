@@ -22,9 +22,7 @@ done
 command -v pkg > "/dev/null" 2>&1 || ${ELEVATE} pkg bootstrap -y
 
 _target_font="${DETECTED_CONSOLE_FONT:-spleen-12x24}"
-if [ "$(sysrc -n allscreens_flags 2> "/dev/null" || true)" != "-f ${_target_font}" ]; then
-	${ELEVATE} sysrc allscreens_flags="-f ${_target_font}" > "/dev/null" 2>&1 || true
-fi
+[ "$(sysrc -n allscreens_flags 2> "/dev/null" || true)" != "-f ${_target_font}" ] && ${ELEVATE} sysrc allscreens_flags="-f ${_target_font}" > "/dev/null" 2>&1 || true
 _rcd_dir="/usr/local/etc/rc.d"
 [ -d "${_rcd_dir}" ] || ${ELEVATE} mkdir -p "${_rcd_dir}"
 ${ELEVATE} cp "${_setup_root}/freebsd/desktop/system/vt-autofont.sh" "${_rcd_dir}/vt_autofont"
@@ -48,9 +46,7 @@ fi
 ### --------------------------------
 ### AUDIO OSS AND SNDIOD TUNING
 ### --------------------------------
-if ! pkg info -e sndiod > "/dev/null" 2>&1; then
-	${ELEVATE} pkg install -y audio/sndiod 2> "/dev/null" || true
-fi
+pkg info -e sndiod > "/dev/null" 2>&1 || ${ELEVATE} pkg install -y audio/sndiod 2> "/dev/null" || true
 [ "$(sysrc -n sndiod_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc sndiod_enable="YES" > "/dev/null" 2>&1 || true
 
 sysrc -q virtual_oss_default_control_device 2> "/dev/null" || ${ELEVATE} sysrc virtual_oss_default_control_device="" > "/dev/null" 2>&1 || true
@@ -59,17 +55,30 @@ for _devd_dir in "/etc/devd" "/usr/local/etc/devd"; do
 	if [ -d "${_devd_dir}" ]; then
 		for _devd_file in "${_devd_dir}"/*.conf; do
 			if [ -f "${_devd_file}" ] && grep -Eq "virtual_oss_cmd|virtual_oss_default_control_device" "${_devd_file}" 2> "/dev/null"; then
+				_bak="$(mktemp "/tmp/devd.conf.XXXXXX")"
+				cp "${_devd_file}" "${_bak}"
 				${ELEVATE} sed -i '' -e ':a' -e '/\\$/N; s/\\\n[[:space:]]*/ /; ta' "${_devd_file}" 2> "/dev/null" || true
-				${ELEVATE} sed -i '' -E 's|(/usr/sbin/)?virtual_oss_cmd[[:space:]]*/dev/\$\(sysrc[[:space:]]+(-[a-zA-Z]*n[a-zA-Z]*[[:space:]]+)?virtual_oss_default_control_device\)|ctl=\$(sysrc -qn virtual_oss_default_control_device 2>/dev/null \|\| true); [ -n "\${ctl}" ] \&\& [ -e "/dev/\${ctl}" ] \&\& \1virtual_oss_cmd /dev/\${ctl}|g' "${_devd_file}" 2> "/dev/null" || true
+				${ELEVATE} sed -i '' -E \
+					-e 's|ctl=\$\(sysrc[[:space:]]+-qn[[:space:]]+virtual_oss_default_control_device[^;]*;[[:space:]]*\[[[:space:]]*-n[[:space:]]+\\?"\$\{ctl\}\\?"[[:space:]]*\][[:space:]]*&&[[:space:]]*\[[[:space:]]*-e[[:space:]]+\\?"/dev/\$\{ctl\}\\?"[[:space:]]*\][[:space:]]*&&[[:space:]]*(/usr/sbin/)?virtual_oss_cmd[[:space:]]+/dev/\$\{ctl\}|ctl=$(sysrc -qn virtual_oss_default_control_device 2>'\''/dev/null'\''); [ -c /dev/${ctl:-nonexistent} ] \&\& /usr/sbin/virtual_oss_cmd /dev/${ctl}|g' \
+					-e 's|(/usr/sbin/)?virtual_oss_cmd[[:space:]]+/dev/\$\(sysrc[[:space:]]+(-[a-zA-Z]*n[a-zA-Z]*[[:space:]]+)?virtual_oss_default_control_device\)|ctl=$(sysrc -qn virtual_oss_default_control_device 2>'\''/dev/null'\''); [ -c /dev/${ctl:-nonexistent} ] \&\& /usr/sbin/virtual_oss_cmd /dev/${ctl}|g' \
+					"${_devd_file}" 2> "/dev/null" || true
+				if command -v devd > "/dev/null" 2>&1 && command -v timeout > "/dev/null" 2>&1; then
+					_st=0
+					${ELEVATE} timeout 1 devd -d -f "${_devd_file}" > "/dev/null" 2>&1 || _st=$?
+					if [ "${_st}" -ne 0 ] && [ "${_st}" -ne 124 ]; then
+						${ELEVATE} cp "${_bak}" "${_devd_file}"
+						${ELEVATE} chmod 0644 "${_devd_file}"
+					fi
+				fi
+				rm -f "${_bak}"
 			fi
 		done
 	fi
 done
 
+${ELEVATE} sysrc mixer_enable="NO" > "/dev/null" 2>&1 || true
 for _mixer_state in /var/db/mixer*-state; do
-	if [ -f "${_mixer_state}" ]; then
-		${ELEVATE} sed -i '' '/^mic\.volume=/d' "${_mixer_state}" 2> "/dev/null" || true
-	fi
+	[ -f "${_mixer_state}" ] && ${ELEVATE} sed -i '' '/^mic\.volume=/d' "${_mixer_state}" 2> "/dev/null" || true
 done
 
 for _sc in "kern.coredump=0" "kern.vt.enable_bell=0"; do
@@ -78,9 +87,7 @@ for _sc in "kern.coredump=0" "kern.vt.enable_bell=0"; do
 done
 
 ${ELEVATE} sysctl hw.snd.default_unit=1 > "/dev/null" 2>&1 || true
-if sysctl dev.pcm.2 > "/dev/null" 2>&1; then
-	${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_0.val=0 dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
-fi
+sysctl dev.pcm.2 > "/dev/null" 2>&1 && ${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_0.val=0 dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
 
 if [ -f "/etc/sysctl.conf" ]; then
 	_tmp="$(mktemp "/tmp/sysctl.conf.XXXXXX")"
@@ -100,9 +107,7 @@ if ! pkg info -e drm-66-kmod > "/dev/null" 2>&1; then
 		graphics/drm-66-kmod graphics/gpu-firmware-intel-kmod-alderlake \
 		multimedia/libva-intel-media-driver multimedia/libva-utils 2> "/dev/null" || true
 fi
-if ! pkg lock -l 2> "/dev/null" | grep -q "drm-66-kmod"; then
-	${ELEVATE} pkg lock -y drm-66-kmod > "/dev/null" 2>&1 || true
-fi
+pkg lock -l 2> "/dev/null" | grep -q "drm-66-kmod" || ${ELEVATE} pkg lock -y drm-66-kmod > "/dev/null" 2>&1 || true
 
 _kld_current="$(sysrc -n kld_list 2> "/dev/null" || true)"
 if echo "${_kld_current}" | grep -q "/boot/modules/i915kms.ko"; then
@@ -110,11 +115,8 @@ if echo "${_kld_current}" | grep -q "/boot/modules/i915kms.ko"; then
 	_kld_current="$(sysrc -n kld_list 2> "/dev/null" || true)"
 fi
 case " ${_kld_current} " in
-	*" i915kms "*)
-		;;
-	*)
-		${ELEVATE} sysrc kld_list+="i915kms" > "/dev/null" 2>&1 || true
-		;;
+	*" i915kms "*) ;;
+	*) ${ELEVATE} sysrc kld_list+="i915kms" > "/dev/null" 2>&1 || true ;;
 esac
 
 _set_loader_tunable() {
@@ -146,9 +148,7 @@ if [ -f "/etc/rc.conf" ]; then
 	${ELEVATE} cp "${_tmp}" "/etc/rc.conf"
 	${ELEVATE} chmod 0644 "/etc/rc.conf"
 	rm -f "${_tmp}"
-	if grep -q "wlans_rtw880" "/etc/rc.conf" 2> "/dev/null" || grep -q "ifconfig_wlan0" "/etc/rc.conf" 2> "/dev/null"; then
-		${ELEVATE} sysrc ifconfig_wlan0="WPA DHCP" > "/dev/null" 2>&1 || true
-	fi
+	(grep -q "wlans_rtw880" "/etc/rc.conf" 2> "/dev/null" || grep -q "ifconfig_wlan0" "/etc/rc.conf" 2> "/dev/null") && ${ELEVATE} sysrc ifconfig_wlan0="WPA DHCP" > "/dev/null" 2>&1 || true
 	${ELEVATE} sysrc -x ifconfig_ue0 > "/dev/null" 2>&1 || true
 fi
 
