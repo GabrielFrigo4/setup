@@ -28,6 +28,8 @@ ${ELEVATE} chmod 0755 \
 if [ -f "/usr/local/etc/rc.d/bastille" ]; then
 	${ELEVATE} sed -i '' -E \
 		-e 's|[[:space:]]*2>[[:space:]]*\\"/dev/null\\"||g' \
+		-e 's|find[[:space:]]+"?\$\{_jailsdir\}"?/\*[[:space:]]+-mindepth[[:space:]]+1[[:space:]]+-maxdepth[[:space:]]+1|find "${_jailsdir}" -mindepth 2 -maxdepth 2 2> "/dev/null"|g' \
+		-e 's|find[[:space:]]+"?\$\{_jailsdir\}"?/\*([[:space:]]+-maxdepth[[:space:]]+0)?|find "${_jailsdir}" -mindepth 2 -maxdepth 2 2> "/dev/null"|g' \
 		-e 's|find[[:space:]]+/usr/local/bastille/jails/\*([[:space:]]+-maxdepth[[:space:]]+0)?|find /usr/local/bastille/jails -mindepth 1 -maxdepth 1|g' \
 		-e 's|find[[:space:]]+\$\{bastille_jailsdir\}/\*([[:space:]]+-maxdepth[[:space:]]+0)?|find ${bastille_jailsdir} -mindepth 1 -maxdepth 1|g' \
 		-e 's|find[[:space:]]+"\$\{bastille_jailsdir\}"/\*([[:space:]]+-maxdepth[[:space:]]+0)?|find "${bastille_jailsdir}" -mindepth 1 -maxdepth 1|g' \
