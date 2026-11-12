@@ -41,12 +41,15 @@ if [ -n "${TARGET_HOME}" ] && [ -d "${TARGET_HOME}" ]; then
 	[ -d "${TARGET_HOME}/.config" ] || mkdir -p "${TARGET_HOME}/.config"
 	if [ -f "${_baloo_cfg}" ]; then
 		if grep -q "^\[Basic Settings\]" "${_baloo_cfg}" 2> "/dev/null"; then
+			_tmp="$(mktemp "/tmp/baloofilerc.XXXXXX")"
 			if grep -q "^Indexing-Enabled=" "${_baloo_cfg}" 2> "/dev/null"; then
-				sed -i '' 's|^Indexing-Enabled=.*|Indexing-Enabled=false|' "${_baloo_cfg}"
+				sed 's|^Indexing-Enabled=.*|Indexing-Enabled=false|' "${_baloo_cfg}" > "${_tmp}"
 			else
-				sed -i '' '/^\[Basic Settings\]/a\
-Indexing-Enabled=false' "${_baloo_cfg}"
+				sed '/^\[Basic Settings\]/a\
+Indexing-Enabled=false' "${_baloo_cfg}" > "${_tmp}"
 			fi
+			cp "${_tmp}" "${_baloo_cfg}"
+			rm -f "${_tmp}"
 		else
 			cat <<- "EOF" >> "${_baloo_cfg}"
 			[Basic Settings]
@@ -81,5 +84,19 @@ cat <<- "EOF" | ${ELEVATE} tee "${_plasma_env_dir}/kdevartmp.sh" > "/dev/null"
 export KDEVARTMP="/tmp"
 EOF
 ${ELEVATE} chmod 0755 "${_plasma_env_dir}/kdevartmp.sh"
+
+### --------------------------------
+### AMBIENTE E PATH DA SESSAO KDE
+### --------------------------------
+_ui_sub "Configurando PATH de sessao para ~/.local/bin..."
+
+cat <<- "EOF" | ${ELEVATE} tee "${_plasma_env_dir}/path.sh" > "/dev/null"
+#!/usr/bin/env sh
+case ":${PATH}:" in
+	*":${HOME}/.local/bin:"*) ;;
+	*) export PATH="${HOME}/.local/bin:${PATH}" ;;
+esac
+EOF
+${ELEVATE} chmod 0755 "${_plasma_env_dir}/path.sh"
 
 _ui_ok "Ambiente KDE Plasma Wayland configurado com sucesso!"

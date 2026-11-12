@@ -11,6 +11,8 @@ _setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 
 _ui_step "Iniciando configuração base do FreeBSD..."
 
+${ELEVATE} rm -f /etc/rc.conf\'\' /etc/sysctl.conf\'\' /boot/loader.conf\'\' /etc/*.conf\'\' /boot/*.conf\'\' 2> "/dev/null" || true
+
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 
 ${ELEVATE} pw groupmod wheel -m "${TARGET_USER}" 2> "/dev/null" || true
@@ -32,22 +34,19 @@ ${ELEVATE} chmod 0755 "${_rcd_dir}/vt_autofont"
 [ "$(sysrc -n moused_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc moused_enable="YES" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n moused_nondefault_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc moused_nondefault_enable="YES" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n moused_flags 2> "/dev/null" || true)" != "-A 1.5,1.5 -a 1.2" ] && ${ELEVATE} sysrc moused_flags="-A 1.5,1.5 -a 1.2" > "/dev/null" 2>&1 || true
-${ELEVATE} sysrc -x moused_port > "/dev/null" 2>&1 || true
-${ELEVATE} sysrc -x moused_type > "/dev/null" 2>&1 || true
+${ELEVATE} sysrc -x moused_port moused_type > "/dev/null" 2>&1 || true
 [ "$(sysrc -n keyrate 2> "/dev/null" || true)" != "fast" ] && ${ELEVATE} sysrc keyrate="fast" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n background_dhclient 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc background_dhclient="NO" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n defaultroute_delay 2> "/dev/null" || true)" != "5" ] && ${ELEVATE} sysrc defaultroute_delay="5" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n ifconfig_re0 2> "/dev/null" || true)" != "DHCP" ] && ${ELEVATE} sysrc ifconfig_re0="DHCP" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n ntpdate_enable 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc ntpdate_enable="NO" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n ntpd_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc ntpd_enable="YES" ntpd_sync_on_start="YES" > "/dev/null" 2>&1 || true
+${ELEVATE} sysrc ntpdate_enable="NO" > "/dev/null" 2>&1 || true
+${ELEVATE} sysrc -x ntpdate_flags ntpdate_hosts > "/dev/null" 2>&1 || true
+${ELEVATE} sysrc ntpd_enable="YES" ntpd_sync_on_start="YES" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n autofs_enable 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc autofs_enable="NO" rpc_statd_enable="NO" rpc_lockd_enable="NO" > "/dev/null" 2>&1 || true
-if [ -x "/etc/rc.d/syscons" ]; then
-	${ELEVATE} /etc/rc.d/syscons restart > "/dev/null" 2>&1 || true
-fi
+[ -x "/etc/rc.d/syscons" ] && ${ELEVATE} /etc/rc.d/syscons restart > "/dev/null" 2>&1 || true
 if command -v kbdcontrol > "/dev/null" 2>&1; then
 	_esc=$'\e'
-	${ELEVATE} kbdcontrol -f 65 "${_esc}[1;5D" > "/dev/null" 2>&1 || true
-	${ELEVATE} kbdcontrol -f 66 "${_esc}[1;5C" > "/dev/null" 2>&1 || true
+	${ELEVATE} kbdcontrol -f 65 "${_esc}[1;5D" -f 66 "${_esc}[1;5C" > "/dev/null" 2>&1 || true
 fi
 
 ### --------------------------------
@@ -70,12 +69,14 @@ if sysctl dev.pcm.2 > "/dev/null" 2>&1; then
 	${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
 fi
 
-if ! grep -q "^hw\.snd\.default_unit=" "/etc/sysctl.conf" 2> "/dev/null"; then
-	echo "hw.snd.default_unit=1" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
-else
-	${ELEVATE} sed -i '' "s|^hw\.snd\.default_unit=.*|hw.snd.default_unit=1|" "/etc/sysctl.conf" 2> "/dev/null" || true
+if [ -f "/etc/sysctl.conf" ]; then
+	_tmp="$(mktemp "/tmp/sysctl.conf.XXXXXX")"
+	sed -e '/^dev\.pcm\.2\.mixer\./d' -e '/^hw\.snd\.default_unit=/d' "/etc/sysctl.conf" > "${_tmp}"
+	echo "hw.snd.default_unit=1" >> "${_tmp}"
+	${ELEVATE} cp "${_tmp}" "/etc/sysctl.conf"
+	${ELEVATE} chmod 0644 "/etc/sysctl.conf"
+	rm -f "${_tmp}"
 fi
-${ELEVATE} sed -i '' '/^dev\.pcm\.2\.mixer\./d' "/etc/sysctl.conf" 2> "/dev/null" || true
 
 ### --------------------------------
 ### DRM AND KMS GRAPHICS TUNING
@@ -109,7 +110,11 @@ _set_loader_tunable() {
 	_tunable="$1"
 	_value="$2"
 	if grep -q "^[[:space:]]*${_tunable}=" "/boot/loader.conf" 2> "/dev/null"; then
-		${ELEVATE} sed -i '' "s|^[[:space:]]*${_tunable}=.*|${_tunable}=\"${_value}\"|" "/boot/loader.conf"
+		_tmp="$(mktemp "/tmp/loader.conf.XXXXXX")"
+		sed "s|^[[:space:]]*${_tunable}=.*|${_tunable}=\"${_value}\"|" "/boot/loader.conf" > "${_tmp}"
+		${ELEVATE} cp "${_tmp}" "/boot/loader.conf"
+		${ELEVATE} chmod 0644 "/boot/loader.conf"
+		rm -f "${_tmp}"
 	else
 		echo "${_tunable}=\"${_value}\"" | ${ELEVATE} tee -a "/boot/loader.conf" > "/dev/null"
 	fi
@@ -135,14 +140,15 @@ fi
 ### ISOLAMENTO DE REDE E WI-FI
 ### --------------------------------
 if [ -f "/etc/rc.conf" ]; then
-	${ELEVATE} sed -i '' '/^[[:space:]]*#[[:space:]]*ifconfig_wlan0=/d' "/etc/rc.conf" 2> "/dev/null" || true
+	_tmp="$(mktemp "/tmp/rc.conf.XXXXXX")"
+	sed -e '/^[[:space:]]*#[[:space:]]*ifconfig_wlan0=/d' -e 's| fusefs||g' "/etc/rc.conf" > "${_tmp}"
+	${ELEVATE} cp "${_tmp}" "/etc/rc.conf"
+	${ELEVATE} chmod 0644 "/etc/rc.conf"
+	rm -f "${_tmp}"
 	if grep -q "wlans_rtw880" "/etc/rc.conf" 2> "/dev/null" || grep -q "ifconfig_wlan0" "/etc/rc.conf" 2> "/dev/null"; then
 		${ELEVATE} sysrc ifconfig_wlan0="WPA DHCP" > "/dev/null" 2>&1 || true
 	fi
 	${ELEVATE} sysrc -x ifconfig_ue0 > "/dev/null" 2>&1 || true
-	if grep -q "/boot/kernel/fusefs.ko" "/etc/rc.conf" 2> "/dev/null" && grep -q " fusefs" "/etc/rc.conf" 2> "/dev/null"; then
-		${ELEVATE} sed -i '' 's| fusefs||g' "/etc/rc.conf"
-	fi
 fi
 
 cat <<- "EOF" | ${ELEVATE} tee "/usr/local/sbin/net-auto-switch" > "/dev/null"
@@ -240,5 +246,7 @@ EOF
 ${ELEVATE} chmod 0644 "${_devd_dir}/ethernet-wifi-isolation.conf"
 
 mkdir -p "${HOME}/Workspace"
+
+${ELEVATE} rm -f /etc/rc.conf\'\' /etc/sysctl.conf\'\' /boot/loader.conf\'\' /etc/*.conf\'\' /boot/*.conf\'\' 2> "/dev/null" || true
 
 _ui_ok "Configuração base concluída com sucesso!"

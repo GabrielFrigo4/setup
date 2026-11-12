@@ -18,11 +18,16 @@ if [ ! -f "${TARGET}" ]; then
 fi
 
 _ly_enabled="NO"
-if [ "$(sysrc -n ly_enable 2> "/dev/null" || true)" = "YES" ]; then
+if [ "$(sysrc -n ly_enable 2> "/dev/null" || true)" = "YES" ] || grep -qiE "/ly|\bly\b" "${TARGET}" 2> "/dev/null"; then
 	_ly_enabled="YES"
 fi
 
 _ly_tty="ttyv1"
+_detected_tty="$(grep -iE "/ly|\bly\b" "${TARGET}" 2> "/dev/null" | awk '{print $1}' | head -n 1)"
+if [ -n "${_detected_tty:-}" ]; then
+	_ly_tty="${_detected_tty}"
+fi
+
 for _ly_conf in "/usr/local/etc/ly/config.ini" "/etc/ly/config.ini"; do
 	if [ -f "${_ly_conf}" ]; then
 		_cfg_tty="$(grep -E "^[[:space:]]*tty[[:space:]]*=" "${_ly_conf}" 2> "/dev/null" | awk -F= '{print $2}' | tr -d '[:space:]')"
@@ -91,7 +96,11 @@ while IFS= read -r line || [ -n "${line}" ]; do
 	esac
 
 	if [ "${_ly_enabled}" = "YES" ] && [ "${name}" = "${_ly_tty}" ]; then
-		status="off"
+		if echo "${getty}" | grep -qiE "/ly|\bly\b"; then
+			status="on"
+		else
+			status="off"
+		fi
 	fi
 
 	if [ -n "${comments}" ]; then
@@ -108,6 +117,8 @@ else
 	cp "${TMP_FILE}" "${TARGET}"
 	chmod 0644 "${TARGET}"
 fi
+
+${ELEVATE} rm -f /etc/ttys.bak /etc/ttys.bak.* 2> "/dev/null" || true
 
 rm -f "${TMP_FILE}"
 
