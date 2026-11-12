@@ -46,11 +46,16 @@ hooks:
 ### ================================
 audit:
 	echo "🔍 Executando suíte de auditoria do Setup..."
-	python3 .scripts/audit/all.py
+	PYTHONPYCACHEPREFIX="$${PYTHONPYCACHEPREFIX:-$$HOME/.cache/pycache}" PYTHONDONTWRITEBYTECODE=1 python3 .scripts/audit/all.py
 
 test:
 	echo "🧪 Validando sintaxe POSIX das receitas de provisionamento..."
 	find . -name "*.sh" -not -path "*/.git/*" -exec sh -n {} +
+	echo "🔍 Verificando ausência de __pycache__ e *.pyc no Setup..."
+	if [ -n "$$(find . -type d -name "__pycache__" -not -path "*/.git/*")" ] || [ -n "$$(find . -type f -name "*.pyc" -not -path "*/.git/*")" ]; then \
+		echo "❌ Erro: __pycache__ ou *.pyc encontrados!"; \
+		exit 1; \
+	fi
 	echo "✅ Todas as receitas POSIX estão válidas!"
 
 format: prettier
@@ -74,7 +79,7 @@ prettier:
 
 fix-banners:
 	echo "📏 Normalizando réguas de banners de cabeçalho e seções..."
-	python3 .scripts/audit/banners.py --fix
+	PYTHONPYCACHEPREFIX="$${PYTHONPYCACHEPREFIX:-$$HOME/.cache/pycache}" PYTHONDONTWRITEBYTECODE=1 python3 .scripts/audit/banners.py --fix
 	echo "✅ Réguas de banners normalizadas com sucesso!"
 
 doctor:
