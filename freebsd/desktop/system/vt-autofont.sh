@@ -55,4 +55,5 @@ vt_autofont_start() {
 
 load_rc_config "${name}"
 : "${vt_autofont_enable:=YES}"
+: "${_rc_svcj:=}"
 run_rc_command "$1"

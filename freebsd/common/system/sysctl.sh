@@ -44,8 +44,12 @@ _set_sysctl "kern.ipc.shm_allow_removed" "1"
 ### --------------------------------
 ### ROTEAMENTO E MIXER DE AUDIO
 ### --------------------------------
-_set_sysctl "hw.snd.default_unit" "2"
-_set_sysctl "dev.pcm.2.mixer.vol_0_0.val" "0"
-_set_sysctl "dev.pcm.2.mixer.vol_0_1.val" "0"
+_set_sysctl "hw.snd.default_unit" "1"
+${ELEVATE} sed -i '' '/^dev\.pcm\.2\.mixer\./d' "/etc/sysctl.conf" 2> "/dev/null" || true
+
+if sysctl dev.pcm.2 > "/dev/null" 2>&1; then
+	${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_0.val=0 > "/dev/null" 2>&1 || true
+	${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
+fi
 
 _ui_ok "Otimizações aplicadas com sucesso!"

@@ -64,17 +64,18 @@ grep -qxF "kern.coredump=0" "/etc/sysctl.conf" 2> "/dev/null" || echo "kern.core
 ${ELEVATE} sysctl kern.vt.enable_bell=0 > "/dev/null" 2>&1 || true
 grep -qxF "kern.vt.enable_bell=0" "/etc/sysctl.conf" 2> "/dev/null" || echo "kern.vt.enable_bell=0" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
 
-${ELEVATE} sysctl hw.snd.default_unit=2 > "/dev/null" 2>&1 || true
-${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_0.val=0 > "/dev/null" 2>&1 || true
-${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
-
-if ! grep -q "hw.snd.default_unit=2" "/etc/sysctl.conf" 2> "/dev/null"; then
-	cat <<- "EOF" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
-	hw.snd.default_unit=2
-	dev.pcm.2.mixer.vol_0_0.val=0
-	dev.pcm.2.mixer.vol_0_1.val=0
-	EOF
+${ELEVATE} sysctl hw.snd.default_unit=1 > "/dev/null" 2>&1 || true
+if sysctl dev.pcm.2 > "/dev/null" 2>&1; then
+	${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_0.val=0 > "/dev/null" 2>&1 || true
+	${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
 fi
+
+if ! grep -q "^hw\.snd\.default_unit=" "/etc/sysctl.conf" 2> "/dev/null"; then
+	echo "hw.snd.default_unit=1" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
+else
+	${ELEVATE} sed -i '' "s|^hw\.snd\.default_unit=.*|hw.snd.default_unit=1|" "/etc/sysctl.conf" 2> "/dev/null" || true
+fi
+${ELEVATE} sed -i '' '/^dev\.pcm\.2\.mixer\./d' "/etc/sysctl.conf" 2> "/dev/null" || true
 
 ### --------------------------------
 ### DRM AND KMS GRAPHICS TUNING
@@ -206,7 +207,6 @@ rcvar="net_isolation_enable"
 start_cmd="net_isolation_start"
 
 net_isolation_start() {
-	set -eu
 	if [ -x "/usr/local/sbin/net-auto-switch" ]; then
 		/usr/local/sbin/net-auto-switch auto
 	fi
@@ -214,6 +214,7 @@ net_isolation_start() {
 
 load_rc_config "${name}"
 : "${net_isolation_enable:=YES}"
+: "${_rc_svcj:=}"
 run_rc_command "$1"
 EOF
 ${ELEVATE} chmod 0755 "/usr/local/etc/rc.d/net_isolation"

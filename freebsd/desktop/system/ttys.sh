@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: Base System Terminals (/etc/ttys)
+# Recipe: Base System Terminals
 # ----------------------------------------------------------------
 set -eu
 
@@ -16,6 +16,28 @@ if [ ! -f "${TARGET}" ]; then
 	_ui_warn "Arquivo ${TARGET} não encontrado."
 	exit 0
 fi
+
+_ly_enabled="NO"
+if [ "$(sysrc -n ly_enable 2> "/dev/null" || true)" = "YES" ]; then
+	_ly_enabled="YES"
+fi
+
+_ly_tty="ttyv1"
+for _ly_conf in "/usr/local/etc/ly/config.ini" "/etc/ly/config.ini"; do
+	if [ -f "${_ly_conf}" ]; then
+		_cfg_tty="$(grep -E "^[[:space:]]*tty[[:space:]]*=" "${_ly_conf}" 2> "/dev/null" | awk -F= '{print $2}' | tr -d '[:space:]')"
+		case "${_cfg_tty}" in
+			[0-9]*)
+				_idx=$(( _cfg_tty - 1 ))
+				[ "${_idx}" -ge 0 ] && _ly_tty="ttyv${_idx}"
+				;;
+			ttyv*)
+				_ly_tty="${_cfg_tty}"
+				;;
+		esac
+		break
+	fi
+done
 
 TMP_FILE="$(mktemp "/tmp/ttys.aligned.XXXXXX")"
 
@@ -67,6 +89,10 @@ while IFS= read -r line || [ -n "${line}" ]; do
 			fi
 			;;
 	esac
+
+	if [ "${_ly_enabled}" = "YES" ] && [ "${name}" = "${_ly_tty}" ]; then
+		status="off"
+	fi
 
 	if [ -n "${comments}" ]; then
 		printf "%-7s %-31s %-7s %-10s %s\n" "${name}" "${getty}" "${type}" "${status}" "${comments}" >> "${TMP_FILE}"
