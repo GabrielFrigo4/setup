@@ -26,10 +26,16 @@ ${ELEVATE} chmod 0755 \
 	"/usr/local/bastille/releases" 2> "/dev/null" || true
 
 if [ -f "/usr/local/etc/rc.d/bastille" ]; then
-	${ELEVATE} sed -i '' 's|find /usr/local/bastille/jails/\*|find /usr/local/bastille/jails -mindepth 1 -maxdepth 1|g' "/usr/local/etc/rc.d/bastille" 2> "/dev/null" || true
+	${ELEVATE} sed -i '' \
+		-e 's|find /usr/local/bastille/jails/\*|find /usr/local/bastille/jails -mindepth 1 -maxdepth 1 2> \"/dev/null\"|g' \
+		-e 's|find \${bastille_jailsdir}/\*|find \${bastille_jailsdir} -mindepth 1 -maxdepth 1 2> \"/dev/null\"|g' \
+		-e 's|find "\${bastille_jailsdir}"/\*|find "\${bastille_jailsdir}" -mindepth 1 -maxdepth 1 2> \"/dev/null\"|g' \
+		-e 's|find "\${bastille_jailsdir}/\*"|find "\${bastille_jailsdir}" -mindepth 1 -maxdepth 1 2> \"/dev/null\"|g' \
+		"/usr/local/etc/rc.d/bastille" 2> "/dev/null" || true
 fi
 
 ${ELEVATE} sysrc bastille_enable="YES"
+sysrc -q bastille_list 2> "/dev/null" || ${ELEVATE} sysrc bastille_list="" > "/dev/null" 2>&1 || true
 
 _cloned="$(sysrc -n cloned_interfaces 2> "/dev/null" || true)"
 case " ${_cloned} " in

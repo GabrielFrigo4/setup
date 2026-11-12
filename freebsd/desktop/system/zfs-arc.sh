@@ -58,20 +58,21 @@ _ui_sub "Bhyve VM Guest: ${VM_MEM_GB} GB"
 ### --------------------------------
 ${ELEVATE} sysctl vfs.zfs.arc.max="${ARC_MAX_BYTES}" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysctl vfs.zfs.arc.min="${ARC_MIN_BYTES}" > "/dev/null" 2>&1 || true
+${ELEVATE} sysctl vfs.zfs.txg.timeout=10 > "/dev/null" 2>&1 || true
 
 ### --------------------------------
 ### 4. LIMPEZA DE TUNABLES RESIDUAIS
 ### --------------------------------
 for _cfg in "/etc/sysctl.conf" "/boot/loader.conf" "/boot/loader.conf.local"; do
 	if [ -f "${_cfg}" ]; then
-		${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc_max/d' -e '/vfs\.zfs\.arc\.max/d' -e '/vfs\.zfs\.arc\.min/d' -e '/vfs\.zfs\.txg\.timeout/d' "${_cfg}" 2> "/dev/null" || true
+		${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc/d' -e '/vfs\.zfs\.txg/d' "${_cfg}" 2> "/dev/null" || true
 	fi
 done
 
 if [ -d "/boot/loader.conf.d" ]; then
 	for _cfg in /boot/loader.conf.d/*; do
 		if [ -f "${_cfg}" ]; then
-			${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc_max/d' -e '/vfs\.zfs\.arc\.max/d' -e '/vfs\.zfs\.arc\.min/d' -e '/vfs\.zfs\.txg\.timeout/d' "${_cfg}" 2> "/dev/null" || true
+			${ELEVATE} sed -i '' -e '/#.*ZFS ARC/d' -e '/vfs\.zfs\.arc/d' -e '/vfs\.zfs\.txg/d' "${_cfg}" 2> "/dev/null" || true
 		fi
 	done
 fi
@@ -83,22 +84,12 @@ if [ -f "/etc/sysctl.conf" ]; then
 	cat <<- EOF | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
 	vfs.zfs.arc.max=${ARC_MAX_BYTES}
 	vfs.zfs.arc.min=${ARC_MIN_BYTES}
+	vfs.zfs.txg.timeout=10
 	EOF
 fi
 
 ### --------------------------------
-### 6. PERSISTENCIA EM LOADER.CONF
-### --------------------------------
-if [ -f "/boot/loader.conf" ]; then
-	cat <<- EOF | ${ELEVATE} tee -a "/boot/loader.conf" > "/dev/null"
-	vfs.zfs.arc.max="${ARC_MAX_BYTES}"
-	vfs.zfs.arc.min="${ARC_MIN_BYTES}"
-	vfs.zfs.txg.timeout="10"
-	EOF
-fi
-
-### --------------------------------
-### 7. ALINHAMENTO TEMPLATE BHYVE
+### 6. ALINHAMENTO TEMPLATE BHYVE
 ### --------------------------------
 if [ "${VM_MEM_GB}" -ge 1 ]; then
 	for _vm_conf in "/zroot/vm/.templates/debian.conf" "/zroot/vm/debian/debian.conf"; do
@@ -109,7 +100,7 @@ if [ "${VM_MEM_GB}" -ge 1 ]; then
 fi
 
 ### --------------------------------
-### 8. DIAGNOSTICO DO ZFS ARC
+### 7. DIAGNOSTICO DO ZFS ARC
 ### --------------------------------
 if ! pkg info -e py-sysctl > "/dev/null" 2>&1 || ! pkg info -e arc_summary > "/dev/null" 2>&1 || ! pkg info -e zfs-stats > "/dev/null" 2>&1; then
 	_ui_step "Instalando utilitários de diagnóstico e py-sysctl..."

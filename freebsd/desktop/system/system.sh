@@ -15,10 +15,9 @@ ${ELEVATE} rm -f /etc/rc.conf\'\' /etc/sysctl.conf\'\' /boot/loader.conf\'\' /et
 
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 
-${ELEVATE} pw groupmod wheel -m "${TARGET_USER}" 2> "/dev/null" || true
-${ELEVATE} pw groupmod operator -m "${TARGET_USER}" 2> "/dev/null" || true
-${ELEVATE} pw groupmod video -m "${TARGET_USER}" 2> "/dev/null" || true
-${ELEVATE} pw groupmod webcamd -m "${TARGET_USER}" 2> "/dev/null" || true
+for _grp in wheel operator video webcamd; do
+	${ELEVATE} pw groupmod "${_grp}" -m "${TARGET_USER}" 2> "/dev/null" || true
+done
 
 command -v pkg > "/dev/null" 2>&1 || ${ELEVATE} pkg bootstrap -y
 
@@ -30,18 +29,15 @@ _rcd_dir="/usr/local/etc/rc.d"
 [ -d "${_rcd_dir}" ] || ${ELEVATE} mkdir -p "${_rcd_dir}"
 ${ELEVATE} cp "${_setup_root}/freebsd/desktop/system/vt-autofont.sh" "${_rcd_dir}/vt_autofont"
 ${ELEVATE} chmod 0755 "${_rcd_dir}/vt_autofont"
-[ "$(sysrc -n vt_autofont_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc vt_autofont_enable="YES" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n moused_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc moused_enable="YES" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n moused_nondefault_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc moused_nondefault_enable="YES" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n moused_flags 2> "/dev/null" || true)" != "-A 1.5,1.5 -a 1.2" ] && ${ELEVATE} sysrc moused_flags="-A 1.5,1.5 -a 1.2" > "/dev/null" 2>&1 || true
+for _sr in "vt_autofont_enable=YES" "moused_enable=YES" "moused_nondefault_enable=YES" \
+	"moused_flags=-A 1.5,1.5 -a 1.2" "keyrate=fast" "background_dhclient=NO" \
+	"defaultroute_delay=5" "ifconfig_re0=DHCP"; do
+	_k="${_sr%%=*}"; _v="${_sr#*=}"
+	[ "$(sysrc -n "${_k}" 2> "/dev/null" || true)" != "${_v}" ] && ${ELEVATE} sysrc "${_sr}" > "/dev/null" 2>&1 || true
+done
 ${ELEVATE} sysrc -x moused_port moused_type > "/dev/null" 2>&1 || true
-[ "$(sysrc -n keyrate 2> "/dev/null" || true)" != "fast" ] && ${ELEVATE} sysrc keyrate="fast" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n background_dhclient 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc background_dhclient="NO" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n defaultroute_delay 2> "/dev/null" || true)" != "5" ] && ${ELEVATE} sysrc defaultroute_delay="5" > "/dev/null" 2>&1 || true
-[ "$(sysrc -n ifconfig_re0 2> "/dev/null" || true)" != "DHCP" ] && ${ELEVATE} sysrc ifconfig_re0="DHCP" > "/dev/null" 2>&1 || true
-${ELEVATE} sysrc ntpdate_enable="NO" > "/dev/null" 2>&1 || true
+${ELEVATE} sysrc ntpdate_enable="NO" ntpd_enable="YES" ntpd_sync_on_start="YES" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysrc -x ntpdate_flags ntpdate_hosts > "/dev/null" 2>&1 || true
-${ELEVATE} sysrc ntpd_enable="YES" ntpd_sync_on_start="YES" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n autofs_enable 2> "/dev/null" || true)" != "NO" ] && ${ELEVATE} sysrc autofs_enable="NO" rpc_statd_enable="NO" rpc_lockd_enable="NO" > "/dev/null" 2>&1 || true
 [ -x "/etc/rc.d/syscons" ] && ${ELEVATE} /etc/rc.d/syscons restart > "/dev/null" 2>&1 || true
 if command -v kbdcontrol > "/dev/null" 2>&1; then
@@ -57,16 +53,33 @@ if ! pkg info -e sndiod > "/dev/null" 2>&1; then
 fi
 [ "$(sysrc -n sndiod_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc sndiod_enable="YES" > "/dev/null" 2>&1 || true
 
-${ELEVATE} sysctl kern.coredump=0 > "/dev/null" 2>&1 || true
-grep -qxF "kern.coredump=0" "/etc/sysctl.conf" 2> "/dev/null" || echo "kern.coredump=0" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
+sysrc -q virtual_oss_default_control_device 2> "/dev/null" || ${ELEVATE} sysrc virtual_oss_default_control_device="" > "/dev/null" 2>&1 || true
 
-${ELEVATE} sysctl kern.vt.enable_bell=0 > "/dev/null" 2>&1 || true
-grep -qxF "kern.vt.enable_bell=0" "/etc/sysctl.conf" 2> "/dev/null" || echo "kern.vt.enable_bell=0" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
+for _devd_dir in "/etc/devd" "/usr/local/etc/devd"; do
+	if [ -d "${_devd_dir}" ]; then
+		for _devd_file in "${_devd_dir}"/*.conf; do
+			if [ -f "${_devd_file}" ] && grep -Eq "virtual_oss_cmd|virtual_oss_default_control_device" "${_devd_file}" 2> "/dev/null"; then
+				${ELEVATE} sed -i '' -e ':a' -e '/\\$/N; s/\\\n[[:space:]]*/ /; ta' "${_devd_file}" 2> "/dev/null" || true
+				${ELEVATE} sed -i '' -E 's|(/usr/sbin/)?virtual_oss_cmd[[:space:]]*/dev/\$\(sysrc[[:space:]]+(-[a-zA-Z]*n[a-zA-Z]*[[:space:]]+)?virtual_oss_default_control_device\)|ctl=\$(sysrc -qn virtual_oss_default_control_device 2>/dev/null \|\| true); [ -n "\${ctl}" ] \&\& [ -e "/dev/\${ctl}" ] \&\& \1virtual_oss_cmd /dev/\${ctl}|g' "${_devd_file}" 2> "/dev/null" || true
+			fi
+		done
+	fi
+done
+
+for _mixer_state in /var/db/mixer*-state; do
+	if [ -f "${_mixer_state}" ]; then
+		${ELEVATE} sed -i '' '/^mic\.volume=/d' "${_mixer_state}" 2> "/dev/null" || true
+	fi
+done
+
+for _sc in "kern.coredump=0" "kern.vt.enable_bell=0"; do
+	${ELEVATE} sysctl "${_sc}" > "/dev/null" 2>&1 || true
+	grep -qxF "${_sc}" "/etc/sysctl.conf" 2> "/dev/null" || echo "${_sc}" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
+done
 
 ${ELEVATE} sysctl hw.snd.default_unit=1 > "/dev/null" 2>&1 || true
 if sysctl dev.pcm.2 > "/dev/null" 2>&1; then
-	${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_0.val=0 > "/dev/null" 2>&1 || true
-	${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
+	${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_0.val=0 dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
 fi
 
 if [ -f "/etc/sysctl.conf" ]; then
@@ -84,10 +97,8 @@ fi
 if ! pkg info -e drm-66-kmod > "/dev/null" 2>&1; then
 	${ELEVATE} pkg delete -f -y drm-kmod drm-612-kmod > "/dev/null" 2>&1 || true
 	${ELEVATE} pkg install -y \
-		graphics/drm-66-kmod \
-		graphics/gpu-firmware-intel-kmod-alderlake \
-		multimedia/libva-intel-media-driver \
-		multimedia/libva-utils 2> "/dev/null" || true
+		graphics/drm-66-kmod graphics/gpu-firmware-intel-kmod-alderlake \
+		multimedia/libva-intel-media-driver multimedia/libva-utils 2> "/dev/null" || true
 fi
 if ! pkg lock -l 2> "/dev/null" | grep -q "drm-66-kmod"; then
 	${ELEVATE} pkg lock -y drm-66-kmod > "/dev/null" 2>&1 || true
@@ -107,33 +118,23 @@ case " ${_kld_current} " in
 esac
 
 _set_loader_tunable() {
-	_tunable="$1"
-	_value="$2"
-	if grep -q "^[[:space:]]*${_tunable}=" "/boot/loader.conf" 2> "/dev/null"; then
-		_tmp="$(mktemp "/tmp/loader.conf.XXXXXX")"
-		sed "s|^[[:space:]]*${_tunable}=.*|${_tunable}=\"${_value}\"|" "/boot/loader.conf" > "${_tmp}"
-		${ELEVATE} cp "${_tmp}" "/boot/loader.conf"
-		${ELEVATE} chmod 0644 "/boot/loader.conf"
-		rm -f "${_tmp}"
+	if grep -q "^[[:space:]]*$1=" "/boot/loader.conf" 2> "/dev/null"; then
+		${ELEVATE} sed -i '' "s|^[[:space:]]*$1=.*|$1=\"$2\"|" "/boot/loader.conf" 2> "/dev/null" || true
 	else
-		echo "${_tunable}=\"${_value}\"" | ${ELEVATE} tee -a "/boot/loader.conf" > "/dev/null"
+		echo "$1=\"$2\"" | ${ELEVATE} tee -a "/boot/loader.conf" > "/dev/null"
 	fi
 }
 
 if [ -f "/boot/loader.conf" ]; then
-	_set_loader_tunable "compat.linuxkpi.i915_enable_psr" "0"
-	_set_loader_tunable "compat.linuxkpi.i915_enable_psr2_sel_fetch" "0"
-	_set_loader_tunable "compat.linuxkpi.i915_enable_fbc" "0"
-	_set_loader_tunable "compat.linuxkpi.i915_enable_dc" "0"
-	_set_loader_tunable "compat.linuxkpi.i915_enable_guc" "2"
-	_set_loader_tunable "compat.linuxkpi.i915_disable_power_well" "0"
-	_set_loader_tunable "kern.ipc.shmseg" "1024"
-	_set_loader_tunable "kern.ipc.shmmni" "1024"
-	_set_loader_tunable "kern.maxproc" "100000"
-	_set_loader_tunable "compat.linuxkpi.skb.mem_limit" "1"
-	_set_loader_tunable "compat.linuxkpi.rtw88_disable_lps_deep" "1"
-	_set_loader_tunable "compat.linuxkpi.rtw88_pci_disable_aspm" "1"
-	_set_loader_tunable "hw.pci.enable_aspm" "0"
+	for _entry in \
+		"compat.linuxkpi.i915_enable_psr=0" "compat.linuxkpi.i915_enable_psr2_sel_fetch=0" \
+		"compat.linuxkpi.i915_enable_fbc=0" "compat.linuxkpi.i915_enable_dc=0" \
+		"compat.linuxkpi.i915_enable_guc=2" "compat.linuxkpi.i915_disable_power_well=0" \
+		"kern.ipc.shmseg=1024" "kern.ipc.shmmni=1024" "kern.maxproc=100000" \
+		"compat.linuxkpi.skb.mem_limit=1" "compat.linuxkpi.rtw88_disable_lps_deep=1" \
+		"compat.linuxkpi.rtw88_pci_disable_aspm=1" "hw.pci.enable_aspm=0"; do
+		_set_loader_tunable "${_entry%%=*}" "${_entry#*=}"
+	done
 fi
 
 ### --------------------------------
@@ -210,13 +211,7 @@ cat <<- "EOF" | ${ELEVATE} tee "/usr/local/etc/rc.d/net_isolation" > "/dev/null"
 
 name="net_isolation"
 rcvar="net_isolation_enable"
-start_cmd="net_isolation_start"
-
-net_isolation_start() {
-	if [ -x "/usr/local/sbin/net-auto-switch" ]; then
-		/usr/local/sbin/net-auto-switch auto
-	fi
-}
+start_cmd="[ -x /usr/local/sbin/net-auto-switch ] && /usr/local/sbin/net-auto-switch auto"
 
 load_rc_config "${name}"
 : "${net_isolation_enable:=YES}"
