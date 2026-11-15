@@ -102,8 +102,10 @@ fi
 ### --------------------------------
 ### 5. EXPORTACAO NFSV3
 ### --------------------------------
-if [ -d "/home/gabrielf" ] && ! grep -q "/home/gabrielf.*192.168.8.2" /etc/exports 2> "/dev/null"; then
-	echo "/home/gabrielf -alldirs -mapall=gabrielf 192.168.8.2" | ${ELEVATE} tee -a /etc/exports > "/dev/null"
+_host_user="${HOST_USER:-${SUDO_USER:-${DOAS_USER:-${USER:-$(id -un)}}}}"
+_host_home="${HOST_HOME:-$(awk -F: -v u="${_host_user}" '$1 == u { print $6; exit }' /etc/passwd 2> "/dev/null" || echo "${HOME}")}"
+if [ "${_host_user}" != "root" ] && [ -n "${_host_home}" ] && [ -d "${_host_home}" ] && ! grep -q "${_host_home}.*192.168.8.2" /etc/exports 2> "/dev/null"; then
+	echo "${_host_home} -alldirs -mapall=${_host_user} 192.168.8.2" | ${ELEVATE} tee -a /etc/exports > "/dev/null"
 	${ELEVATE} service mountd reload 2> "/dev/null" || true
 fi
 
