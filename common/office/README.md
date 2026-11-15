@@ -8,23 +8,23 @@
 
 Esta pasta centraliza as rotinas de instalação e configuração de suites de escritório modernas:
 
-1. **LibreOffice:** A suíte completa nativa de produtividade com suporte integral a temas escuros GTK3/GTK4 e persistência de sessão.
+1. **LibreOffice:** A suíte completa nativa de produtividade com backend GTK3 adaptativo ao tema claro/escuro do desktop.
 2. **Collabora Office Desktop:** A implementação focada em compatibilidade de documentos e privacidade construída sobre o motor Collabora Online / LibreOffice.
 
 ---
 
 ## 📂 Catálogo de Recursos
 
-| Recurso                            | Tipo    | Plataformas Alvo               | Método de Provisionamento                                                      |
-| :--------------------------------- | :------ | :----------------------------- | :----------------------------------------------------------------------------- |
-| **[`office.sh`](office.sh)**       | Receita | Linux, FreeBSD                 | Dispatch universal (`dnf` / `apt` / `pacman` / `pkg`) com patch de tema escuro |
-| **[`collabora.sh`](collabora.sh)** | Receita | Linux, FreeBSD, Windows (MSYS) | Dispatch universal (`pkg` / `dnf` / `apt` / `pacman` / Flatpak / Winget)       |
+| Recurso                            | Tipo    | Plataformas Alvo               | Método de Provisionamento                                                 |
+| :--------------------------------- | :------ | :----------------------------- | :------------------------------------------------------------------------ |
+| **[`office.sh`](office.sh)**       | Receita | Linux, FreeBSD                 | Dispatch universal (`dnf` / `apt` / `pacman` / `pkg`) com integração GTK3 |
+| **[`collabora.sh`](collabora.sh)** | Receita | Linux, FreeBSD, Windows (MSYS) | Dispatch universal (`pkg` / `dnf` / `apt` / `pacman` / Flatpak / Winget)  |
 
 ---
 
 ## 🛠️ Detalhes da Receita `office.sh` (LibreOffice Suite)
 
-A receita `office.sh` executa o provisionamento completo e padronização visual da suíte:
+A receita `office.sh` executa o provisionamento completo e padronização visual adaptativa da suíte:
 
 ### 1. Suíte Completa de Módulos
 
@@ -39,39 +39,25 @@ Garante a instalação dos 6 aplicativos oficiais da suíte:
 
 Junto aos módulos da aplicação, a receita instala os backends VCL `libreoffice-gtk3` e `libreoffice-gtk4`.
 
-### 2. Injeção de Tema Escuro nos Lançadores `.desktop`
+### 2. Backend GTK3 Adaptativo nos Lançadores `.desktop`
 
-Para evitar o problema comum de aplicativos do LibreOffice abrirem com fundo branco desarmonioso em desktops escuros, o script copia os lançadores do sistema para `~/.local/share/applications/` e injeta na linha de execução `Exec=`:
-
-```ini
-Exec=env SAL_USE_VCLPLUGIN=gtk3 GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 libreoffice
-```
-
-Caso o tema `adw-gtk3-dark` não esteja instalado no sistema, o script aplica automaticamente fallback para `Adwaita:dark`.
-
-### 3. Persistência de Sessão (`environment.d`)
-
-Cria o drop-in `~/.config/environment.d/gtk-dark.conf` contendo:
+Para garantir integração nativa ao esquema claro/escuro ativo do ambiente de desktop sem forçar tema fixo, o script copia os lançadores do sistema para `~/.local/share/applications/` e aplica apenas o backend VCL GTK3 na linha `Exec=`:
 
 ```ini
-GTK_THEME=adw-gtk3-dark
-GTK_APPLICATION_PREFER_DARK_THEME=1
-SAL_USE_VCLPLUGIN=gtk3
+Exec=env SAL_USE_VCLPLUGIN=gtk3 libreoffice
 ```
 
-Exporta imediatamente os parâmetros para o systemd e barramento D-Bus do usuário via `systemctl --user set-environment` e `dbus-update-activation-environment`.
+### 3. Limpeza de Overrides Legados de Sessão (`environment.d`)
 
-### 4. Overrides para Flatpak
+Remove o drop-in legado `~/.config/environment.d/gtk-dark.conf` caso exista e limpa variáveis forçadas (`GTK_THEME` e `GTK_APPLICATION_PREFER_DARK_THEME`) em `systemctl --user`, permitindo que aplicativos sigam dinamicamente a preferência do desktop.
 
-Configura regras globais para o runtime do Flatpak:
+### 4. Temas Adaptativos para Flatpak
 
-```sh
-flatpak override --user --env=GTK_THEME=Adwaita:dark
-```
+Remove qualquer override global legado de `GTK_THEME` (`flatpak override --user --unset-env=GTK_THEME` e nível de sistema) e garante a instalação dos pacotes de tema `org.gtk.Gtk3theme.adw-gtk3` e `org.gtk.Gtk3theme.adw-gtk3-dark` no Flathub (quando o remote existir) para que aplicativos em sandbox sigam o tema claro/escuro ativo da sessão.
 
 ### 5. Sinergia com Editores (`common/editors/editors.sh`)
 
-Em conjunto com `office.sh`, o script `editors.sh` padroniza o lançador do GNU Emacs gerando um ícone consolidado `emacs.desktop` com tema GTK3 escuro (`emacsclient --create-frame --alternate-editor="" %F`) e oculta lançadores secundários redundantes (`emacsclient.desktop`, `emacs-mail.desktop`, `emacsclient-mail.desktop`) via `NoDisplay=true`.
+Em conjunto com `office.sh`, o script `editors.sh` preserva lançadores e symlinks de `emacs.desktop` e `emacsclient.desktop` já gerenciados pelo **Profile** (recorrendo a fallback adaptativo em `emacs.desktop` apenas quando ausente) e oculta lançadores secundários redundantes (`emacs-mail.desktop`, `emacsclient-mail.desktop`) via `NoDisplay=true`.
 
 ---
 

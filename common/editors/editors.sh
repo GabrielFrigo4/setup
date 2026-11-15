@@ -46,14 +46,24 @@ fi
 
 _apps_dir="${XDG_DATA_HOME:-${HOME}/.local/share}/applications"
 mkdir -p "${_apps_dir}"
-rm -f "${_apps_dir}/emacs.desktop"
-cat << 'EOF' > "${_apps_dir}/emacs.desktop"
+
+_need_emacs_desktop=0
+if [ ! -L "${_apps_dir}/emacs.desktop" ] && [ ! -e "${_apps_dir}/emacs.desktop" ]; then
+	_need_emacs_desktop=1
+elif [ -f "${_apps_dir}/emacs.desktop" ] && [ ! -L "${_apps_dir}/emacs.desktop" ] && \
+	! grep -q "emacs-client" "${_apps_dir}/emacs.desktop" 2> "/dev/null" && \
+	grep -q "GTK_THEME=" "${_apps_dir}/emacs.desktop" 2> "/dev/null"; then
+	_need_emacs_desktop=1
+fi
+
+if [ "${_need_emacs_desktop}" -eq 1 ]; then
+	cat << 'EOF' > "${_apps_dir}/emacs.desktop"
 [Desktop Entry]
 Name=Emacs
 GenericName=Text Editor
 Comment=Edit text (GNU Emacs Client & Server)
 MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;x-scheme-handler/org-protocol;
-Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F
+Exec=sh -c 'PATH="${HOME}/.local/bin:${PATH}"; if command -v emacs-client > "/dev/null" 2>&1; then exec emacs-client "$@"; fi; exec emacsclient --create-frame --alternate-editor="" "$@"' -- %F
 Icon=emacs
 Type=Application
 Terminal=false
@@ -66,55 +76,43 @@ Actions=new-frame;new-instance;
 
 [Desktop Action new-frame]
 Name=New Frame
-Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F
+Exec=sh -c 'PATH="${HOME}/.local/bin:${PATH}"; if command -v emacs-client > "/dev/null" 2>&1; then exec emacs-client "$@"; fi; exec emacsclient --create-frame --alternate-editor="" "$@"' -- %F
 
 [Desktop Action new-instance]
 Name=New Standalone Instance
-Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacs %F
+Exec=emacs %F
 EOF
+	chmod 0644 "${_apps_dir}/emacs.desktop"
+fi
 
 for _hidden_app in "emacsclient.desktop" "emacs-mail.desktop" "emacsclient-mail.desktop"; do
-	cat <<- EOF > "${_apps_dir}/${_hidden_app}"
-	[Desktop Entry]
-	Type=Application
-	Name=Emacs
-	NoDisplay=true
-	EOF
+	if [ ! -L "${_apps_dir}/${_hidden_app}" ] && [ ! -e "${_apps_dir}/${_hidden_app}" ]; then
+		cat <<- EOF > "${_apps_dir}/${_hidden_app}"
+		[Desktop Entry]
+		Type=Application
+		Name=Emacs
+		NoDisplay=true
+		EOF
+		chmod 0644 "${_apps_dir}/${_hidden_app}"
+	fi
 done
 
-chmod 0644 "${_apps_dir}"/emacs*.desktop
 if command -v update-desktop-database > "/dev/null" 2>&1; then
 	update-desktop-database "${_apps_dir}" 2> "/dev/null" || true
 fi
 
-if [ -n "${ELEVATE:-}" ] || [ "$(id -u)" -eq 0 ]; then
-	if [ -w "/usr/local/share/applications" ] || [ "$(id -u)" -eq 0 ]; then
-		mkdir -p "/usr/local/share/applications" 2> "/dev/null" || true
-		cp -f "${_apps_dir}/emacs.desktop" "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
-		for _hidden_app in "emacsclient.desktop" "emacs-mail.desktop" "emacsclient-mail.desktop"; do
-			cp -f "${_apps_dir}/${_hidden_app}" "/usr/local/share/applications/${_hidden_app}" 2> "/dev/null" || true
-		done
-		chmod 0644 /usr/local/share/applications/emacs*.desktop 2> "/dev/null" || true
-		command -v update-desktop-database > "/dev/null" 2>&1 && update-desktop-database "/usr/local/share/applications" 2> "/dev/null" || true
-	elif [ -n "${ELEVATE:-}" ]; then
-		${ELEVATE} mkdir -p "/usr/local/share/applications" 2> "/dev/null" || true
-		${ELEVATE} cp -f "${_apps_dir}/emacs.desktop" "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
-		for _hidden_app in "emacsclient.desktop" "emacs-mail.desktop" "emacsclient-mail.desktop"; do
-			${ELEVATE} cp -f "${_apps_dir}/${_hidden_app}" "/usr/local/share/applications/${_hidden_app}" 2> "/dev/null" || true
-		done
-		${ELEVATE} chmod 0644 /usr/local/share/applications/emacs*.desktop 2> "/dev/null" || true
-		command -v update-desktop-database > "/dev/null" 2>&1 && ${ELEVATE} update-desktop-database "/usr/local/share/applications" 2> "/dev/null" || true
-	fi
-
-	if [ -f "/usr/share/applications/emacs.desktop" ]; then
-		if [ -w "/usr/share/applications/emacs.desktop" ]; then
-			sed -i '' 's|^Exec=.*emacs.*|Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || \
-				sed -i 's|^Exec=.*emacs.*|Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || true
-			command -v update-desktop-database > "/dev/null" 2>&1 && update-desktop-database "/usr/share/applications" 2> "/dev/null" || true
+if [ "${_need_emacs_desktop}" -eq 1 ]; then
+	if [ -n "${ELEVATE:-}" ] || [ "$(id -u)" -eq 0 ]; then
+		if [ -w "/usr/local/share/applications" ] || [ "$(id -u)" -eq 0 ]; then
+			mkdir -p "/usr/local/share/applications" 2> "/dev/null" || true
+			cp -f "${_apps_dir}/emacs.desktop" "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
+			chmod 0644 "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
+			command -v update-desktop-database > "/dev/null" 2>&1 && update-desktop-database "/usr/local/share/applications" 2> "/dev/null" || true
 		elif [ -n "${ELEVATE:-}" ]; then
-			${ELEVATE} sed -i '' 's|^Exec=.*emacs.*|Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || \
-				${ELEVATE} sed -i 's|^Exec=.*emacs.*|Exec=env GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 emacsclient --create-frame --alternate-editor="" %F|' "/usr/share/applications/emacs.desktop" 2> "/dev/null" || true
-			command -v update-desktop-database > "/dev/null" 2>&1 && ${ELEVATE} update-desktop-database "/usr/share/applications" 2> "/dev/null" || true
+			${ELEVATE} mkdir -p "/usr/local/share/applications" 2> "/dev/null" || true
+			${ELEVATE} cp -f "${_apps_dir}/emacs.desktop" "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
+			${ELEVATE} chmod 0644 "/usr/local/share/applications/emacs.desktop" 2> "/dev/null" || true
+			command -v update-desktop-database > "/dev/null" 2>&1 && ${ELEVATE} update-desktop-database "/usr/local/share/applications" 2> "/dev/null" || true
 		fi
 	fi
 fi

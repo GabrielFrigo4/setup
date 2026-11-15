@@ -14,12 +14,13 @@ Esta pasta centraliza receitas universais para bibliotecas de janelas e multimí
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo / Receita                  | Descrição                                                                                | Plataforma                            |
-| :--------------------------------- | :--------------------------------------------------------------------------------------- | :------------------------------------ |
-| [`windowing.sh`](windowing.sh)     | Bibliotecas de janelas e multimídia gráfica (GLFW, SDL3 e ecossistema)                   | Linux / FreeBSD / macOS / WSL / MSYS2 |
-| [`compositors.sh`](compositors.sh) | Tétrade de micro-compositores Wayland (Sway, River, Labwc, Cage), Seatd e Foot           | Linux / FreeBSD / Arch                |
-| [`shaders.sh`](shaders.sh)         | Compiladores de shaders modernos (Vulkan SDK, Slang, DXC, glslang, shaderc, SPIRV-Cross) | Linux / FreeBSD / MSYS2               |
-| [`blender.sh`](blender.sh)         | Suite completa de modelagem, animação e renderização 3D (Blender)                        | Linux / FreeBSD / Windows (Winget)    |
+| Arquivo / Receita                  | Descrição                                                                                                      | Plataforma                            |
+| :--------------------------------- | :------------------------------------------------------------------------------------------------------------- | :------------------------------------ |
+| [`windowing.sh`](windowing.sh)     | Bibliotecas de janelas e multimídia gráfica (GLFW, SDL3 e ecossistema)                                         | Linux / FreeBSD / macOS / WSL / MSYS2 |
+| [`xorg.sh`](xorg.sh)               | Servidor Xorg, WMs X11 (`openbox`, `cwm`, `fvwm3`/`fvwm`, `fluxbox`, `icewm`, etc.) e `20-tearfree.conf`       | Linux / FreeBSD / Arch                |
+| [`compositors.sh`](compositors.sh) | Compositores Wayland (`sway`, `river`, `labwc`, `cage`, `wayfire`, `niri`, `hikari`, `weston`), `wofi`, `foot` | Linux / FreeBSD / Arch                |
+| [`shaders.sh`](shaders.sh)         | Compiladores de shaders modernos (Vulkan SDK, Slang, DXC, glslang, shaderc, SPIRV-Cross)                       | Linux / FreeBSD / MSYS2               |
+| [`blender.sh`](blender.sh)         | Suite completa de modelagem, animação e renderização 3D (Blender)                                              | Linux / FreeBSD / Windows (Winget)    |
 
 ---
 
@@ -28,11 +29,11 @@ Esta pasta centraliza receitas universais para bibliotecas de janelas e multimí
 Provisionar suite de modelagem e animação 3D Blender:
 
 ```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/blender.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/blender.sh) | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/blender.sh | sh
 ```
 
 Provisionar bibliotecas de janelas e multimídia (GLFW e SDL3):
 
 ```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/windowing.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/windowing.sh) | sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/windowing.sh | sh
 ```

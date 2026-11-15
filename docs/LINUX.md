@@ -17,7 +17,7 @@ O repositório **Setup** suporta de forma atômica e declarativa as três grande
 ### 1. 🔵 Fedora Workstation (Estação Primária)
 
 - **Papel:** Estação de trabalho principal para desenvolvimento e produtividade diária.
-- **Destaques:** GNOME Wayland puro, tema Adwaita escuro, suporte oficial a Flatpak/Flathub e integração nativa com o subsistema Podman/OCI.
+- **Destaques:** GNOME Wayland puro, tema `adw-gtk3` sincronizado dinamicamente com claro/escuro do sistema, suporte oficial a Flatpak/Flathub e integração nativa com o subsistema Podman/OCI.
 - **Receitas:** [`linux/desktop/fedora/`](../linux/desktop/fedora/README.md).
 
 ### 2. 🏹 Arch Linux (Ambiente Modular)
@@ -77,14 +77,14 @@ A integração da suíte de escritório em distribuições Linux é executada pe
     - **Fedora:** `libreoffice-writer`, `libreoffice-calc`, `libreoffice-impress`, `libreoffice-draw`, `libreoffice-math`, `libreoffice-base`, `libreoffice-gtk3`, `libreoffice-gtk4`.
     - **Debian / Ubuntu:** `libreoffice`, `libreoffice-gtk3`, `libreoffice-gtk4`.
     - **Arch Linux:** `libreoffice-fresh`.
-- **Tema Escuro GTK3 Injetado:** Para evitar fundos claros em desktops escuros, o script duplica e edita os arquivos `.desktop` em `~/.local/share/applications/`, injetando `env SAL_USE_VCLPLUGIN=gtk3 GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1` nas linhas de execução `Exec=`.
-- **Configuração de Sessão (`environment.d`):** Cria `~/.config/environment.d/gtk-dark.conf` contendo as variáveis de tema escuro e as exporta para o barramento do usuário via `systemctl --user set-environment` e `dbus-update-activation-environment`.
-- **Overrides Flatpak:** Aplica `flatpak override --user --env=GTK_THEME=Adwaita:dark` para garantir que empacotamentos sandbox respeitem o tema Adwaita Dark.
+- **Backend GTK3 Adaptativo:** O script duplica e normaliza os arquivos `.desktop` em `~/.local/share/applications/` utilizando `env SAL_USE_VCLPLUGIN=gtk3`, removendo overrides fixos de tema para seguir dinamicamente o esquema claro/escuro do ambiente.
+- **Limpeza de Sessão (`environment.d`):** Remove `~/.config/environment.d/gtk-dark.conf` legado e limpa `GTK_THEME` / `GTK_APPLICATION_PREFER_DARK_THEME` no `systemctl --user`.
+- **Suporte Adaptativo para Flatpak:** Remove overrides legados de `GTK_THEME` (`--unset-env=GTK_THEME`) e instala `org.gtk.Gtk3theme.adw-gtk3` e `org.gtk.Gtk3theme.adw-gtk3-dark` do Flathub quando disponível.
 
-### Padronização de Editores e Ícone Único do Emacs ([`common/editors/editors.sh`](../common/editors/editors.sh))
+### Padronização de Editores e Preservação de Lançadores do Emacs ([`common/editors/editors.sh`](../common/editors/editors.sh))
 
-- **Ícone Único (`emacs.desktop`):** Configura um lançador consolidado apontando para `emacsclient --create-frame --alternate-editor="" %F` com variáveis de tema escuro GTK3.
-- **Ocultação de Lançadores Secundários:** Gera arquivos com `NoDisplay=true` para `emacsclient.desktop`, `emacs-mail.desktop` e `emacsclient-mail.desktop`, impedindo que ações auxiliares poluam a lista de aplicativos.
+- **Preservação do Profile (`emacs.desktop` / `emacsclient.desktop`):** Mantém intactos symlinks e lançadores já gerenciados pelo Profile em `~/.local/share/applications/`, criando fallback limpo (`emacsclient --create-frame --alternate-editor="" %F` sem `GTK_THEME` forçado) apenas quando ausente.
+- **Ocultação de Lançadores Secundários:** Gera arquivos com `NoDisplay=true` apenas para `emacs-mail.desktop` e `emacsclient-mail.desktop`, impedindo que ações auxiliares poluam a lista de aplicativos.
 - **Suíte Modal:** Realiza o clone e sincronização canônica dos editores Neovim (`~/.config/nvim`), Vim (`~/.vim`), Helix (`~/.config/helix`) e Micro (`~/.config/micro`).
 
 ---

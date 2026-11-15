@@ -11,116 +11,119 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 _is_bsd=0
 [ "$(uname -s)" = "FreeBSD" ] && _is_bsd=1
 
-if command -v xinit > "/dev/null" 2>&1 && \
-	command -v xterm > "/dev/null" 2>&1 && \
-	command -v xrdb > "/dev/null" 2>&1 && \
-	command -v openbox > "/dev/null" 2>&1 && \
-	command -v cwm > "/dev/null" 2>&1 && \
-	command -v dwm > "/dev/null" 2>&1 && \
-	command -v picom > "/dev/null" 2>&1 && \
-	command -v xsettingsd > "/dev/null" 2>&1 && \
-	{ [ "${_is_bsd}" -eq 1 ] || command -v matchbox-window-manager > "/dev/null" 2>&1; }; then
-	_ui_ok "Servidor X11, utilitários, compositores e gerenciadores já instalados."
-	exit 0
-fi
+_install_resilient() {
+	_mgr="$1"
+	[ "$#" -ge 1 ] && shift
+	case "${_mgr}" in
+		pkg)
+			if ! ${ELEVATE} pkg install -y "$@" 2> "/dev/null"; then
+				for _pkg in "$@"; do
+					${ELEVATE} pkg install -y "${_pkg}" 2> "/dev/null" || true
+				done
+			fi
+			;;
+		dnf)
+			if ! ${ELEVATE} dnf install --assumeyes --skip-unavailable "$@" 2> "/dev/null"; then
+				for _pkg in "$@"; do
+					${ELEVATE} dnf install --assumeyes "${_pkg}" 2> "/dev/null" || true
+				done
+			fi
+			;;
+		apt-get)
+			${ELEVATE} apt-get update -qq 2> "/dev/null" || true
+			if ! ${ELEVATE} apt-get install --yes "$@" 2> "/dev/null"; then
+				for _pkg in "$@"; do
+					${ELEVATE} apt-get install --yes "${_pkg}" 2> "/dev/null" || true
+				done
+			fi
+			;;
+		pacman)
+			if ! ${ELEVATE} pacman -S --needed --noconfirm "$@" 2> "/dev/null"; then
+				for _pkg in "$@"; do
+					${ELEVATE} pacman -S --needed --noconfirm "${_pkg}" 2> "/dev/null" || true
+				done
+			fi
+			;;
+		yay)
+			if ! yay -S --needed --noconfirm "$@" 2> "/dev/null"; then
+				for _pkg in "$@"; do
+					yay -S --needed --noconfirm "${_pkg}" 2> "/dev/null" || true
+				done
+			fi
+			;;
+		pkg_add)
+			if ! ${ELEVATE} pkg_add -I "$@" 2> "/dev/null"; then
+				for _pkg in "$@"; do
+					${ELEVATE} pkg_add -I "${_pkg}" 2> "/dev/null" || true
+				done
+			fi
+			;;
+	esac
+}
 
-_ui_step "Instalando ecossistema gráfico X11, compositores e gerenciadores..."
+_ui_step "Provisionando ecossistema gráfico X11, compositores e gerenciadores..."
 
 ### --------------------------------
 ### 1. INSTALACAO DE PACOTES
 ### --------------------------------
 if command -v pkg > "/dev/null" 2>&1; then
-	${ELEVATE} pkg install -y \
-		x11/xorg-minimal \
-		x11/xinit \
-		x11/xterm \
-		x11/xrdb \
-		x11/xdotool \
-		x11-wm/openbox \
-		x11-wm/cwm \
-		x11-wm/dwm \
-		x11-wm/picom \
-		x11-wm/xcompmgr \
-		x11/xsettingsd \
-		security/gnome-keyring \
-		security/libsecret \
-		x11-themes/adwaita-icon-theme \
-		x11-themes/kf6-breeze-icons 2> "/dev/null" || true
+	_install_resilient pkg \
+		x11/xorg-minimal x11/xinit x11/xterm x11/xrdb x11/xdotool x11/wmctrl \
+		devel/py-xlib x11-wm/openbox x11-wm/cwm x11-wm/dwm x11-wm/fvwm3 \
+		x11-wm/fluxbox x11-wm/icewm x11-wm/jwm x11-wm/pekwm x11-wm/twm \
+		x11-wm/picom x11-wm/xcompmgr x11/xsettingsd x11/rofi x11/dmenu \
+		security/gnome-keyring security/libsecret \
+		x11-themes/adwaita-icon-theme x11-themes/kf6-breeze-icons
+	if ! command -v fvwm3 > "/dev/null" 2>&1 && ! command -v fvwm > "/dev/null" 2>&1; then
+		_install_resilient pkg x11-wm/fvwm
+	fi
 elif command -v dnf > "/dev/null" 2>&1; then
-	${ELEVATE} dnf install --assumeyes \
-		xorg-x11-server-Xorg \
-		xorg-x11-xinit \
-		xterm \
-		xrdb \
-		xdotool \
-		openbox \
-		cwm \
-		dwm \
-		picom \
-		xcompmgr \
-		xsettingsd \
-		gnome-keyring \
-		libsecret \
-		adwaita-icon-theme \
-		adwaita-icon-theme-legacy \
-		breeze-icon-theme \
-		xorg-x11-drv-intel \
-		xorg-x11-drv-amdgpu \
-		xorg-x11-drv-nouveau 2> "/dev/null" || true
-	${ELEVATE} dnf install --assumeyes matchbox-window-manager 2> "/dev/null" || true
+	_fedora_pkgs="xorg-x11-server-Xorg xorg-x11-xinit xterm xrdb xdotool wmctrl \
+		python3-xlib openbox cwm fvwm3 fluxbox icewm jwm pekwm \
+		matchbox-window-manager picom xcompmgr xsettingsd rofi dmenu \
+		gnome-keyring libsecret adwaita-icon-theme adwaita-icon-theme-legacy \
+		breeze-icon-theme xorg-x11-drv-intel xorg-x11-drv-amdgpu \
+		xorg-x11-drv-ati xorg-x11-drv-nouveau"
+	_missing=""
+	for _pkg in ${_fedora_pkgs}; do
+		rpm -q "${_pkg}" > "/dev/null" 2>&1 || _missing="${_missing} ${_pkg}"
+	done
+	if [ -n "${_missing}" ]; then
+		_install_resilient dnf ${_missing} dwm twm
+		if ! command -v fvwm3 > "/dev/null" 2>&1 && ! command -v fvwm > "/dev/null" 2>&1; then
+			_install_resilient dnf fvwm
+		fi
+	fi
 elif command -v apt-get > "/dev/null" 2>&1; then
-	${ELEVATE} apt-get update -qq 2> "/dev/null" || true
-	${ELEVATE} apt-get install --yes \
-		xserver-xorg \
-		xinit \
-		xterm \
-		x11-xserver-utils \
-		xdotool \
-		openbox \
-		cwm \
-		dwm \
-		picom \
-		xcompmgr \
-		xsettingsd \
-		gnome-keyring \
-		libsecret-1-0 \
-		libsecret-tools \
-		adwaita-icon-theme \
-		breeze-icon-theme \
-		matchbox-window-manager 2> "/dev/null" || true
+	_install_resilient apt-get \
+		xserver-xorg xinit xterm x11-xserver-utils xdotool wmctrl python3-xlib \
+		openbox cwm dwm fvwm3 fluxbox icewm jwm pekwm twm \
+		matchbox-window-manager picom xcompmgr xsettingsd rofi suckless-tools \
+		gnome-keyring libsecret-1-0 libsecret-tools \
+		adwaita-icon-theme breeze-icon-theme
+	if ! command -v fvwm3 > "/dev/null" 2>&1 && ! command -v fvwm > "/dev/null" 2>&1; then
+		_install_resilient apt-get fvwm
+	fi
 elif command -v pacman > "/dev/null" 2>&1; then
-	${ELEVATE} pacman -S --needed --noconfirm \
-		xorg-server \
-		xorg-xinit \
-		xterm \
-		xorg-xrdb \
-		xdotool \
-		openbox \
-		cwm \
-		dwm \
-		picom \
-		xcompmgr \
-		xsettingsd \
-		gnome-keyring \
-		libsecret \
-		adwaita-icon-theme \
-		breeze-icons 2> "/dev/null" || true
+	_install_resilient pacman \
+		xorg-server xorg-xinit xterm xorg-xrdb xdotool wmctrl python-xlib \
+		openbox fvwm3 fluxbox icewm jwm pekwm xorg-twm picom xcompmgr \
+		xsettingsd rofi dmenu gnome-keyring libsecret \
+		adwaita-icon-theme breeze-icons
+	if ! command -v fvwm3 > "/dev/null" 2>&1 && ! command -v fvwm > "/dev/null" 2>&1; then
+		_install_resilient pacman fvwm
+	fi
 	if command -v yay > "/dev/null" 2>&1; then
-		yay -S --needed --noconfirm matchbox-window-manager 2> "/dev/null" || true
+		_install_resilient yay cwm dwm matchbox-window-manager
 	fi
 elif command -v pkg_add > "/dev/null" 2>&1; then
-	${ELEVATE} pkg_add -I \
-		xdotool \
-		openbox \
-		cwm \
-		dwm \
-		picom \
-		xcompmgr \
-		xsettingsd \
-		gnome-keyring \
-		libsecret \
-		adwaita-icon-theme \
-		breeze-icons 2> "/dev/null" || true
+	_install_resilient pkg_add \
+		xdotool wmctrl openbox cwm dwm fvwm3 fluxbox icewm jwm pekwm \
+		picom xcompmgr xsettingsd rofi dmenu gnome-keyring libsecret \
+		adwaita-icon-theme breeze-icons
+	if ! command -v fvwm3 > "/dev/null" 2>&1 && ! command -v fvwm > "/dev/null" 2>&1; then
+		_install_resilient pkg_add fvwm
+	fi
 else
 	_ui_err "Gerenciador de pacotes não suportado para instalação do ecossistema X11."
 	exit 1
@@ -141,27 +144,32 @@ fi
 ### 3. CONFIGURACAO DO TEARFREE
 ### --------------------------------
 _xorg_conf_dir="/etc/X11/xorg.conf.d"
-[ "$(uname -s)" = "FreeBSD" ] && _xorg_conf_dir="/usr/local/etc/X11/xorg.conf.d"
+[ "${_is_bsd}" -eq 1 ] && _xorg_conf_dir="/usr/local/etc/X11/xorg.conf.d"
 
-if [ -d "/etc/X11" ] || [ "$(uname -s)" = "FreeBSD" ]; then
+if [ -d "/etc/X11" ] || [ "${_is_bsd}" -eq 1 ]; then
 	${ELEVATE} mkdir -p "${_xorg_conf_dir}" 2> "/dev/null" || true
 	cat <<- "EOF" | ${ELEVATE} tee "${_xorg_conf_dir}/20-tearfree.conf" > "/dev/null" 2>&1 || true
-	Section "Device"
-		Identifier "Intel Graphics"
-		Driver "intel"
-		Option "TearFree" "true"
+	Section "OutputClass"
+		Identifier "Modesetting TearFree"
+		MatchDriver "i915|xe|i915kms|nouveau|virtio_gpu|vmwgfx|vboxvideo"
+		Driver "modesetting"
+		Option "AccelMethod" "glamor"
+		Option "PageFlip" "on"
+		Option "AsyncFlipSecondaries" "false"
 	EndSection
 
-	Section "Device"
+	Section "OutputClass"
 		Identifier "AMD Graphics"
-		Driver "amdgpu"
+		MatchDriver "amdgpu"
 		Option "TearFree" "true"
+		Option "PageFlip" "on"
 	EndSection
 
-	Section "Device"
+	Section "OutputClass"
 		Identifier "Radeon Graphics"
-		Driver "radeon"
+		MatchDriver "radeon|radeonkms"
 		Option "TearFree" "true"
+		Option "PageFlip" "on"
 	EndSection
 	EOF
 	${ELEVATE} chmod 0644 "${_xorg_conf_dir}/20-tearfree.conf" 2> "/dev/null" || true

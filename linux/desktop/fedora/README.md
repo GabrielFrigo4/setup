@@ -14,10 +14,10 @@ Esta pasta concentra o provisionamento da estação de trabalho primária Linux 
 
 ## 📂 Catálogo Categorizado de Receitas
 
-| Categoria      | Receita                                | Descrição                                                                                               |
-| :------------- | :------------------------------------- | :------------------------------------------------------------------------------------------------------ |
-| **`system/`**  | [`system/base.sh`](system/base.sh)     | Sistema base: fuse-sshfs, mascaramento do fwupd e modelos de arquivos no GNOME (`~/Modelos`)            |
-| **`desktop/`** | [`desktop/gnome.sh`](desktop/gnome.sh) | Tema Adwaita escuro, botões da janela (`:minimize,maximize,close`) e atalhos (`Super + T`, `Super + A`) |
+| Categoria      | Receita                                | Descrição                                                                                            |
+| :------------- | :------------------------------------- | :--------------------------------------------------------------------------------------------------- |
+| **`system/`**  | [`system/base.sh`](system/base.sh)     | Sistema base: fuse-sshfs, mascaramento do fwupd e modelos de arquivos no GNOME (`~/Modelos`)         |
+| **`desktop/`** | [`desktop/gnome.sh`](desktop/gnome.sh) | Tema adaptativo `adw-gtk3`/`adw-gtk3-dark` sincronizado a `color-scheme`, botões de janela e atalhos |
 
 ---
 

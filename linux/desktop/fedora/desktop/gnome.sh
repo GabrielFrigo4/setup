@@ -20,20 +20,24 @@ ${ELEVATE} dnf install --assumeyes gnome-tweak-tool adw-gtk3-theme plasma-breeze
 ### --------------------------------
 mkdir -p "${HOME}/.config/environment.d"
 echo "QT_QPA_PLATFORMTHEME=qt6ct" > "${HOME}/.config/environment.d/qt.conf"
+rm -f "${HOME}/.config/environment.d/gtk-dark.conf"
 
-cat <<- "EOF" > "${HOME}/.config/environment.d/gtk-dark.conf"
-GTK_THEME=adw-gtk3-dark
-GTK_APPLICATION_PREFER_DARK_THEME=1
-SAL_USE_VCLPLUGIN=gtk3
-EOF
-
-command -v systemctl > "/dev/null" 2>&1 && systemctl --user set-environment QT_QPA_PLATFORMTHEME=qt6ct GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 SAL_USE_VCLPLUGIN=gtk3 2> "/dev/null" || true
-command -v dbus-update-activation-environment > "/dev/null" 2>&1 && dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME=qt6ct GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 SAL_USE_VCLPLUGIN=gtk3 2> "/dev/null" || true
+if command -v systemctl > "/dev/null" 2>&1; then
+	systemctl --user unset-environment GTK_THEME GTK_APPLICATION_PREFER_DARK_THEME 2> "/dev/null" || true
+	systemctl --user set-environment QT_QPA_PLATFORMTHEME=qt6ct 2> "/dev/null" || true
+fi
+command -v dbus-update-activation-environment > "/dev/null" 2>&1 && \
+	dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME=qt6ct 2> "/dev/null" || true
 
 ### --------------------------------
 ### 3. CONFIGURACOES GSETTINGS
 ### --------------------------------
-gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3-dark" 2> "/dev/null" || true
+_color_scheme="$(gsettings get org.gnome.desktop.interface color-scheme 2> "/dev/null" || true)"
+case "${_color_scheme}" in
+	*prefer-dark*) _gtk_theme="adw-gtk3-dark" ;;
+	*) _gtk_theme="adw-gtk3" ;;
+esac
+gsettings set org.gnome.desktop.interface gtk-theme "${_gtk_theme}" 2> "/dev/null" || true
 gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close" 2> "/dev/null" || true
 
 gsettings set org.gnome.desktop.wm.keybindings show-desktop "[]" 2> "/dev/null" || true

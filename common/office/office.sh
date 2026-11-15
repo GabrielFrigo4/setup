@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # ----------------------------------------------------------------
-# Recipe: LibreOffice Productivity Suite & Desktop Dark Theme
+# Recipe: LibreOffice Productivity Suite & Adaptive GTK3 Theme
 # ----------------------------------------------------------------
 set -eu
 
@@ -25,40 +25,48 @@ elif command -v pkg > "/dev/null" 2>&1; then
 fi
 
 ### --------------------------------
-### 2. FLATPAK DARK OVERRIDE
+### 2. FLATPAK GTK3 THEME
 ### --------------------------------
 if command -v flatpak > "/dev/null" 2>&1; then
-	flatpak override --user --env=GTK_THEME=Adwaita:dark 2> "/dev/null" || true
+	flatpak override --user --unset-env=GTK_THEME 2> "/dev/null" || true
 	if [ -n "${ELEVATE:-}" ] || [ "$(id -u)" -eq 0 ]; then
-		${ELEVATE} flatpak override --env=GTK_THEME=Adwaita:dark 2> "/dev/null" || true
+		${ELEVATE} flatpak override --unset-env=GTK_THEME 2> "/dev/null" || true
+	fi
+	if flatpak remotes --columns=name 2> "/dev/null" | grep -qx "flathub"; then
+		if flatpak remotes --system --columns=name 2> "/dev/null" | grep -qx "flathub"; then
+			${ELEVATE} flatpak install --system --assumeyes --noninteractive --or-update flathub \
+				org.gtk.Gtk3theme.adw-gtk3 \
+				org.gtk.Gtk3theme.adw-gtk3-dark 2> "/dev/null" || \
+				flatpak install --system --assumeyes --noninteractive --or-update flathub \
+				org.gtk.Gtk3theme.adw-gtk3 \
+				org.gtk.Gtk3theme.adw-gtk3-dark 2> "/dev/null" || true
+		else
+			flatpak install --user --assumeyes --noninteractive --or-update flathub \
+				org.gtk.Gtk3theme.adw-gtk3 \
+				org.gtk.Gtk3theme.adw-gtk3-dark 2> "/dev/null" || true
+		fi
 	fi
 fi
 
 ### --------------------------------
-### 3. ENVIRONMENT.D CONFIG
+### 3. ENVIRONMENT CLEANUP
 ### --------------------------------
-mkdir -p "${HOME}/.config/environment.d"
-cat <<- "EOF" > "${HOME}/.config/environment.d/gtk-dark.conf"
-GTK_THEME=adw-gtk3-dark
-GTK_APPLICATION_PREFER_DARK_THEME=1
-SAL_USE_VCLPLUGIN=gtk3
-EOF
+rm -f "${HOME}/.config/environment.d/gtk-dark.conf"
 
-command -v systemctl > "/dev/null" 2>&1 && systemctl --user set-environment GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 SAL_USE_VCLPLUGIN=gtk3 2> "/dev/null" || true
-command -v dbus-update-activation-environment > "/dev/null" 2>&1 && dbus-update-activation-environment --systemd GTK_THEME=adw-gtk3-dark GTK_APPLICATION_PREFER_DARK_THEME=1 SAL_USE_VCLPLUGIN=gtk3 2> "/dev/null" || true
+if command -v systemctl > "/dev/null" 2>&1; then
+	systemctl --user unset-environment GTK_THEME GTK_APPLICATION_PREFER_DARK_THEME 2> "/dev/null" || true
+	systemctl --user set-environment SAL_USE_VCLPLUGIN=gtk3 2> "/dev/null" || true
+fi
+command -v dbus-update-activation-environment > "/dev/null" 2>&1 && \
+	dbus-update-activation-environment --systemd SAL_USE_VCLPLUGIN=gtk3 2> "/dev/null" || true
 
 ### --------------------------------
-### 4. INTEGRACAO DESKTOP DARK
+### 4. INTEGRACAO DESKTOP GTK3
 ### --------------------------------
 _apps_dir="${XDG_DATA_HOME:-${HOME}/.local/share}/applications"
 mkdir -p "${_apps_dir}"
 
-_theme="adw-gtk3-dark"
-if [ ! -d "/usr/share/themes/adw-gtk3-dark" ] && [ ! -d "${HOME}/.themes/adw-gtk3-dark" ] && [ ! -d "/usr/local/share/themes/adw-gtk3-dark" ]; then
-	_theme="Adwaita:dark"
-fi
-
-_prefix="env SAL_USE_VCLPLUGIN=gtk3 GTK_THEME=${_theme} GTK_APPLICATION_PREFER_DARK_THEME=1 "
+_prefix="env SAL_USE_VCLPLUGIN=gtk3 "
 
 for _src_dir in "/usr/share/applications" "/usr/local/share/applications"; do
 	if [ -d "${_src_dir}" ]; then
@@ -79,4 +87,4 @@ if command -v update-desktop-database > "/dev/null" 2>&1; then
 	update-desktop-database "${_apps_dir}" 2> "/dev/null" || true
 fi
 
-_ui_ok "LibreOffice configurado com tema escuro GTK3 com sucesso!"
+_ui_ok "LibreOffice configurado com integração GTK3 adaptativa com sucesso!"

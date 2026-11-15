@@ -20,7 +20,7 @@ Esta pasta abriga receitas de automação que são **100% puras em POSIX Shell (
 | **[`database/`](database/README.md)**   | Receitas    | Motores e clientes de banco de dados (`databases.sh`: PostgreSQL, SQLite, MariaDB, MySQL, MongoDB, Redis)     |
 | **[`vcs/`](vcs/README.md)**             | Receitas    | Instalação (`tools.sh`) e configuração global do Git (`git.sh`) e Game of Trees (`got.sh`)                    |
 | **[`editors/`](editors/README.md)**     | Subcatálogo | Instalação (`install.sh`), perfis pessoais (`editors.sh`) e frameworks (`lazyvim.sh`, etc.)                   |
-| **[`graphics/`](graphics/README.md)**   | Receitas    | Janelas (`windowing.sh`), Shaders (`shaders.sh`) e Suite 3D (`blender.sh`: Blender)                           |
+| **[`graphics/`](graphics/README.md)**   | Receitas    | Xorg/WMs (`xorg.sh`), Wayland (`compositors.sh`), Janelas (`windowing.sh`), Shaders (`shaders.sh`) e Blender  |
 | **[`wasm/`](wasm/README.md)**           | Receita     | Compilador WebAssembly (`emscripten.sh`: C/C++ para Wasm)                                                     |
 | **[`media/`](media/README.md)**         | Receitas    | Processamento de mídia (`cli.sh`: FFmpeg, ImageMagick, yt-dlp) e reprodutores (`players.sh`)                  |
 | **[`docs/`](docs/README.md)**           | Receita     | Editoração técnica e tipografia (`typesetting.sh`: Pandoc, TeX Live, PDFtk)                                   |

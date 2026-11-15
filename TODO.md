@@ -7,22 +7,22 @@
 
 ## 📊 Matriz de Maturidade
 
-| Área                        |   Status    | Cobertura / Estado                                                         |
-| :-------------------------- | :---------: | :------------------------------------------------------------------------- |
-| **Linux Provisioning**      | 🟢 Estável  | Paridade Debian, Arch, Fedora, Void e Alpine com receitas idempotentes     |
-| **FreeBSD Provisioning**    | 🟢 Estável  | Pacotes `pkg -y`, DRM `drm-66-kmod`, áudio OSS, Bhyve e tunables de kernel |
-| **Windows Provisioning**    | 🟢 Estável  | Receitas nativas integradas via Winget e delegação ao motor do Shell       |
-| **Console & TTY**           | 🟢 Estável  | Fontes KMS Terminus 16x32, teclados ABNT2/US e locale soberano UTF-8       |
-| **Servidores Ubuntu**       | 🟢 Estável  | Baseline minimalista de servidor com apt-clone, tmux e full-upgrade        |
-| **Orquestrador Central**    | 🟢 Estável  | `setup.sh` desacoplado em receitas atômicas e modulares em `core/`         |
-| **Compositores Wayland**    | 🟢 Estável  | Tétrade `sway`, `river`, `labwc`, `cage` com `seatd`, `foot` e `wlr-randr` |
-| **Ecossistema X11 / Xorg**  | 🟢 Estável  | Servidor Xorg, xinit, xterm, xrdb, xdotool e micro-WMs de quiosque         |
-| **Mídia & Streaming**       | 🟢 Estável  | `mpv`, `vlc` e `yt-dlp` provisionados de forma cross-platform              |
-| **Toolchain Rust & EWM**    | 🟢 Estável  | Compilação e setup de `libewm_core.so` e `ewm` Elisp via Smithay / Rust    |
-| **Mouse no Console**        | 🟢 Estável  | Suporte a `gpm` (Linux) e `moused` ABNT2 acelerado (FreeBSD)               |
-| **Segurança & Privilégios** | 🟢 Estável  | Detecção automática antifrágil de `sudo`/`doas` em `core/elevate.sh`       |
-| **Emissão Visual TUI**      | 🟢 Estável  | Biblioteca semântica canônica `core/ui.sh` (`_ui_*`) integrada             |
-| **Quality Gates**           | 🟢 Aprovado | Linters de monólitos, nanos, sintaxe POSIX e réguas 100% aprovados         |
+| Área                        |   Status    | Cobertura / Estado                                                                                                                    |
+| :-------------------------- | :---------: | :------------------------------------------------------------------------------------------------------------------------------------ |
+| **Linux Provisioning**      | 🟢 Estável  | Paridade Debian, Arch, Fedora, Void e Alpine com receitas idempotentes                                                                |
+| **FreeBSD Provisioning**    | 🟢 Estável  | Pacotes `pkg -y`, DRM `drm-66-kmod`, áudio OSS, Bhyve e tunables de kernel                                                            |
+| **Windows Provisioning**    | 🟢 Estável  | Receitas nativas integradas via Winget e delegação ao motor do Shell                                                                  |
+| **Console & TTY**           | 🟢 Estável  | Fontes KMS Terminus 16x32, teclados ABNT2/US e locale soberano UTF-8                                                                  |
+| **Servidores Ubuntu**       | 🟢 Estável  | Baseline minimalista de servidor com apt-clone, tmux e full-upgrade                                                                   |
+| **Orquestrador Central**    | 🟢 Estável  | `setup.sh` desacoplado em receitas atômicas e modulares em `core/`                                                                    |
+| **Compositores Wayland**    | 🟢 Estável  | Suite Wayland (`sway`, `river`, `labwc`, `cage`, `wayfire`, `niri`, `hikari`, `weston`), `wofi`, `fuzzel`, `seatd`, `foot`            |
+| **Ecossistema X11 / Xorg**  | 🟢 Estável  | Servidor Xorg, `xinit`, WMs (`openbox`, `cwm`, `fvwm3`/`fvwm`, `fluxbox`, `icewm`, `jwm`, `pekwm`) e `OutputClass` `20-tearfree.conf` |
+| **Mídia & Streaming**       | 🟢 Estável  | `mpv`, `vlc` e `yt-dlp` provisionados de forma cross-platform                                                                         |
+| **Toolchain Rust & EWM**    | 🟢 Estável  | Compilação e setup de `libewm_core.so` e `ewm` Elisp via Smithay / Rust                                                               |
+| **Mouse no Console**        | 🟢 Estável  | Suporte a `gpm` (Linux) e `moused` ABNT2 acelerado (FreeBSD)                                                                          |
+| **Segurança & Privilégios** | 🟢 Estável  | Detecção automática antifrágil de `sudo`/`doas` em `core/elevate.sh`                                                                  |
+| **Emissão Visual TUI**      | 🟢 Estável  | Biblioteca semântica canônica `core/ui.sh` (`_ui_*`) integrada                                                                        |
+| **Quality Gates**           | 🟢 Aprovado | Linters de monólitos, nanos, sintaxe POSIX e réguas 100% aprovados                                                                    |
 
 ---
 
@@ -31,7 +31,7 @@
 - **Zero Pendências:** Sistema de provisionamento modular, idempotente e resiliente em 7 plataformas.
 - **Blindagem de GPU Intel Alder Lake (FreeBSD 15.1):** Downgrade seletivo para `drm-66-kmod` com `pkg lock`, desativação de deep sleep e alocação de tunables IPC SHM e ZFS ARC no `/boot/loader.conf`.
 - **Diagnóstico Técnico & Runbook FreeBSD:** Absorção integral da arquitetura LinuxKPI e matriz comparativa 15.0 / 15.1 / 15.2 / 16.0 em `docs/BSD.md`.
-- **Ecossistema X11 Estendido:** Suporte multiplataforma a `dwm`, `picom`, `xcompmgr`, `xsettingsd`, `gnome-keyring`, `libsecret`, ícones Adwaita/Breeze, `TearFree` e auto-unlock PAM.
+- **Ecossistema X11 Estendido:** Suporte multiplataforma resiliente a WMs X11 (`fvwm3`/`fvwm`, `openbox`, `cwm`, `fluxbox`, `icewm`, `jwm`, `pekwm`), `picom`, `xcompmgr`, `xsettingsd`, `wmctrl`, `rofi`, `dmenu`, `gnome-keyring`, `libsecret`, ícones Adwaita/Breeze, `20-tearfree.conf` (`OutputClass`) e auto-unlock PAM.
 - **Clean-Break em Editores:** Idempotência estrita antes de clonagem em `editors.sh`, além de inclusão de `libtool` e `cmake` para compilação do `vterm`.
 - **Tipografia, Dicionários & Typesetting:** Dicionários Hunspell bilíngues (`portuguese/hunspell`, `textproc/en-hunspell`), suporte a `typst` e `texlive-plain-generic`.
 - **Tétrade de Micro-Compositores Wayland:** Receitas idempotentes para `sway`, `river`, `labwc`, `cage`, `seatd`, `foot` e `wlr-randr` em Linux e FreeBSD.
