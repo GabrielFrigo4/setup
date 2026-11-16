@@ -29,6 +29,22 @@ echo set rtp+=~/vimfiles
 echo source ~/vimfiles/vimrc
 ) > "%USERPROFILE%\_vimrc"
 
+if exist "%USERPROFILE%\vimfiles\" (
+	if not exist "%USERPROFILE%\.vim\" (
+		dir /a:l /b "%USERPROFILE%" 2>nul | findstr /i /l /x ".vim" >nul 2>&1 && rmdir "%USERPROFILE%\.vim" >nul 2>&1
+		if not exist "%USERPROFILE%\.vim" (
+			mklink /J "%USERPROFILE%\.vim" "%USERPROFILE%\vimfiles" >nul 2>&1
+			if errorlevel 1 (
+				echo [!] Aviso: falha ao criar junction "%USERPROFILE%\.vim".
+			) else (
+				echo [V] Junction "%USERPROFILE%\.vim" -^> "%USERPROFILE%\vimfiles" configurada!
+			)
+		) else (
+			echo [!] Aviso: "%USERPROFILE%\.vim" ja existe como arquivo independente.
+		)
+	)
+)
+
 if not exist "%APPDATA%\helix\.git" (
 	git clone "https://github.com/GabrielFrigo4/helix.git" "%APPDATA%\helix"
 ) else (
