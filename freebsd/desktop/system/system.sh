@@ -27,7 +27,7 @@ _rcd_dir="/usr/local/etc/rc.d"
 [ -d "${_rcd_dir}" ] || ${ELEVATE} mkdir -p "${_rcd_dir}"
 ${ELEVATE} cp "${_setup_root}/freebsd/desktop/system/vt-autofont.sh" "${_rcd_dir}/vt_autofont"
 ${ELEVATE} chmod 0755 "${_rcd_dir}/vt_autofont"
-for _sr in "vt_autofont_enable=YES" "moused_enable=YES" "moused_nondefault_enable=NO" \
+for _sr in "vt_autofont_enable=YES" "moused_enable=YES" "moused_nondefault_enable=YES" \
 	"moused_flags=-A 1.5,1.5 -a 1.2" "keyrate=fast" "background_dhclient=NO" \
 	"defaultroute_delay=5" "ifconfig_re0=DHCP" "ifconfig_re0_ipv6=inet6 accept_rtadv" \
 	"keymap=br.kbd" "powerd_enable=YES" "dumpdev=NO" "dbus_enable=YES" \
@@ -35,7 +35,9 @@ for _sr in "vt_autofont_enable=YES" "moused_enable=YES" "moused_nondefault_enabl
 	_k="${_sr%%=*}"; _v="${_sr#*=}"
 	[ "$(sysrc -n "${_k}" 2> "/dev/null" || true)" != "${_v}" ] && ${ELEVATE} sysrc "${_sr}" > "/dev/null" 2>&1 || true
 done
-${ELEVATE} pkill -f "[m]oused.*input/event" 2> "/dev/null" || true
+for _ev in /dev/input/event*; do
+	[ -c "${_ev}" ] && ${ELEVATE} service moused quietstart "${_ev#/dev/}" > "/dev/null" 2>&1 || true
+done
 if [ -f "/etc/fstab" ]; then
 	grep -Eq "^[[:space:]]*fdesc[[:space:]]+/dev/fd" "/etc/fstab" 2> "/dev/null" || printf "fdesc\t\t/dev/fd\t\tfdescfs\trw\t\t0\t0\n" | ${ELEVATE} tee -a "/etc/fstab" > "/dev/null"
 	grep -Eq "^[[:space:]]*proc[[:space:]]+/proc" "/etc/fstab" 2> "/dev/null" || printf "proc\t\t/proc\t\tprocfs\trw\t\t0\t0\n" | ${ELEVATE} tee -a "/etc/fstab" > "/dev/null"
