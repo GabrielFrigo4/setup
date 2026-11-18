@@ -22,7 +22,12 @@ ${ELEVATE} pkg install -y \
 	graphics/gimp3-app \
 	x11-themes/adwaita-icon-theme \
 	x11-themes/kf6-breeze-icons \
-	x11/xsettingsd
+	x11/xsettingsd \
+	multimedia/pipewire \
+	multimedia/wireplumber \
+	deskutils/xdg-desktop-portal \
+	x11/plasma6-xdg-desktop-portal-kde \
+	multimedia/plasma6-kpipewire
 
 [ "$(sysrc -n dbus_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc dbus_enable="YES" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n seatd_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc seatd_enable="YES" > "/dev/null" 2>&1 || true
