@@ -176,6 +176,17 @@ Section "OutputClass"
 	Option "PageFlip" "on"
 EndSection'
 
+_tap_conf='Section "InputClass"
+	Identifier "touchpad"
+	Driver "libinput"
+	MatchIsTouchpad "on"
+	Option "Tapping" "on"
+	Option "NaturalScrolling" "on"
+	Option "ClickMethod" "clickfinger"
+	Option "AccelSpeed" "0.0"
+	Option "DisableWhileTyping" "on"
+EndSection'
+
 if [ -d "/etc/X11" ] || [ "${_is_bsd}" -eq 1 ]; then
 	${ELEVATE} rm -f "/etc/X11/xorg.conf.d/20-swcursor.conf" "/usr/local/etc/X11/xorg.conf.d/20-swcursor.conf" 2> "/dev/null" || true
 	for _xorg_conf_dir in "/etc/X11/xorg.conf.d" "/usr/local/etc/X11/xorg.conf.d"; do
@@ -183,6 +194,8 @@ if [ -d "/etc/X11" ] || [ "${_is_bsd}" -eq 1 ]; then
 		${ELEVATE} mkdir -p "${_xorg_conf_dir}" 2> "/dev/null" || true
 		printf '%s\n' "${_tearfree_conf}" | ${ELEVATE} tee "${_xorg_conf_dir}/20-tearfree.conf" > "/dev/null" 2>&1 || true
 		${ELEVATE} chmod 0644 "${_xorg_conf_dir}/20-tearfree.conf" 2> "/dev/null" || true
+		printf '%s\n' "${_tap_conf}" | ${ELEVATE} tee "${_xorg_conf_dir}/30-tap.conf" > "/dev/null" 2>&1 || true
+		${ELEVATE} chmod 0644 "${_xorg_conf_dir}/30-tap.conf" 2> "/dev/null" || true
 	done
 fi
 
