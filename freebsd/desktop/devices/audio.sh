@@ -49,6 +49,11 @@ for _mixer_state in /var/db/mixer*-state; do
 	[ -f "${_mixer_state}" ] && ${ELEVATE} sed -i '' '/^mic\.volume=/d' "${_mixer_state}" 2> "/dev/null" || true
 done
 
+_pa_desktop="/usr/local/etc/xdg/autostart/pulseaudio.desktop"
+if [ -f "${_pa_desktop}" ] && grep -q '^Exec=start-pulseaudio-x11' "${_pa_desktop}" 2> "/dev/null"; then
+	${ELEVATE} sed -i '' 's|^Exec=start-pulseaudio-x11|Exec=pulseaudio --start|' "${_pa_desktop}" 2> "/dev/null" || true
+fi
+
 ### --------------------------------
 ### 3. ROTEAMENTO DE AUDIO RTP
 ### --------------------------------

@@ -12,5 +12,6 @@ _ui_step "Ativando camada de compatibilidade Linux (/compat/linux)..."
 
 ${ELEVATE} sysrc linux_enable="YES"
 ${ELEVATE} service linux start 2> "/dev/null" || true
+${ELEVATE} sysctl compat.linux.debug=0 > "/dev/null" 2>&1 || true
 
 _ui_ok "Camada de compatibilidade (/compat/linux) ativa no kernel!"

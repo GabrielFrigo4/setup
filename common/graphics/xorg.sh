@@ -178,29 +178,32 @@ fi
 ### --------------------------------
 ### 4. AUTO-UNLOCK GNOME KEYRING
 ### --------------------------------
-_pam_keyring=""
-for _p in \
-	"/lib/security/pam_gnome_keyring.so" \
-	"/lib64/security/pam_gnome_keyring.so" \
-	"/usr/lib/security/pam_gnome_keyring.so" \
-	"/usr/lib64/security/pam_gnome_keyring.so" \
-	"/usr/lib/x86_64-linux-gnu/security/pam_gnome_keyring.so" \
-	"/usr/lib/aarch64-linux-gnu/security/pam_gnome_keyring.so" \
-	"/usr/local/lib/pam_gnome_keyring.so"; do
-	if [ -f "${_p}" ]; then
-		_pam_keyring="${_p}"
-		break
+if [ "${_is_bsd}" -eq 1 ]; then
+	if [ -f "/etc/pam.d/login" ] && grep -q "pam_gnome_keyring\.so" "/etc/pam.d/login" 2> "/dev/null"; then
+		${ELEVATE} sed -i '' '/pam_gnome_keyring\.so/d' "/etc/pam.d/login" 2> "/dev/null" || true
 	fi
-done
+else
+	_pam_keyring=""
+	for _p in \
+		"/lib/security/pam_gnome_keyring.so" \
+		"/lib64/security/pam_gnome_keyring.so" \
+		"/usr/lib/security/pam_gnome_keyring.so" \
+		"/usr/lib64/security/pam_gnome_keyring.so" \
+		"/usr/lib/x86_64-linux-gnu/security/pam_gnome_keyring.so" \
+		"/usr/lib/aarch64-linux-gnu/security/pam_gnome_keyring.so"; do
+		if [ -f "${_p}" ]; then
+			_pam_keyring="${_p}"
+			break
+		fi
+	done
 
-if [ -n "${_pam_keyring}" ] && [ -f "/etc/pam.d/login" ]; then
-	if ! grep -q "pam_gnome_keyring\.so" "/etc/pam.d/login" 2> "/dev/null"; then
-		_keyring_mod="pam_gnome_keyring.so"
-		[ "$(uname -s)" = "FreeBSD" ] && _keyring_mod="/usr/local/lib/pam_gnome_keyring.so"
-		cat <<- EOF | ${ELEVATE} tee -a "/etc/pam.d/login" > "/dev/null" 2>&1 || true
-		auth optional ${_keyring_mod}
-		session optional ${_keyring_mod} auto_start
-		EOF
+	if [ -n "${_pam_keyring}" ] && [ -f "/etc/pam.d/login" ]; then
+		if ! grep -q "pam_gnome_keyring\.so" "/etc/pam.d/login" 2> "/dev/null"; then
+			cat <<- EOF | ${ELEVATE} tee -a "/etc/pam.d/login" > "/dev/null" 2>&1 || true
+			auth optional pam_gnome_keyring.so
+			session optional pam_gnome_keyring.so auto_start
+			EOF
+		fi
 	fi
 fi
 

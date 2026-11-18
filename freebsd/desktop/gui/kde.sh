@@ -11,12 +11,11 @@ _setup_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 _ui_step "Configurando ambiente gráfico KDE Plasma..."
 
 ${ELEVATE} pkg install -y \
-	x11/plasma6-plasma \
+	x11/kde \
 	x11/konsole \
 	sysutils/seatd \
 	devel/dbus \
 	x11/wl-clipboard \
-	x11/xclip \
 	ports-mgmt/octopkg \
 	archivers/ark \
 	x11-themes/plasma6-breeze-gtk \

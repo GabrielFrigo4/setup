@@ -63,6 +63,14 @@ if sysctl dev.pcm.2 > "/dev/null" 2>&1; then
 	${ELEVATE} sysctl dev.pcm.2.mixer.vol_0_1.val=0 > "/dev/null" 2>&1 || true
 fi
 
+### --------------------------------
+### COMPATIBILIDADE LINUX E VM
+### --------------------------------
+_set_sysctl "compat.linux.debug" "0"
+_set_sysctl "vm.pageout_oom_seq" "120"
+_set_sysctl "hw.acpi.lid_switch_state" "S5"
+_set_sysctl "vfs.usermount" "1"
+
 ${ELEVATE} rm -f /etc/rc.conf\'\' /etc/sysctl.conf\'\' /boot/loader.conf\'\' /etc/*.conf\'\' /boot/*.conf\'\' 2> "/dev/null" || true
 
 _ui_ok "Otimizações aplicadas com sucesso!"

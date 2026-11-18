@@ -24,6 +24,6 @@ fi
 ${ELEVATE} sysrc "wlans_${PARENT_DEV}"="${IFACE}" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysrc "create_args_${IFACE}"="country BR regdomain FCC" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysrc wpa_supplicant_enable="YES"
-${ELEVATE} sysrc "ifconfig_${IFACE}"="WPA DHCP"
+${ELEVATE} sysrc "ifconfig_${IFACE}"="WPA DHCP -bgscan"
 
 _ui_ok "wpa_supplicant configurado para '${IFACE}'!"

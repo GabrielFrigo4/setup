@@ -100,7 +100,22 @@ if [ "${VM_MEM_GB}" -ge 1 ]; then
 fi
 
 ### --------------------------------
-### 7. DIAGNOSTICO DO ZFS ARC
+### 7. PROVISIONAMENTO DE SWAP ZFS
+### --------------------------------
+if zpool list -H -o name zroot > "/dev/null" 2>&1 && ! zfs list -H -o name zroot/swap > "/dev/null" 2>&1; then
+	_ui_sub "Provisionando zvol zroot/swap (6 GB)..."
+	${ELEVATE} zfs create -V 6G -o org.freebsd:swap=on -o checksum=off -o compression=off -o dedup=off -o sync=disabled -o primarycache=none -o secondarycache=none zroot/swap > "/dev/null" 2>&1 || true
+fi
+
+if [ -e "/dev/zvol/zroot/swap" ]; then
+	if ! grep -q "/dev/zvol/zroot/swap" "/etc/fstab" 2> "/dev/null"; then
+		printf "/dev/zvol/zroot/swap\tnone\tswap\tsw\t0\t0\n" | ${ELEVATE} tee -a "/etc/fstab" > "/dev/null"
+	fi
+	swapinfo 2> "/dev/null" | grep -q "/dev/zvol/zroot/swap" || ${ELEVATE} swapon /dev/zvol/zroot/swap 2> "/dev/null" || true
+fi
+
+### --------------------------------
+### 8. DIAGNOSTICO DO ZFS ARC
 ### --------------------------------
 if ! pkg info -e py-sysctl > "/dev/null" 2>&1 || ! pkg info -e arc_summary > "/dev/null" 2>&1 || ! pkg info -e zfs-stats > "/dev/null" 2>&1; then
 	_ui_step "Instalando utilitários de diagnóstico e py-sysctl..."

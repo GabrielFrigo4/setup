@@ -27,12 +27,19 @@ _rcd_dir="/usr/local/etc/rc.d"
 [ -d "${_rcd_dir}" ] || ${ELEVATE} mkdir -p "${_rcd_dir}"
 ${ELEVATE} cp "${_setup_root}/freebsd/desktop/system/vt-autofont.sh" "${_rcd_dir}/vt_autofont"
 ${ELEVATE} chmod 0755 "${_rcd_dir}/vt_autofont"
-for _sr in "vt_autofont_enable=YES" "moused_enable=YES" "moused_nondefault_enable=YES" \
+for _sr in "vt_autofont_enable=YES" "moused_enable=YES" "moused_nondefault_enable=NO" \
 	"moused_flags=-A 1.5,1.5 -a 1.2" "keyrate=fast" "background_dhclient=NO" \
-	"defaultroute_delay=5" "ifconfig_re0=DHCP"; do
+	"defaultroute_delay=5" "ifconfig_re0=DHCP" "ifconfig_re0_ipv6=inet6 accept_rtadv" \
+	"keymap=br.kbd" "powerd_enable=YES" "dumpdev=NO" "dbus_enable=YES" \
+	"devd_enable=YES" "seatd_enable=YES" "sddm_enable=NO" "nfs_client_enable=YES"; do
 	_k="${_sr%%=*}"; _v="${_sr#*=}"
 	[ "$(sysrc -n "${_k}" 2> "/dev/null" || true)" != "${_v}" ] && ${ELEVATE} sysrc "${_sr}" > "/dev/null" 2>&1 || true
 done
+${ELEVATE} pkill -f "[m]oused.*input/event" 2> "/dev/null" || true
+if [ -f "/etc/fstab" ]; then
+	grep -Eq "^[[:space:]]*fdesc[[:space:]]+/dev/fd" "/etc/fstab" 2> "/dev/null" || printf "fdesc\t\t/dev/fd\t\tfdescfs\trw\t\t0\t0\n" | ${ELEVATE} tee -a "/etc/fstab" > "/dev/null"
+	grep -Eq "^[[:space:]]*proc[[:space:]]+/proc" "/etc/fstab" 2> "/dev/null" || printf "proc\t\t/proc\t\tprocfs\trw\t\t0\t0\n" | ${ELEVATE} tee -a "/etc/fstab" > "/dev/null"
+fi
 ${ELEVATE} sysrc -x moused_port moused_type > "/dev/null" 2>&1 || true
 ${ELEVATE} sysrc ntpdate_enable="NO" ntpd_enable="YES" ntpd_sync_on_start="YES" > "/dev/null" 2>&1 || true
 ${ELEVATE} sysrc -x ntpdate_flags ntpdate_hosts > "/dev/null" 2>&1 || true
@@ -134,21 +141,23 @@ if [ -f "/boot/loader.conf" ]; then
 		"compat.linuxkpi.i915_enable_guc=2" "compat.linuxkpi.i915_disable_power_well=0" \
 		"kern.ipc.shmseg=1024" "kern.ipc.shmmni=1024" "kern.maxproc=100000" \
 		"compat.linuxkpi.skb.mem_limit=1" "compat.linuxkpi.rtw88_disable_lps_deep=1" \
-		"compat.linuxkpi.rtw88_pci_disable_aspm=1" "hw.pci.enable_aspm=0"; do
+		"compat.linuxkpi.rtw88_pci_disable_aspm=1" "hw.pci.enable_aspm=0" \
+		"if_re_load=YES" "if_re_name=/boot/modules/if_re.ko" "uplcom_load=YES" "ng_ubt_load=YES"; do
 		_set_loader_tunable "${_entry%%=*}" "${_entry#*=}"
 	done
 fi
+pkg info -e realtek-re-kmod > "/dev/null" 2>&1 || ${ELEVATE} pkg install -y net/realtek-re-kmod 2> "/dev/null" || true
 
 ### --------------------------------
 ### ISOLAMENTO DE REDE E WI-FI
 ### --------------------------------
 if [ -f "/etc/rc.conf" ]; then
 	_tmp="$(mktemp "/tmp/rc.conf.XXXXXX")"
-	sed -e '/^[[:space:]]*#[[:space:]]*ifconfig_wlan0=/d' -e 's| fusefs||g' "/etc/rc.conf" > "${_tmp}"
+	sed -e '/^[[:space:]]*#[[:space:]]*ifconfig_wlan0=/d' "/etc/rc.conf" > "${_tmp}"
 	${ELEVATE} cp "${_tmp}" "/etc/rc.conf"
 	${ELEVATE} chmod 0644 "/etc/rc.conf"
 	rm -f "${_tmp}"
-	(grep -q "wlans_rtw880" "/etc/rc.conf" 2> "/dev/null" || grep -q "ifconfig_wlan0" "/etc/rc.conf" 2> "/dev/null") && ${ELEVATE} sysrc ifconfig_wlan0="WPA DHCP" > "/dev/null" 2>&1 || true
+	(grep -q "wlans_rtw880" "/etc/rc.conf" 2> "/dev/null" || grep -q "ifconfig_wlan0" "/etc/rc.conf" 2> "/dev/null") && ${ELEVATE} sysrc ifconfig_wlan0="WPA DHCP -bgscan" > "/dev/null" 2>&1 || true
 	${ELEVATE} sysrc -x ifconfig_ue0 > "/dev/null" 2>&1 || true
 fi
 
@@ -161,9 +170,7 @@ set -eu
 
 _action="${1:-auto}"
 
-_is_wired_active() {
-	ifconfig re0 2> "/dev/null" | grep -q "status: active"
-}
+_is_wired_active() { ifconfig re0 2> "/dev/null" | grep -q "status: active"; }
 
 _switch_wired() {
 	service dhclient stop wlan0 > "/dev/null" 2>&1 || true
@@ -174,26 +181,23 @@ _switch_wired() {
 }
 
 _switch_wifi() {
+	sleep 2
 	if ! _is_wired_active; then
 		service dhclient stop re0 > "/dev/null" 2>&1 || true
 		ifconfig re0 inet 0.0.0.0 > "/dev/null" 2>&1 || true
 		ifconfig wlan0 up > "/dev/null" 2>&1 || true
-		service wpa_supplicant restart wlan0 > "/dev/null" 2>&1 || true
+		if ! pgrep -f "wpa_supplicant.*wlan0" > "/dev/null" 2>&1; then
+			service wpa_supplicant restart wlan0 > "/dev/null" 2>&1 || true
+		else
+			wpa_cli -i wlan0 reconfigure > "/dev/null" 2>&1 || true
+		fi
 	fi
 }
 
 case "${_action}" in
-	wired)
-		_switch_wired
-		;;
-	wifi)
-		_switch_wifi
-		;;
-	auto|*)
-		if _is_wired_active; then
-			_switch_wired
-		fi
-		;;
+	wired) _switch_wired ;;
+	wifi) _switch_wifi ;;
+	auto|*) if _is_wired_active; then _switch_wired; fi ;;
 esac
 EOF
 ${ELEVATE} chmod 0755 "/usr/local/sbin/net-auto-switch"
