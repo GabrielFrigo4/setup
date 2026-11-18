@@ -10,7 +10,7 @@ No nosso ecossistema dual (**Fedora com GNOME** e **FreeBSD com KDE Plasma**), o
 
 1. **Wayland Nativo:** Sessão Wayland pura iniciada via `startplasma-wayland`, isolando processos gráficos sem a insegurança do X11 legado.
 2. **Desempenho Direto no Host:** Aceleração de hardware (GPU) sem overhead, proporcionando fluidez para gerenciar Bastille Jails, bhyve e volumes ZFS.
-3. **Konsole Moderno:** O emulador de terminal nativo do KDE oferece excelente renderização, perfis unificados para shells (`software/terminals/konsole/`) e suporte integral ao ecossistema [Shell](https://github.com/GabrielFrigo4/shell).
+3. **Konsole Moderno:** O emulador de terminal nativo do KDE oferece excelente renderização, perfis unificados para shells (`Profile/terminals/konsole/`) e suporte integral ao ecossistema [Shell](https://github.com/GabrielFrigo4/shell).
 
 ---
 
@@ -31,7 +31,7 @@ Como limitamos ao máximo o uso de comandos administrativos diretos no host grá
 
 O repositório **[Shell](https://github.com/GabrielFrigo4/shell)** traz integrações nativas para o KDE:
 
-1. **Detecção e Tema Unificado:** Detecta o tema escuro via `kreadconfig6` e exporta automaticamente `QT_STYLE_OVERRIDE=Breeze-Dark` e `GTK_THEME=Breeze-Dark`, mantendo coerência absoluta entre apps Qt e GTK.
+1. **Detecção e Tema Unificado:** Detecta dinamicamente o esquema de cores (`dark`/`light`) via `kreadconfig6` / portal XDG; em sessões Full DE preserva a gestão nativa do Plasma sem pinning estático, e em sessões standalone exporta `QT_STYLE_OVERRIDE="Breeze"` (estilo QStyle válido no Qt6) junto ao tema GTK correspondente (`Breeze-Dark` ou `Breeze`), mantendo coerência visual entre apps Qt e GTK.
 2. **Dispositivos Móveis (`~/Device`):** As funções de terminal `mount-device` e `umount-device` utilizam o **KDE Connect** (`kdeconnect-cli --mount`) e KIO-Fuse, permitindo acessar o celular Android diretamente em `~/Device` ou via Dolphin.
 3. **Atalhos do Terminal:** Comandos dedicados como `way` (atalho para `ck-launch-session dbus-run-session startplasma-wayland`).
 

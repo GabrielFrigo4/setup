@@ -2,7 +2,7 @@
 
 O repositório **[Universal Shell Environment](https://github.com/GabrielFrigo4/shell)** é o "motor dinâmico" do ecossistema. Ele contém a lógica interativa da linha de comando, prompts otimizados, aliases globais, funções utilitárias e gerenciamento de contexto para todos os ambientes.
 
-Enquanto o `Configuration` cuida do provisionamento estático e dotfiles do host, o `Shell` provê agilidade e ergonomia ao terminal no dia a dia.
+Enquanto o **Setup** cuida do provisionamento de sistema e o **Profile** dos dotfiles do usuário, o **Shell** provê agilidade e ergonomia ao terminal no dia a dia.
 
 ---
 
@@ -11,7 +11,7 @@ Enquanto o `Configuration` cuida do provisionamento estático e dotfiles do host
 Instalação global recomendada (Linux / FreeBSD / macOS):
 
 ```sh
-sudo git clone "[https://github.com/GabrielFrigo4/shell](https://github.com/GabrielFrigo4/shell)" "/usr/local/share/shell"
+sudo git clone "https://github.com/GabrielFrigo4/shell" "/usr/local/share/shell"
 ```
 
 Executar a instalação escolhendo o contexto desejado (`desktop`, `server`, `container` ou `wsl`):
@@ -36,24 +36,25 @@ Shell/
 └── install.sh
 ```
 
-- **`core/`:** Ciclo de vida principal e carregador do ambiente (`environment.sh`, `vault.sh`).
+- **`core/` (9 módulos):** Núcleo de boot e runtime (`detect.sh`, `ui.sh`, `elevate.sh`, `perms.sh`, `path.sh`, `environment.sh`, `userland.sh`, `vault.sh`, `deploy.sh`).
+- **`library/` (5 dispatchers + subpastas):** Bibliotecas de domínio organizadas em `desktop.sh` (`desktop/`), `system.sh` (`system/`), `functions.sh` (`functions/`), `ecosystem.sh` (`ecosystem/`) e `hypervisor.sh` (`hypervisor/`).
 - **`context/`:** Especializações por tipo de máquina (`desktop`, `server`, `container`, `wsl`).
-- **`target/`:** Especializações por sistema operacional (`linux`, `freebsd`, `windows`).
-- **`library/`:** Funções utilitárias reutilizáveis (`detect.sh`, `functions.sh`).
-- **`theme/`:** Temas visuais e prompts rápidos (`bash.sh`, `zsh.sh`).
+- **`target/`:** Especializações por sistema operacional (`linux`, `freebsd`, `openbsd`, `netbsd`, `illumos`, `macos`, `windows`, `common`).
+- **`theme/`:** Temas visuais e prompts rápidos (`bash.sh`, `zsh.sh`, `sh.sh`, `ksh.sh`).
 - **`install.sh`:** Instalador idempotente.
 
 ---
 
 ## 🛠️ A Matriz de Shells Suportados
 
-Para garantir consistência e performance sem adicionar complexidade desnecessária, focamos nos interpretadores mais maduros:
+Para garantir consistência e performance sem adicionar complexidade desnecessária, focamos nos interpretadores homologados:
 
-### Ambientes UNIX (Linux, FreeBSD, macOS, WSL2)
+### Ambientes UNIX (Linux, FreeBSD, OpenBSD, NetBSD, illumos, macOS, WSL2)
 
-- **`sh`**: Shell POSIX puro (`sh` do FreeBSD, `dash` do Debian). Utilizado em scripts de infraestrutura ultra-leves e rápidos.
-- **`bash`**: Presente nativamente na maioria das distribuições Linux e servidores.
-- **`zsh`**: Shell interativo padrão diário, altamente configurado com autocompletion e navegação eficiente.
+- **`sh` / `ksh`:** POSIX puro (`sh` nativo do FreeBSD com `libedit` e `/bin/ksh` no OpenBSD; `dash` e NetBSD `/bin/sh` não são suportados interativamente).
+- **`bash`:** Presente nativamente na maioria das distribuições Linux e servidores.
+- **`zsh`:** Shell interativo padrão diário, altamente configurado com autocompletion e navegação eficiente.
+- **`fish`:** Suporte completo via módulo dedicado em `target/common/fish/`.
 
 ### Ambientes Windows Nativo
 

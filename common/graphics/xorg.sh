@@ -68,12 +68,15 @@ _ui_step "Provisionando ecossistema gráfico X11, compositores e gerenciadores..
 ### --------------------------------
 if command -v pkg > "/dev/null" 2>&1; then
 	_install_resilient pkg \
-		x11/xorg-minimal x11/xinit x11/xterm x11/xrdb x11/xdotool x11/wmctrl \
-		devel/py-xlib x11-wm/openbox x11-wm/cwm x11-wm/dwm x11-wm/fvwm3 \
+		x11/xorg-minimal x11/xinit x11/xterm x11/xrdb x11/xdotool x11/wmctrl-fork \
+		x11-toolkits/py-python-xlib x11-wm/openbox x11-wm/cwm x11-wm/dwm x11-wm/fvwm3 \
 		x11-wm/fluxbox x11-wm/icewm x11-wm/jwm x11-wm/pekwm x11-wm/twm \
 		x11-wm/picom x11-wm/xcompmgr x11/xsettingsd x11/rofi x11/dmenu \
 		security/gnome-keyring security/libsecret \
 		x11-themes/adwaita-icon-theme x11-themes/kf6-breeze-icons
+	if ! command -v wmctrl > "/dev/null" 2>&1; then
+		_install_resilient pkg x11/wmctrl
+	fi
 	if ! command -v fvwm3 > "/dev/null" 2>&1 && ! command -v fvwm > "/dev/null" 2>&1; then
 		_install_resilient pkg x11-wm/fvwm
 	fi

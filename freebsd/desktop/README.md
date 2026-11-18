@@ -16,7 +16,8 @@ Esta pasta reúne scripts especializados para a estação de trabalho gráfica F
 
 | Categoria        | Receita                                                                    | Descrição                                                                                    |
 | :--------------- | :------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
-| **`system/`**    | [`system/system.sh`](system/system.sh)                                     | Grupos essenciais, fontes Spleen 12x24, tunings de GPU Intel Gen 12 e Wi-Fi Realtek          |
+| **`system/`**    | [`system/system.sh`](system/system.sh)                                     | Grupos essenciais, integração `vt_autofont`, tunings de GPU Intel Gen 12 e Wi-Fi Realtek     |
+| **`system/`**    | [`system/vt-autofont.sh`](system/vt-autofont.sh)                           | Serviço rc.d `vt_autofont` para escalonamento dinâmico de fontes Spleen conforme resolução   |
 | **`system/`**    | [`system/toolchain.sh`](system/toolchain.sh)                               | Toolchain GNU: `gcc` e `coreutils`                                                           |
 | **`system/`**    | [`system/ttys.sh`](system/ttys.sh)                                         | Alinhamento canônico, auto-cura e formatação tabular do `/etc/ttys`                          |
 | **`system/`**    | [`system/zfs-arc.sh`](system/zfs-arc.sh)                                   | Dimensionamento dinâmico de memória ZFS ARC (4/16), Host (11/16) e Bhyve VM (1/16)           |
