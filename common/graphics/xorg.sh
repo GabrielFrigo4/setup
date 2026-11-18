@@ -146,36 +146,44 @@ fi
 ### --------------------------------
 ### 3. CONFIGURACAO DO TEARFREE
 ### --------------------------------
-_xorg_conf_dir="/etc/X11/xorg.conf.d"
-[ "${_is_bsd}" -eq 1 ] && _xorg_conf_dir="/usr/local/etc/X11/xorg.conf.d"
+_tearfree_conf='Section "OutputClass"
+	Identifier "Modesetting TearFree"
+	MatchDriver "i915|xe|i915kms|nouveau|virtio_gpu|vmwgfx|vboxvideo"
+	Driver "modesetting"
+	Option "AccelMethod" "glamor"
+	Option "PageFlip" "on"
+	Option "SWcursor" "off"
+	Option "AsyncFlipSecondaries" "false"
+EndSection
+
+Section "OutputClass"
+	Identifier "Intel Graphics"
+	MatchDriver "i915|i915kms"
+	Option "TearFree" "true"
+EndSection
+
+Section "OutputClass"
+	Identifier "AMD Graphics"
+	MatchDriver "amdgpu"
+	Option "TearFree" "true"
+	Option "PageFlip" "on"
+EndSection
+
+Section "OutputClass"
+	Identifier "Radeon Graphics"
+	MatchDriver "radeon|radeonkms"
+	Option "TearFree" "true"
+	Option "PageFlip" "on"
+EndSection'
 
 if [ -d "/etc/X11" ] || [ "${_is_bsd}" -eq 1 ]; then
-	${ELEVATE} mkdir -p "${_xorg_conf_dir}" 2> "/dev/null" || true
-	cat <<- "EOF" | ${ELEVATE} tee "${_xorg_conf_dir}/20-tearfree.conf" > "/dev/null" 2>&1 || true
-	Section "OutputClass"
-		Identifier "Modesetting TearFree"
-		MatchDriver "i915|xe|i915kms|nouveau|virtio_gpu|vmwgfx|vboxvideo"
-		Driver "modesetting"
-		Option "AccelMethod" "glamor"
-		Option "PageFlip" "on"
-		Option "AsyncFlipSecondaries" "false"
-	EndSection
-
-	Section "OutputClass"
-		Identifier "AMD Graphics"
-		MatchDriver "amdgpu"
-		Option "TearFree" "true"
-		Option "PageFlip" "on"
-	EndSection
-
-	Section "OutputClass"
-		Identifier "Radeon Graphics"
-		MatchDriver "radeon|radeonkms"
-		Option "TearFree" "true"
-		Option "PageFlip" "on"
-	EndSection
-	EOF
-	${ELEVATE} chmod 0644 "${_xorg_conf_dir}/20-tearfree.conf" 2> "/dev/null" || true
+	${ELEVATE} rm -f "/etc/X11/xorg.conf.d/20-swcursor.conf" "/usr/local/etc/X11/xorg.conf.d/20-swcursor.conf" 2> "/dev/null" || true
+	for _xorg_conf_dir in "/etc/X11/xorg.conf.d" "/usr/local/etc/X11/xorg.conf.d"; do
+		[ "${_is_bsd}" -eq 0 ] && [ "${_xorg_conf_dir}" = "/usr/local/etc/X11/xorg.conf.d" ] && continue
+		${ELEVATE} mkdir -p "${_xorg_conf_dir}" 2> "/dev/null" || true
+		printf '%s\n' "${_tearfree_conf}" | ${ELEVATE} tee "${_xorg_conf_dir}/20-tearfree.conf" > "/dev/null" 2>&1 || true
+		${ELEVATE} chmod 0644 "${_xorg_conf_dir}/20-tearfree.conf" 2> "/dev/null" || true
+	done
 fi
 
 ### --------------------------------
