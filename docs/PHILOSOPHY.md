@@ -1,46 +1,44 @@
 # 🧠 A Filosofia do Ecossistema
 
-A visão e o design arquitetural de longo prazo para este ambiente de desenvolvimento baseiam-se em três princípios imutáveis. Este documento é a "Bíblia" que guia a aprovação de qualquer novo script, configuração ou tecnologia no repositório.
+A visão e o design arquitetural de longo prazo para este ambiente de desenvolvimento baseiam-se em quatro princípios imutáveis que orientam cada módulo do repositório **Setup**.
+
+---
 
 ## 1. "Clean Host" (Isolamento Extremo)
 
-A regra de ouro do ambiente é: **O sistema operacional nativo (o _host_) deve ser tratado como um santuário.**
+A regra de ouro do ambiente é: **O sistema operacional nativo (o _host_) deve ser tratado como um santuário portátil.**
 
-Em vez de instalar e jogar dezenas de linguagens, bancos de dados e frameworks (ex: Node, Python, Postgres) diretamente no host, utilizamos tecnologias de virtualização e conteinerização para manter o SO original o mais puro possível.
+Em vez de acumular runtimes, bancos de dados e dependências pesadas diretamente no host, utilizamos virtualização e conteinerização para manter o SO enxuto e reprodutível. O _host_ é responsável por:
 
-O _host_ é responsável única e exclusivamente por:
+- Prover a interface gráfica nativa em Wayland (`GNOME` no Fedora Workstation, `KDE Plasma 6` no FreeBSD Desktop).
+- Gerenciar drivers de hardware, áudio, vídeo e rede portáteis.
+- Executar editores residentes e navegadores.
+- Rodar o _hypervisor_ ou engine de containers (`Incus`, `Podman`, `Bastille Jails`, `Bhyve`, `Hyper-V` / `WSL2`).
 
-- Prover a interface gráfica nativa em Wayland:
-    - **Fedora Workstation:** GNOME Shell puro com Adwaita dark.
-    - **FreeBSD Desktop:** KDE Plasma 6 Wayland.
-- Gerenciar drivers de hardware (áudio, vídeo, rede).
-- Executar os editores de código (IDEs) e navegadores.
-- Rodar o _hypervisor_ ou agente de virtualização e containers.
+Ferramentas adicionais de desenvolvimento no host (compiladores de shaders, Python stack, Ollama, linters) ficam isoladas no perfil opt-in `--profile=dev-host`.
 
-Todo projeto, script complexo ou serviço de desenvolvimento **rodará isolado** do host.
+---
 
-### Vantagens dessa Abordagem
+## 2. Separação Portabilidade vs. Hardware Pessoal (`hosts/`)
 
-- **Reprodutibilidade:** Se você precisar configurar um hardware novo, seu projeto subirá idêntico, provendo as próprias dependências.
-- **Limpeza Fácil:** Deletar um projeto remove todas as sujeiras do sistema associadas a ele. Não ficam pacotes órfãos ou versões conflitantes de linguagens esquecidas no host.
-- **Portabilidade:** Padronização do fluxo de trabalho independente do sistema hospedeiro.
+Receitas em `freebsd/` e `linux/` pertencem ao domínio portátil e devem funcionar em qualquer máquina compatível. Quirks específicos de hardware físico (como travas de versão DRM para GPU Intel Alder Lake, identificadores fixos de placa `re0`/`rtw880`, unidades PCM ou políticas ACPI de notebook) residem exclusivamente em `hosts/` (ex: `hosts/vostro3520-freebsd.sh`) como perfis opt-in via `--profile=host`.
 
-## 2. ZFS: A Base da Segurança e Flexibilidade
+---
 
-Não é possível ter uma arquitetura verdadeiramente robusta e baseada em containers sem um sistema de arquivos à altura. O **ZFS** é adotado como cidadão de primeira classe (seja no FreeBSD nativo ou no Linux via OpenZFS).
+## 3. ZFS: A Base da Segurança e Flexibilidade
 
-O ZFS garante:
+O **ZFS** é adotado como fundação de storage no FreeBSD e via OpenZFS no Linux sempre que aplicável:
 
-- **Snapshots Instantâneos:** Capacidade de criar pontos de restauração do sistema antes de qualquer teste arriscado, permitindo _rollbacks_ em milissegundos.
-- **Criptografia Nativa:** Segurança de dados fundamental.
-- **Integração com Containers/VMs:** É a fundação perfeita para armazenar as raízes dos containers (LXC, Jails) e discos virtuais de hypervisors (ZVOLs), permitindo clonagem quase instantânea de ambientes.
+- **Snapshots & Boot Environments (`bectl`):** Pontos de restauração instantâneos antes de upgrades de driver ou kernel.
+- **Integração com Containers/VMs:** Datasets dedicados para Jails (`Bastille`) e volumes de bloco ZVOL para convidados `Bhyve` com dimensionamento proporcional de ARC (`4/16` RAM) e VM (`1/16` RAM).
 
-## 3. "Uma coisa, um lugar" (A Tríade de Modularidade)
+---
 
-Para evitar configurações espaguete, o ambiente de desenvolvimento foi desmembrado em três repositórios com fronteiras rígidas:
+## 4. "Uma coisa, um lugar" (O Quarteto de Modularidade)
 
-1. **Configuration (Este Repositório):** Focado no provisionamento da máquina e na configuração estática (dotfiles dos editores, formatação do sistema, receitas modulares). Ele funciona como um **Livro de Receitas (Cookbook)** do GitHub: você acessa diretamente pela web, copia o que precisa ou executa receitas atômicas. Não exige clone obrigatório.
-2. **Shell (Repositório Dinâmico):** Focado no comportamento ativo. Ali ficam todos os aliases, funções e utilitários que comandam o terminal no dia a dia. É clonado e carregado continuamente a cada sessão.
-3. **Vault (Repositório Privado):** Gerencia todos os segredos. O Configuration e o Shell nunca devem ter chaves SSH ou senhas "hardcoded". Eles apenas lêem do Vault.
+O ambiente completo é desmembrado no **Quarteto de Produtividade** (complementado pela **Suíte de Editores**):
 
-Essa modularidade significa que você pode atualizar suas preferências de terminal (Shell) sem tocar na infraestrutura (Configuration), e gerenciar credenciais (Vault) sem arriscar vazar senhas ao compartilhar as configurações de sistema.
+1. **Setup (`~/.local/share/setup`):** Provisionamento privilegiado de sistema operacional via Clone Soberano (`bootstrap.sh`), drivers, containers e `hosts/`.
+2. **Shell (`/usr/local/share/shell`):** Motor interativo de terminal, aliases, funções e prompts (< 64ms).
+3. **Vault (`~/.local/share/vault`):** Cofre privado para chaves SSH/PuTTY, segredos `.env` e credenciais de rede.
+4. **Profile (`~/.config/profile`):** Dotfiles declarativos de usuário, terminais, linters e skills portáteis de IA.

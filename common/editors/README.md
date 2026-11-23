@@ -1,64 +1,27 @@
-# 📝 Common Code Editors & Frameworks Setup
+# 📝 Common Code Editors Setup
 
-> Receitas modulares em POSIX Shell para clonagem de perfis pessoais, frameworks de editores e sincronização de extensões de IDEs.
+> Receitas modulares em POSIX Shell para instalação de editores de código e compilação do módulo nativo EWM.
 
 ---
 
 ## 🎯 Finalidade
 
-Esta pasta reúne scripts autônomos em POSIX Shell para provisionar editores de texto e código em ambientes UNIX (Linux, FreeBSD, macOS, WSL2 e MSYS2).
-
-> ℹ️ **Automações Windows (.cmd / .ps1):** As receitas equivalentes para Windows residem em [`../../windows/native/`](../../windows/native/README.md).
+Esta pasta reúne scripts autônomos em POSIX Shell para instalar binários de editores no sistema hospedeiro e compilar o módulo Wayland do **Emacs Wayland Manager (`ewm`)**. Configurações e dotfiles de editores são gerenciados pelos repositórios dedicados da **Suíte de Editores** (`Emacs`, `Helix`, `NeoVim`, `Vim`).
 
 ---
 
 ## 📂 Catálogo de Receitas
 
-| Recurso                | Receita                                    | Descrição                                                                                                    |
-| :--------------------- | :----------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
-| **Editor Packages**    | [`install.sh`](install.sh)                 | Instalação de binários de editores (Neovim, Emacs, Vim, Helix, Micro)                                        |
-| **All Custom Editors** | [`editors.sh`](editors.sh)                 | Clona perfis de editores e preserva lançadores `.desktop` gerenciados pelo Profile (com fallback adaptativo) |
-| **IDE Extensions**     | [`sync-extensions.sh`](sync-extensions.sh) | Sincroniza em lote a lista declarativa `extensions.txt` no VS Code, Antigravity ou VSCodium                  |
-| **Doom Emacs**         | [`doom-emacs.sh`](doom-emacs.sh)           | Instala o Doom Emacs completo com módulos Treesitter e Mermaid                                               |
-| **LazyVim**            | [`lazyvim.sh`](lazyvim.sh)                 | Instala o starter completo do LazyVim com opções de cursor                                                   |
-| **SpaceVim**           | [`spacevim.sh`](spacevim.sh)               | Instala o SpaceVim com camadas de LSP, Git, Autocomplete e Shell                                             |
-| **Pylance LSP**        | [`pylance.sh`](pylance.sh)                 | Instala o Python Language Server (Pylance) no FreeBSD, Linux e Windows                                       |
-| **EWM (Wayland)**      | [`ewm.sh`](ewm.sh)                         | Clona, compila via Cargo e instala o módulo nativo libewm_core.so                                            |
+| Recurso             | Receita                    | Descrição                                                             |
+| :------------------ | :------------------------- | :-------------------------------------------------------------------- |
+| **Editor Packages** | [`install.sh`](install.sh) | Instalação de binários de editores (Neovim, Emacs, Vim, Helix, Micro) |
+| **EWM (Wayland)**   | [`ewm.sh`](ewm.sh)         | Clona, compila via Cargo e instala o módulo nativo `libewm_core.so`   |
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-### 1. Clonar Todos os Perfis Pessoais de Editores
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/editors.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/editors.sh) | sh
-```
-
-### 2. Sincronizar Extensões no VS Code / Antigravity / VSCodium
-
-Instalar todas as extensões declaradas:
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/sync-extensions.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/sync-extensions.sh) | sh
-```
-
-Exportar extensões atuais para o arquivo:
-
-```sh
-sh sync-extensions.sh export
-```
-
-### 3. Instalar Frameworks
-
-Instalar LazyVim:
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/lazyvim.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/lazyvim.sh) | sh
-```
-
-Instalar Doom Emacs:
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/doom-emacs.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/editors/doom-emacs.sh) | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/editors/install.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/editors/ewm.sh"
 ```

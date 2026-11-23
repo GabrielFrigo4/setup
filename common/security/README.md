@@ -19,10 +19,8 @@ Esta pasta centraliza ferramentas de auditoria e inspeção de código e binári
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Execute diretamente no terminal:
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/security/re.sh | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/security/re.sh"
 ```

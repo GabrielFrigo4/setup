@@ -6,7 +6,7 @@
 
 ## 🎯 Finalidade
 
-Organiza a configuração do Debian em módulos atômicos: repositórios non-free, doas (`0440`), drivers proprietários Nvidia, editores e utilitários.
+Organiza a configuração do Debian em módulos atômicos: repositórios non-free, configuração base, guest Bhyve e drivers de aceleração.
 
 > ℹ️ **Containers & Infraestrutura Base:** Receitas de containers (Incus, Podman, Docker) residem em [`../../container/`](../../container/README.md) e infraestrutura base (Swap, doas, Flatpak, Wireshark, Antigravity) em [`../../common/`](../../common/README.md).
 
@@ -17,14 +17,14 @@ Organiza a configuração do Debian em módulos atômicos: repositórios non-fre
 | Categoria      | Receita                                    | Descrição                                           |
 | :------------- | :----------------------------------------- | :-------------------------------------------------- |
 | **`system/`**  | [`system/base.sh`](system/base.sh)         | Repositórios non-free, usuário e pacotes essenciais |
-| **`desktop/`** | [`desktop/drivers.sh`](desktop/drivers.sh) | Mesa, Nvidia proprietary drivers e firmwares        |
+| **`desktop/`** | [`desktop/drivers.sh`](desktop/drivers.sh) | Mesa, drivers Nvidia e firmwares                    |
+| **`guest`**    | [`bhyve-guest.sh`](bhyve-guest.sh)         | Provisionamento de convidado Debian sob Bhyve       |
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Copie os comandos da receita desejada e execute no terminal do Debian:
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/desktop/debian/desktop/drivers.sh | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/setup.sh" --profile=debian-desktop
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/linux/desktop/debian/desktop/drivers.sh"
 ```

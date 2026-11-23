@@ -44,7 +44,7 @@ Os perfis do Konsole no repositório [Profile](https://github.com/GabrielFrigo4/
 ### 5. Hardware e Periféricos no FreeBSD
 
 - **Wi-Fi Nativo:** Graças aos avanços recentes do time do FreeBSD, a maioria dos chipsets Wi-Fi modernos agora é suportada nativamente pelo kernel (`wpa_supplicant`), tornando o uso de ferramentas como o Wifibox um recurso pontual de contingência, e não uma dependência obrigatória.
-- **Áudio & Periféricos:** Fones e microfones USB (headsets) funcionam de forma nativa e estável através do subsistema OSS do FreeBSD (`/dev/dsp*`) e PulseAudio. O script artesanal em `devices/audio.sh` provê uma rota adicional para streaming via Android quando necessário.
+- **Áudio & Periféricos:** Fones e microfones USB (headsets) funcionam de forma nativa e estável através do subsistema OSS do FreeBSD (`/dev/dsp*`) e `sndiod`. Ajustes específicos de unidade de saída e controle (`hw.snd.default_unit=1`, `dev.pcm.2`, `virtual_oss` devd) ficam isolados no perfil opt-in [`hosts/vostro3520-freebsd.sh`](../hosts/vostro3520-freebsd.sh).
 
 ### 6. Ecossistema Python de Alta Performance: Astral `uv`
 
@@ -61,12 +61,13 @@ Para gerenciamento de runtimes Python, ambientes virtuais e ferramentas CLI com 
 
 ### 8. Catálogo de Receitas Modulares do FreeBSD
 
-Seguindo a simetria do repositório, as receitas do FreeBSD residem em [`freebsd/`](../freebsd/README.md):
+Seguindo a simetria do repositório, as receitas portáteis do FreeBSD residem em [`freebsd/`](../freebsd/README.md) e os quirks de hardware pessoal em [`hosts/`](../hosts/README.md):
 
-- **[`common/`](../freebsd/common/README.md):** `system/sysctl.sh` (parâmetros de kernel e áudio). Elevação `common/system/nopass.sh`, ferramentas de terminal e compiladores residem em [`common/`](../common/README.md).
-- **[`container/`](../freebsd/container/README.md):** `jails.sh` (Jails nativas), `bastille.sh` (BastilleBSD) e `podman.sh` (Podman OCI nativo).
-- **[`desktop/`](../freebsd/desktop/README.md):** `gui/kde.sh` (KDE Plasma 6), `ports/ports.sh`, `emulation/compat.sh` e `devices/audio.sh` (Wireshark universal em [`common/security/`](../common/security/README.md)).
-- **[`server/`](../freebsd/server/README.md):** `system/guest.sh` (QEMU Guest Agent para VM KVM) e `connect.sh` (conexão dinâmica SSH/SCP).
+- **[`common/`](../freebsd/common/README.md):** `system/sysctl.sh` (parâmetros portáteis de kernel, descritores e IPC SHM). Elevação `common/system/nopass.sh`, ferramentas de terminal e compiladores residem em [`common/`](../common/README.md).
+- **[`container/`](../freebsd/container/README.md):** `jails.sh` (Jails nativas), `bastille.sh` (BastilleBSD), `bhyve.sh` (hypervisor + PF hardening parametrizado) e `podman.sh` (Podman OCI nativo).
+- **[`desktop/`](../freebsd/desktop/README.md):** `system/system.sh` portátil (grupos, `vt_autofont`, `sndiod`, `syslogd_flags=-ss`), `gui/kde.sh` (KDE Plasma 6), `ports/ports.sh` e `emulation/compat.sh` (Wireshark universal em [`common/security/`](../common/security/README.md)).
+- **[`server/`](../freebsd/server/README.md):** `system/guest.sh` (QEMU Guest Agent para VM KVM).
+- **[`hosts/`](../hosts/README.md):** `vostro3520-freebsd.sh` (opt-in para Intel Alder Lake DRM `< 15.2` / `>= 15.2`, `re0`, `rtw880`, áudio e ACPI).
 
 ---
 
@@ -120,9 +121,12 @@ Em estações de trabalho móveis e desktops com processadores Intel Core de 12�
 
 ---
 
-#### C. Estratégia Canônica: Downgrade Seletivo para `drm-66-kmod` e Blindagem
+#### C. Estratégia Canônica (`hosts/vostro3520-freebsd.sh`): Downgrade Seletivo `< 15.2` e Upgrade Automático `>= 15.2`
 
-Para restabelecer estabilidade imediata e determinística no FreeBSD 15.1-RELEASE sem abrir mão do KDE Plasma 6 e dos softwares atualizados, a solução canônica do ecossistema consiste em aplicar o downgrade seletivo para o pacote **`drm-66-kmod`** e travar a versão com `pkg lock`:
+Para restabelecer estabilidade imediata e determinística em hardware Intel Alder Lake sem poluir receitas portáteis, o perfil opt-in [`hosts/vostro3520-freebsd.sh`](../hosts/vostro3520-freebsd.sh) inspeciona `freebsd-version -u`:
+
+- **Versões `< 15.2` (15.0 / 15.1):** Aplica downgrade seletivo para `graphics/drm-66-kmod` + `graphics/gpu-firmware-intel-kmod-alderlake` e trava a versão com `pkg lock -y drm-66-kmod`.
+- **Versões `>= 15.2`:** Destrava automaticamente (`pkg unlock -y drm-66-kmod`) e instala `graphics/drm-kmod` padrão.
 
 1. **Criação de Boot Environment Preventivo no ZFS:**
 

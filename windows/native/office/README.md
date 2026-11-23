@@ -12,9 +12,10 @@ Esta pasta reúne scripts dedicados para instalação e configuração de ferram
 
 ## 📂 Catálogo de Recursos
 
-| Recurso                              | Tipo    | Método de Instalação                   | Identificador / Fonte            |
-| :----------------------------------- | :------ | :------------------------------------- | :------------------------------- |
-| **[`collabora.cmd`](collabora.cmd)** | Receita | Winget (`--accept-package-agreements`) | `9P9MRBXJJG0M` (Microsoft Store) |
+| Recurso                                  | Tipo    | Método de Instalação                   | Identificador / Fonte               |
+| :--------------------------------------- | :------ | :------------------------------------- | :---------------------------------- |
+| **[`collabora.cmd`](collabora.cmd)**     | Receita | Winget (`--accept-package-agreements`) | `9P9MRBXJJG0M` (Microsoft Store)    |
+| **[`libreoffice.cmd`](libreoffice.cmd)** | Receita | Winget (`--accept-package-agreements`) | `TheDocumentFoundation.LibreOffice` |
 
 ---
 
@@ -24,4 +25,6 @@ Abra o Prompt de Comando (`cmd.exe`) ou PowerShell com privilégios de Administr
 
 ```cmd
 collabora.cmd
+
+libreoffice.cmd
 ```

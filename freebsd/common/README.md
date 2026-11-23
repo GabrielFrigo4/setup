@@ -6,7 +6,7 @@
 
 ## 🎯 Finalidade
 
-Esta pasta centraliza as configurações essenciais do FreeBSD que independem de interface gráfica ou contexto de servidor: elevação de privilégios (`doas`), parâmetros de kernel e utilitários modernos de terminal.
+Esta pasta centraliza as configurações essenciais do FreeBSD que independem de interface gráfica ou hardware específico: elevação de privilégios (`doas`), parâmetros portáteis de kernel e utilitários modernos de terminal.
 
 ---
 
@@ -14,29 +14,17 @@ Esta pasta centraliza as configurações essenciais do FreeBSD que independem de
 
 | Recurso       | Receita                                                                | Descrição                                                                                    |
 | :------------ | :--------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
-| **`system/`** | [`../../common/system/nopass.sh`](../../common/system/nopass.sh)       | Configura `doas` e `sudo` sem senha para Desktop (0440)                                      |
-| **`system/`** | [`system/sysctl.sh`](system/sysctl.sh)                                 | Desativa core dumps, define áudio USB padrão e parâmetros no `/etc/sysctl.conf`              |
+| **`system/`** | [`../../common/system/nopass.sh`](../../common/system/nopass.sh)       | Configura `doas` e `sudo` sem senha para Desktop (`0440`)                                    |
+| **`system/`** | [`system/sysctl.sh`](system/sysctl.sh)                                 | Desativa core dumps, ajusta limites de arquivos e memória IPC SHM no `/etc/sysctl.conf`      |
 | **`common/`** | [`../../common/cli/core.sh`](../../common/cli/core.sh)                 | Instala utilitários CLI modernos (`eza`, `bat`, `ripgrep`, `fd-find`, `zoxide`, `fastfetch`) |
 | **`common/`** | [`../../common/graphics/shaders.sh`](../../common/graphics/shaders.sh) | Toolchains de shaders (Vulkan, Slang, DXC, glslang, shaderc, SPIRV-Cross)                    |
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Configurar elevação de privilégios sem senha (`doas` + `sudo`):
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/nopass.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/nopass.sh) | sh
-```
-
-Ajustar parâmetros de kernel e áudio no `sysctl.conf`:
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/system/sysctl.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/freebsd/common/system/sysctl.sh) | sh
-```
-
-Instalar utilitários CLI universais:
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/cli/core.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/cli/core.sh) | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/system/nopass.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/freebsd/common/system/sysctl.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/cli/core.sh"
 ```

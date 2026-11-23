@@ -4,7 +4,10 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [MSYS2 Libraries]: Instalando bibliotecas nativas de sistema e runtime..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+
+_ui_step "Instalando bibliotecas nativas de sistema e runtime (MSYS2 UCRT64)..."
 
 pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-gcc-libs \
@@ -25,4 +28,4 @@ pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-sqlite3 \
 	mingw-w64-ucrt-x86_64-tree-sitter
 
-echo "✅ [MSYS2 Libraries]: Bibliotecas de sistema instaladas com sucesso!"
+_ui_ok "Bibliotecas de sistema MSYS2 instaladas com sucesso!"

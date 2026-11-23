@@ -18,10 +18,8 @@ Provisiona navegadores web modernos de forma padronizada através do gerenciador
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Instalar navegadores web no sistema hospedeiro:
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/web/browsers.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/web/browsers.sh) | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/web/browsers.sh"
 ```

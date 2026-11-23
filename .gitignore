@@ -106,5 +106,6 @@ id_ed25519*
 # PROJECT & STACK SPECIFIC ARTIFACTS
 # ================================================================
 !.scripts/build/
+!/core/
 *.kate-swp
 .DS_Store?

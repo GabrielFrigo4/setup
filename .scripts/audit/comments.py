@@ -14,6 +14,7 @@ IGNORE_DIRS = {
     ".venv",
     "venv",
     "node_modules",
+    "Open Source",
     "OSS",
     "elpaca",
     "elpa",

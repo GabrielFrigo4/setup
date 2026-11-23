@@ -18,10 +18,8 @@ Esta pasta centraliza a instalação e configuração de compiladores WebAssembl
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Execute diretamente no terminal:
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/wasm/emscripten.sh | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/wasm/emscripten.sh"
 ```

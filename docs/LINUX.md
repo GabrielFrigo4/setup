@@ -81,11 +81,9 @@ A integração da suíte de escritório em distribuições Linux é executada pe
 - **Limpeza de Sessão (`environment.d`):** Remove `~/.config/environment.d/gtk-dark.conf` legado e limpa `GTK_THEME` / `GTK_APPLICATION_PREFER_DARK_THEME` no `systemctl --user`.
 - **Suporte Adaptativo para Flatpak:** Remove overrides legados de `GTK_THEME` (`--unset-env=GTK_THEME`) e instala `org.gtk.Gtk3theme.adw-gtk3` e `org.gtk.Gtk3theme.adw-gtk3-dark` do Flathub quando disponível.
 
-### Padronização de Editores e Preservação de Lançadores do Emacs ([`common/editors/editors.sh`](../common/editors/editors.sh))
+### Instalação de Editores ([`common/editors/install.sh`](../common/editors/install.sh))
 
-- **Preservação do Profile (`emacs.desktop` / `emacsclient.desktop`):** Mantém intactos symlinks e lançadores já gerenciados pelo Profile em `~/.local/share/applications/`, criando fallback limpo (`emacsclient --create-frame --alternate-editor="" %F` sem `GTK_THEME` forçado) apenas quando ausente.
-- **Ocultação de Lançadores Secundários:** Gera arquivos com `NoDisplay=true` apenas para `emacs-mail.desktop` e `emacsclient-mail.desktop`, impedindo que ações auxiliares poluam a lista de aplicativos.
-- **Suíte Modal:** Realiza o clone e sincronização canônica dos editores Neovim (`~/.config/nvim`), Vim (`~/.vim`), Helix (`~/.config/helix`) e Micro (`~/.config/micro`).
+- **Binários no Host:** Instala os editores base (`neovim`, `vim`, `emacs`, `emacs-lucid`, `helix`, `micro`) via gerenciador nativo da distribuição. Dotfiles e lançadores `.desktop` são sincronizados soberanamente pelo repositório **Profile** (`~/.config/profile`).
 
 ---
 
@@ -111,13 +109,12 @@ Para compilação avançada de shaders HLSL/Slang para SPIR-V e pipelines gráfi
 
 ---
 
-## ☁️ Servidores em Nuvem (OCI & Magalu Cloud)
+## ☁️ Servidores Headless ([`linux/server/`](../linux/server/README.md))
 
-Para servidores remotos (Oracle Cloud Infrastructure e Magalu Cloud):
+Para servidores remotos e instâncias headless:
 
 - As receitas universais residem em [`linux/common/`](../linux/common/README.md) (Swap agnóstico de 2GB, `doas.conf` com permissões `0440` e regras de firewall).
-- As instâncias dedicadas ([`oracle-personal`](../linux/server/oracle-personal/README.md) e [`oracle-venture`](../linux/server/oracle-venture/README.md)) contêm os proxies reversos Caddy e os daemons de aplicações (`resume`, `game`, `catalogo`).
-- Conexão unificada via SSH/SCP através do script [`linux/server/connect.sh`](../linux/server/connect.sh) consumindo credenciais do Vault.
+- A receita [`linux/server/ubuntu.sh`](../linux/server/ubuntu.sh) provê o baseline mínimo (`apt-clone`, `tmux`) com integração ao perfil `--profile=server` em [`setup.sh`](../setup.sh).
 
 ---
 
@@ -144,5 +141,5 @@ Para garantir legibilidade nítida e ergonomia visual em consoles de emergência
     - `p3 = 0`.
 4. **Desativação Total de Pisque:**
     - Kernel/driver: `cursor_blink 0` via `/etc/tmpfiles.d/console-cursor.conf`.
-    - Tela pré-login: Injeção de `\033%G\033[?16;238;0c` no `/etc/issue`.
+    - Tela pré-login: Injeção de `\x1b%G\x1b[?16;238;0c` no `/etc/issue`.
     - Runtime ativo: Atualização imediata em `/dev/tty[1-6]`.

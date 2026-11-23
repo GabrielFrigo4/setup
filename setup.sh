@@ -12,128 +12,108 @@ else
 		*/*)  _script_dir="${0%/*}" ;;
 		*)    _script_dir="." ;;
 	esac
-	if [ -n "${_script_dir}" ] && [ -d "${_script_dir}" ]; then
-		_repo_root="$(cd "${_script_dir}" && pwd)"
-	else
-		_repo_root="${PWD}"
-	fi
+	[ -n "${_script_dir}" ] && [ -d "${_script_dir}" ] && _repo_root="$(cd "${_script_dir}" && pwd)" || _repo_root="${PWD}"
 fi
 
 . "${_repo_root}/core/ui.sh"
 . "${_repo_root}/core/elevate.sh"
 . "${_repo_root}/core/detect.sh"
 . "${_repo_root}/core/perms.sh"
-
 _self_heal_perms "${_repo_root}"
 
-_dry_run=0
-_profile=""
-
+_dry_run=0; _profile=""
 for _arg in "$@"; do
 	case "${_arg}" in
 		--dry-run) _dry_run=1 ;;
 		--profile=*) _profile="${_arg#*=}" ;;
-		doctor) _profile="doctor" ;;
-		audit) python3 "${_repo_root}/.scripts/audit/all.py"; exit 0 ;;
-		test)
-			find "${_repo_root}" -name "*.sh" -not -path "*/.git/*" -exec sh -n {} +
-			_ui_ok "Todas as receitas POSIX estão válidas!"
-			exit 0
-			;;
+		--host=*) HOST_PROFILE="${_arg#*=}" ;;
+		base|desktop|fedora-desktop|arch-desktop|debian-desktop|freebsd-desktop|virtualization|dev-host|host|server|doctor) _profile="${_arg}" ;;
+		audit) PYTHONPYCACHEPREFIX="${PYTHONPYCACHEPREFIX:-${HOME}/.cache/pycache}" PYTHONDONTWRITEBYTECODE=1 python3 "${_repo_root}/.scripts/audit/all.py"; exit 0 ;;
+		test) find "${_repo_root}" -name "*.sh" -not -path "*/.git/*" -exec sh -n {} +; _ui_ok "Todas as receitas POSIX estão válidas!"; exit 0 ;;
 		--help|-h|help)
 			_ui_banner "Universal Setup Orchestrator"
-			_ui_info "Uso: $0 [doctor|audit|test] [--dry-run] [--profile=<perfil>]"
-			_ui_info "Perfis: fedora-desktop, arch-desktop, debian-desktop, freebsd-desktop, server, containers, common, doctor"
-			exit 0
-			;;
+			_ui_info "Uso: $0 [perfil] [--dry-run] [--profile=<perfil>] [--host=<nome>]"
+			_ui_info "Perfis: base, desktop, fedora-desktop, arch-desktop, debian-desktop, freebsd-desktop, virtualization, dev-host, host, server, doctor, audit, test"
+			exit 0 ;;
+		*) _ui_err "Argumento desconhecido: ${_arg}"; exit 1 ;;
 	esac
 done
 
-_ui_banner "Universal Setup Orchestrator"
-_ui_step "Inicializando orquestrador do sistema em: ${_repo_root}"
-[ "${_dry_run}" -eq 1 ] && _ui_warn "Modo DRY-RUN ativado (nenhum comando será executado)."
-
 _run_recipe() {
-	_script="$1"
-	if [ -f "${_script}" ]; then
-		_ui_sub "Executando: ${_script}"
-		if [ "${_dry_run}" -eq 0 ]; then
-			sh "${_script}"
-		fi
+	if [ -f "$1" ]; then
+		_ui_sub "Executando: ${1#${_repo_root}/}"
+		[ "${_dry_run}" -eq 0 ] && sh "$1" || true
 	else
-		_ui_warn "Receita não encontrada: ${_script}"
+		_ui_warn "Receita não encontrada: $1"
 	fi
 }
 
-_ui_info "Sistema detectado: ${DETECTED_OS} (${DETECTED_DISTRO})"
+_ui_banner "Universal Setup Orchestrator"
+_ui_info "Sistema detectado: ${DETECTED_OS} (${DETECTED_DISTRO}) | Raiz: ${_repo_root}"
+[ "${_dry_run}" -eq 1 ] && _ui_warn "Modo DRY-RUN ativado (nenhuma receita será executada)."
 
-### ================================
-### PROFILE SELECTION
-### ================================
 if [ -z "${_profile}" ]; then
-	_ui_step "Escolha o perfil de provisionamento desejado:"
-	_ui_sub "1) Desktop Completo (${DETECTED_DISTRO})"
-	_ui_sub "2) Servidor / Headless"
-	_ui_sub "3) Containers & Virtualização"
-	_ui_sub "4) Fontes & Linters Comuns"
-	_ui_sub "5) Executar Diagnóstico (Setup Doctor)"
+	_ui_step "Selecione o perfil de provisionamento:"
+	_ui_sub "1) base            (Clean Host portátil)"
+	_ui_sub "2) desktop         (Desktop completo: ${DETECTED_DISTRO})"
+	_ui_sub "3) virtualization  (Containers, Jails & Bhyve)"
+	_ui_sub "4) dev-host        (Editores, Python, Docs, Shaders, AI & Linters — Opt-In)"
+	_ui_sub "5) host            (Quirks de hardware em hosts/ — Opt-In)"
+	_ui_sub "6) server          (Servidor Headless / Ubuntu)"
+	_ui_sub "7) doctor          (Diagnóstico multiplataforma)"
 	_ui_sub "q) Sair"
-	printf "Opção [1-5]: "
-	read -r _choice || _choice="q"
-else
-	case "${_profile}" in
-		fedora-desktop|arch-desktop|debian-desktop|freebsd-desktop) _choice="1" ;;
-		server) _choice="2" ;;
-		containers) _choice="3" ;;
-		common) _choice="4" ;;
-		doctor) _choice="5" ;;
-		*) _choice="q" ;;
+	printf "Opção [1-7]: "; read -r _choice || _choice="q"
+	case "${_choice}" in
+		1) _profile="base" ;; 2) _profile="desktop" ;; 3) _profile="virtualization" ;;
+		4) _profile="dev-host" ;; 5) _profile="host" ;; 6) _profile="server" ;; 7) _profile="doctor" ;;
+		*) _ui_info "Operação cancelada."; exit 0 ;;
 	esac
 fi
 
-case "${_choice}" in
-	1)
-		_ui_step "Provisionando Desktop para ${DETECTED_OS}/${DETECTED_DISTRO}..."
+### ================================
+### PROFILE EXECUTION DISPATCH
+### ================================
+case "${_profile}" in
+	base)
+		for _r in common/system/nopass.sh common/cli/core.sh common/vcs/tools.sh common/fonts/fonts.sh; do _run_recipe "${_repo_root}/${_r}"; done
 		if [ "${DETECTED_OS}" = "freebsd" ]; then
-			_run_recipe "${_repo_root}/freebsd/desktop/all.sh"
-		elif [ "${DETECTED_DISTRO}" = "fedora" ]; then
-			_run_recipe "${_repo_root}/linux/desktop/fedora/all.sh"
-		elif [ "${DETECTED_DISTRO}" = "arch" ]; then
-			_run_recipe "${_repo_root}/linux/desktop/arch/all.sh"
-		elif [ "${DETECTED_DISTRO}" = "debian" ]; then
-			_run_recipe "${_repo_root}/linux/desktop/debian/all.sh"
-		else
-			_ui_warn "Distribuição '${DETECTED_DISTRO}' não possui bundle automatizado 'all.sh'."
-		fi
-		;;
-	2)
-		_ui_step "Provisionando Servidor..."
-		_run_recipe "${_repo_root}/linux/server/connect.sh"
-		;;
-	3)
-		_ui_step "Provisionando Containers..."
+			for _r in freebsd/common/system/sysctl.sh freebsd/desktop/system/system.sh freebsd/desktop/system/ttys.sh freebsd/desktop/system/zfs-arc.sh freebsd/desktop/devices/filesystem.sh; do _run_recipe "${_repo_root}/${_r}"; done
+		elif [ "${DETECTED_DISTRO}" = "fedora" ] || [ "${DETECTED_DISTRO}" = "arch" ] || [ "${DETECTED_DISTRO}" = "debian" ]; then
+			_run_recipe "${_repo_root}/linux/desktop/${DETECTED_DISTRO}/system/base.sh"
+		elif [ "${DETECTED_DISTRO}" = "msys2" ]; then
+			_run_recipe "${_repo_root}/windows/msys2/system.sh"; _run_recipe "${_repo_root}/windows/msys2/tools.sh"
+		elif [ "${DETECTED_OS}" = "linux" ]; then
+			_run_recipe "${_repo_root}/linux/common/system/console.sh"
+		fi ;;
+	fedora-desktop)  _run_recipe "${_repo_root}/linux/desktop/fedora/all.sh" ;;
+	arch-desktop)    _run_recipe "${_repo_root}/linux/desktop/arch/all.sh" ;;
+	debian-desktop)  _run_recipe "${_repo_root}/linux/desktop/debian/all.sh" ;;
+	freebsd-desktop) _run_recipe "${_repo_root}/freebsd/desktop/all.sh" ;;
+	desktop)
+		if [ "${DETECTED_OS}" = "freebsd" ]; then _run_recipe "${_repo_root}/freebsd/desktop/all.sh"
+		elif [ -f "${_repo_root}/linux/desktop/${DETECTED_DISTRO}/all.sh" ]; then _run_recipe "${_repo_root}/linux/desktop/${DETECTED_DISTRO}/all.sh"
+		else _ui_warn "Distribuição '${DETECTED_DISTRO}' sem bundle 'all.sh'."; fi ;;
+	virtualization)
 		if [ "${DETECTED_OS}" = "freebsd" ]; then
-			_run_recipe "${_repo_root}/freebsd/container/jails.sh"
-			_run_recipe "${_repo_root}/freebsd/container/bhyve.sh"
+			for _r in freebsd/container/jails.sh freebsd/container/bastille.sh freebsd/container/bhyve.sh freebsd/container/podman.sh; do _run_recipe "${_repo_root}/${_r}"; done
 		else
-			_run_recipe "${_repo_root}/linux/container/incus.sh"
-			_run_recipe "${_repo_root}/linux/container/podman.sh"
-		fi
-		;;
-	4)
-		_ui_step "Instalando Fontes e Linters comuns..."
-		_run_recipe "${_repo_root}/common/fonts/fonts.sh"
-		_run_recipe "${_repo_root}/common/linters/linters.sh"
-		;;
-	5)
-		_ui_step "Executando diagnóstico..."
-		sh "${_repo_root}/.scripts/audit/doctor.sh"
-		;;
-	*)
-		_ui_info "Operação cancelada."
-		exit 0
-		;;
+			_run_recipe "${_repo_root}/linux/container/incus.sh"; _run_recipe "${_repo_root}/linux/container/podman.sh"
+		fi ;;
+	dev-host)
+		for _r in common/editors/install.sh common/languages/python.sh common/docs/typesetting.sh common/graphics/shaders.sh common/ai/ollama.sh common/linters/prettier.sh common/linters/ruff.sh common/linters/mermaid.sh; do
+			_run_recipe "${_repo_root}/${_r}"
+		done ;;
+	host)
+		_hid="${HOST_PROFILE:-$(hostname -s 2> "/dev/null" | tr '[:upper:]' '[:lower:]' || true)}"
+		if [ -n "${_hid}" ] && [ -f "${_repo_root}/hosts/${_hid}.sh" ]; then _run_recipe "${_repo_root}/hosts/${_hid}.sh"
+		elif [ -n "${_hid}" ] && [ -f "${_repo_root}/hosts/${_hid}-${DETECTED_OS}.sh" ]; then _run_recipe "${_repo_root}/hosts/${_hid}-${DETECTED_OS}.sh"
+		else _ui_warn "Perfil de hardware '${_hid:-desconhecido}' não encontrado em hosts/. Disponíveis: $(ls "${_repo_root}/hosts/"*.sh 2> "/dev/null" | xargs -n1 basename 2> "/dev/null" || echo nenhum)"; fi ;;
+	server)
+		_run_recipe "${_repo_root}/common/system/persist.sh"; _run_recipe "${_repo_root}/common/cli/core.sh"; _run_recipe "${_repo_root}/common/vcs/tools.sh"
+		if [ "${DETECTED_OS}" = "freebsd" ]; then _run_recipe "${_repo_root}/freebsd/common/system/sysctl.sh"
+		else [ "${DETECTED_PKG_MGR}" = "apt" ] && _run_recipe "${_repo_root}/linux/server/ubuntu.sh" || true; _run_recipe "${_repo_root}/linux/common/security/firewall.sh"; fi ;;
+	doctor) sh "${_repo_root}/.scripts/audit/doctor.sh" ;;
+	*) _ui_err "Perfil inválido: ${_profile}"; exit 1 ;;
 esac
 
 _ui_ok "Processo concluído com sucesso!"
-exit 0

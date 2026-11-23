@@ -10,10 +10,10 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 
 _ui_step "Configurando usuário, systemd e ferramentas base Fedora WSL2..."
 
-TARGET_USER="${DOAS_USER:-${SUDO_USER:-gabriel}}"
+TARGET_USER="${TARGET_USER:-${DOAS_USER:-${SUDO_USER:-$(id -un)}}}"
 
 if ! id "${TARGET_USER}" > "/dev/null" 2>&1; then
-	useradd -m -G wheel -s /usr/bin/bash "${TARGET_USER}"
+	${ELEVATE} useradd -m -G wheel -s /usr/bin/bash "${TARGET_USER}"
 fi
 
 cat << 'EOF' | ${ELEVATE} tee "/etc/sudoers.d/wheel" > "/dev/null"

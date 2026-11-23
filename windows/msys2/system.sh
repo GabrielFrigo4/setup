@@ -4,11 +4,16 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [MSYS2 System]: Configurando sistema base e shell padrão..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
 
-cat << 'EOF' | tee -a "/clang64.ini" | tee -a "/clangarm64.ini" | tee -a "/mingw64.ini" | tee -a "/msys2.ini" | tee -a "/ucrt64.ini" > "/dev/null"
-SHELL=/usr/bin/bash
-EOF
+_ui_step "Configurando sistema base e shell padrão (MSYS2 UCRT64)..."
+
+for _ini in /clang64.ini /clangarm64.ini /mingw64.ini /msys2.ini /ucrt64.ini; do
+	if [ -f "${_ini}" ] && ! grep -qxF "SHELL=/usr/bin/bash" "${_ini}" 2> "/dev/null"; then
+		echo "SHELL=/usr/bin/bash" >> "${_ini}"
+	fi
+done
 
 pacman --needed --noconfirm -S \
 	base-devel \
@@ -27,4 +32,4 @@ pacman --needed --noconfirm -S \
 	bash \
 	zsh
 
-echo "✅ [MSYS2 System]: Sistema base configurado com sucesso!"
+_ui_ok "Sistema base MSYS2 configurado com sucesso!"

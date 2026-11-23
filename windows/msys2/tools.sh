@@ -4,7 +4,10 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [MSYS2 Tools]: Instalando utilitários modernos de linha de comando..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+
+_ui_step "Instalando utilitários modernos de linha de comando (MSYS2 UCRT64)..."
 
 pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-uutils-coreutils \
@@ -22,4 +25,4 @@ pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-imagemagick \
 	mingw-w64-ucrt-x86_64-ffmpeg
 
-echo "✅ [MSYS2 Tools]: Utilitários instalados com sucesso!"
+_ui_ok "Utilitários MSYS2 instalados com sucesso!"

@@ -4,14 +4,15 @@ Essas diretrizes são de aplicação obrigatória para qualquer modificação ou
 
 > 🏛️ **Hub Orquestrador:** Este repositório faz parte do [Quarteto de Produtividade](https://github.com/GabrielFrigo4/environment), orquestrado pelo repositório **Environment**. Consulte o `ENVIRONMENT.md` e `PRINCIPLES.md` canônicos na raiz do Environment para a arquitetura completa.
 
-## 1. Modelo Cookbook (Zero-Clone) & Idempotência
+## 1. Modelo Clone Soberano, Clean Host & Idempotência
 
-- Todas as receitas devem ser autocontidas, atômicas e executáveis diretamente via GitHub (`curl ... | sh`).
-- Executar a receita múltiplas vezes DEVE produzir o mesmo estado final sem duplicar linhas, links ou gerar erros de arquivo existente.
+- O repositório opera sob o modelo **Clone Soberano**: [`bootstrap.sh`](../../bootstrap.sh) clona/atualiza `Setup` em `${SETUP_DIR:-${XDG_DATA_HOME:-${HOME}/.local/share}/setup}`, aplica permissões `0755` e invoca [`setup.sh`](../../setup.sh) consumindo `core/` (`detect.sh`, `elevate.sh`, `pkg.sh`, `perms.sh`, `ui.sh`).
+- O sistema hospedeiro segue o princípio **Clean Host**: receitas portáteis em `freebsd/` e `linux/` instalam apenas base, desktop e virtualização; quirks específicos de máquina física residem isolados em `hosts/` (opt-in) e ferramentas pesadas de desenvolvimento residem no perfil opt-in `dev-host`.
+- Executar qualquer receita múltiplas vezes DEVE produzir o mesmo estado final sem duplicar linhas, links ou gerar erros de arquivo existente.
 
 ## 2. Template Canônico de Receitas (POSIX Shell)
 
-Toda receita de provisionamento DEVE utilizar o cabeçalho oficial de 64 hífens:
+Toda receita de provisionamento DEVE utilizar o cabeçalho oficial de 64 hífens e bibliotecas `core/`:
 
 ```sh
 #!/usr/bin/env sh
@@ -20,78 +21,64 @@ Toda receita de provisionamento DEVE utilizar o cabeçalho oficial de 64 hífens
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Nome]: Iniciando configuração..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando [Nome]..."
 
-echo "✅ [Nome]: Configurado com sucesso!"
+_ui_ok "[Nome] configurado com sucesso!"
 ```
 
 ## 3. Ordem Canônica de Priorização de Pacotes & Paradigma do `common/`
 
 - **O Paradigma do `common/` (Despachante Multi-OS Universal):**
-  A pasta `common/` é o lar de qualquer ferramenta ou serviço que possa ser instalado em múltiplos sistemas operacionais. Suas receitas utilizam uma cascata unificada:
+  Qualquer ferramenta multiplataforma DEVE residir em `common/<categoria>/<ferramenta>.sh` consumindo `core/pkg.sh` (`_pkg_update`, `_pkg_install`) ou a cascata unificada na ordem estrita:
   `pkg` (FreeBSD) -> `dnf` (Fedora) -> `apt` (Debian/Ubuntu) -> `pacman` (MSYS2 UCRT64 / Arch) -> `winget.exe` (Windows).
-- **Pastas Específicas por Sistema (`linux/`, `freebsd/`, `windows/`):**
-  Reservadas estritamente para o que é inerentemente exclusivo do sistema operacional (ex: configurações de dconf/GNOME, regras udev, Jails nativas, Linuxulator, sysctl de kernel BSD, atalhos do Windows Shell).
+- **Pastas Específicas por Sistema (`linux/`, `freebsd/`, `windows/`, `hosts/`):**
+  Reservadas estritamente para particularidades de sistema operacional (`linux/`, `freebsd/`, `windows/`) ou quirks específicos de hardware pessoal (`hosts/`).
 - **Receitas Exclusivas de Linux (`linux/`):**
-  `dnf` (Fedora) -> `apt` (Debian) -> `pacman` (Arch)
+  `dnf` (Fedora) -> `apt` (Debian) -> `pacman` (Arch).
 - **Origens Canônicas Antifrágeis no FreeBSD (`pkg`):**
-  Para pacotes no FreeBSD (especialmente módulos Python e bibliotecas multi-flavor), **SEMPRE utilize a origem canônica do port** (`<categoria>/<nome>`, ex: `devel/py-sysctl`, `sysutils/arc_summary`, `devel/uv`) em vez de nomes binários com versões de runtime hardcoded (`py312-sysctl`, `py311-uv`). A origem canônica é resolvida dinamicamente pelo `pkg` para a versão ativa no sistema, prevenindo quebras em upgrades de versão.
+  Para pacotes no FreeBSD, utilize a origem canônica do port (`<categoria>/<nome>`, ex: `devel/py-sysctl`, `devel/uv`) em vez de versões de runtime fixas.
 
 ## 4. Preferência Absoluta por Flags Longas Autoexplicativas
 
 - Use sempre flags descritivas:
-    - `apt install --yes`
+    - `apt-get install --yes`
     - `dnf install --assumeyes`
     - `pkg install --yes`
     - `pacman -S --needed --noconfirm`
     - `flatpak install --assumeyes`
     - `npm install --global`
     - `usermod --append --groups`
+    - `winget.exe install --id ... --accept-package-agreements --accept-source-agreements`
 
 ## 5. Limites de Linhas & Arquitetura de Comentários
 
-- **Orçamento de Linhas (Regra 8 - 128):** Piso de 8 linhas e teto de 128 linhas úteis.
+- **Orçamento de Linhas (Regra 8 - 128):** Piso de 8 linhas e teto recomendado de 128 linhas úteis (limite rígido de 256 linhas).
 - **Camada 1 (Header Banner):** Exclusivo para linhas 2 a 4, delimitado por 64 hífens (`# ----------------------------------------------------------------`).
-- **Camada 2 (Delimitadores Estruturais de Corpo):** Réguas simétricas de 32 caracteres (`### ================================` ou `### --------------------------------`). O título DEVE ter no máximo 32 caracteres e JAMAIS vazar além da régua (total de 36 colunas com `### `).
-- **Camada 3 (Zero Comentários Narrativos):** Não use comentários narrativos ou inline em scripts, templates e exemplos. Utilize linhas em branco para separar blocos lógicos.
+- **Camada 2 (Delimitadores Estruturais de Corpo):** Réguas simétricas de 32 caracteres (`### ================================` ou `### --------------------------------`) com título em MAIÚSCULO contido em 32 colunas e sem parênteses.
+- **Camada 3 (Zero Comentários Narrativos):** Não use comentários narrativos ou inline em scripts, templates e blocos de código Markdown.
 
-## 6. Padrão Universal de READMEs
+## 6. Permissões e Segurança
 
-- **README Raiz:** Portal institucional com título e emoji, blockquote de missão, badges do Quarteto de Produtividade, sistemas suportados, catálogo de primeiro nível e instruções de auditoria/CI.
-- **README de Subpastas:** Catálogo tabular obrigatório (`| Arquivo / Receita | Descrição | Plataforma |`) e bloco de execução limpo sem comentários inline.
+- `chmod 0755` para scripts executáveis, `.githooks/*` e `.scripts/audit/*.py`.
+- `chmod 0644` para arquivos de configuração, `.cmd`, `.ps1`, `.reg` e documentação Markdown.
+- Redirecionamentos para `/dev/null` sempre com aspas: `> "/dev/null" 2>&1`.
+- Finais de linha LF em `.sh`, `.md`, `.py`, `.json`, `.yml`; CRLF preservado em `.cmd`, `.ps1` e `.reg`.
 
-## 7. Permissões e Segurança
+## 7. Matriz de Runtimes e Inits (FreeBSD, Systemd, Devuan/Não-Systemd, OpenBSD)
 
-- `chmod 0755` para scripts executáveis.
-- `chmod 0644` para arquivos de configuração e Markdown.
-- Redirecionamentos para `/dev/null` sempre com aspas: `> "/dev/null"` e `2> "/dev/null"`.
+- **FreeBSD:** Scripts em `/usr/local/etc/rc.d/` com `/etc/rc.subr`, `sysrc`, `vidcontrol` e driver `vt(4)`.
+- **Debian / Fedora / Arch (Linux com Systemd):** Drop-ins em `/etc/systemd/system/*.d/`, `systemctl daemon-reload` e `localectl`.
+- **Devuan / Linux Não-Systemd:** Regras `udev`/`eudev` em `/etc/udev/rules.d/`, OpenRC `/etc/init.d/`, SysVinit LSB e `console-setup`.
+- **OpenBSD:** Validação do subsistema `wscons(4)` e `rasops(9)`.
 
-## 8. Matriz Quádrupla de Runtimes e Inits (FreeBSD, Systemd, Devuan/Não-Systemd, OpenBSD)
-
-Toda automação de sistema, serviço ou daemon DEVE ser concebida respeitando a neutralidade de init e suporte multi-OS:
-
-- **FreeBSD (Host Soberano):** Scripts em `/usr/local/etc/rc.d/` com suporte canônico ao `/etc/rc.subr`, `sysrc`, `vidcontrol` e driver `vt(4)`.
-- **Debian / Fedora / Arch (Linux com Systemd):** Drop-ins canônicos em `/etc/systemd/system/*.d/`, `systemctl daemon-reload` e `localectl`.
-- **Devuan / Alpine / Gentoo (Linux Não-Systemd):**
-    - **Udev / Eudev Universal:** Regras em `/etc/udev/rules.d/` (`vtconsole`, `drm`) que operam independentemente do PID 1.
-    - **OpenRC:** Scripts `/etc/init.d/` com `depend()` e registro via `rc-update add <serviço> boot`.
-    - **SysVinit (Devuan):** Cabeçalho padrão LSB (`### BEGIN INIT INFO`) e registro via `update-rc.d <serviço> defaults`.
-    - **Console-Setup:** Sincronização em `/etc/default/console-setup` e recarga via `setupcon`.
-- **OpenBSD:** Validação do subsistema `wscons(4)` e suporte nativo ao kernel `rasops(9)`, com inspeção via `wsfontload(8)` e `wsconsctl(8)`.
-
-## 9. Checklist de Validação Obrigatório
+## 8. Checklist de Validação Obrigatório
 
 Antes de concluir qualquer alteração no Setup:
 
-1. `git diff --check` (deve retornar 0 erros).
-2. `./.githooks/pre-commit` (deve passar 100%).
-3. `python3 .scripts/audit/all.py` (deve aprovar 100% dos testes).
+1. `make format`
+2. `make ci` (executa `test` + `audit` com 9/9 módulos aprovados)
+3. `git diff --check` (0 erros)

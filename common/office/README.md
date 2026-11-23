@@ -15,10 +15,10 @@ Esta pasta centraliza as rotinas de instalação e configuração de suites de e
 
 ## 📂 Catálogo de Recursos
 
-| Recurso                            | Tipo    | Plataformas Alvo               | Método de Provisionamento                                                 |
-| :--------------------------------- | :------ | :----------------------------- | :------------------------------------------------------------------------ |
-| **[`office.sh`](office.sh)**       | Receita | Linux, FreeBSD                 | Dispatch universal (`dnf` / `apt` / `pacman` / `pkg`) com integração GTK3 |
-| **[`collabora.sh`](collabora.sh)** | Receita | Linux, FreeBSD, Windows (MSYS) | Dispatch universal (`pkg` / `dnf` / `apt` / `pacman` / Flatpak / Winget)  |
+| Recurso                            | Tipo    | Plataformas Alvo               | Método de Provisionamento                                                            |
+| :--------------------------------- | :------ | :----------------------------- | :----------------------------------------------------------------------------------- |
+| **[`office.sh`](office.sh)**       | Receita | Linux, FreeBSD, Windows (MSYS) | Dispatch universal (`pkg` / `dnf` / `apt` / `pacman` / `Winget`) com integração GTK3 |
+| **[`collabora.sh`](collabora.sh)** | Receita | Linux, FreeBSD, Windows (MSYS) | Dispatch universal (`pkg` / `dnf` / `apt` / `pacman` / Flatpak / Winget)             |
 
 ---
 
@@ -55,10 +55,6 @@ Remove o drop-in legado `~/.config/environment.d/gtk-dark.conf` caso exista e li
 
 Remove qualquer override global legado de `GTK_THEME` (`flatpak override --user --unset-env=GTK_THEME` e nível de sistema) e garante a instalação dos pacotes de tema `org.gtk.Gtk3theme.adw-gtk3` e `org.gtk.Gtk3theme.adw-gtk3-dark` no Flathub (quando o remote existir) para que aplicativos em sandbox sigam o tema claro/escuro ativo da sessão.
 
-### 5. Sinergia com Editores (`common/editors/editors.sh`)
-
-Em conjunto com `office.sh`, o script `editors.sh` preserva lançadores e symlinks de `emacs.desktop` e `emacsclient.desktop` já gerenciados pelo **Profile** (recorrendo a fallback adaptativo em `emacs.desktop` apenas quando ausente) e oculta lançadores secundários redundantes (`emacs-mail.desktop`, `emacsclient-mail.desktop`) via `NoDisplay=true`.
-
 ---
 
 ## 🌐 Suporte por Plataforma (Collabora Office)
@@ -83,16 +79,9 @@ Em conjunto com `office.sh`, o script `editors.sh` preserva lançadores e symlin
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Executar o provisionamento do LibreOffice completo:
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/office/office.sh | sh
-```
-
-Executar o provisionamento do Collabora Office:
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/office/collabora.sh | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/office/office.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/office/collabora.sh"
 ```

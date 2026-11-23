@@ -21,10 +21,8 @@ Esta pasta fornece o script para instalar as fontes de programação essenciais 
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Execute diretamente no terminal:
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/fonts/fonts.sh | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/fonts/fonts.sh"
 ```

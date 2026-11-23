@@ -1,40 +1,37 @@
-# 💿 Dynamic ISO Images — Catálogo de Receitas de Download
+# 💿 Dynamic ISO Images — Download & Verificação
 
-> Receitas modulares em POSIX Shell (`.sh`) para descoberta dinâmica, download e validação criptográfica das imagens ISO estáveis mais recentes de sistemas operacionais.
+> Motor único em POSIX Shell ([`download.sh`](download.sh)) para descoberta dinâmica, download e validação criptográfica das imagens ISO estáveis mais recentes.
 
 ---
 
 ## 🎯 Finalidade
 
-Automatizar a obtenção de mídias de instalação oficiais sem codificar versões obsoletas ou estáticas em código. Cada receita:
+Automatizar a obtenção de mídias oficiais sem codificar versões estáticas. O script [`download.sh`](download.sh):
 
-1. Consulta os repositórios e espelhos canônicos oficiais via HTTP/HTTPS.
-2. Resolve dinamicamente a versão estável mais recente do sistema operacional.
-3. Detecta inteligentemente o destino (datastore de hypervisor `/zroot/vm/.iso` no FreeBSD bhyve ou `/var/lib/libvirt/images` no Linux KVM, ou o diretório local para pendrives de boot).
-4. Realiza o download seguro e valida a integridade com a soma criptográfica canônica (SHA256, SHA512 ou MD5).
-
----
-
-## 📂 Catálogo de Sistemas Operacionais
-
-| Script                             | Sistema Operacional | Método de Descoberta                                         | Validação de Integridade   |
-| :--------------------------------- | :------------------ | :----------------------------------------------------------- | :------------------------- |
-| **[`alpine.sh`](alpine.sh)**       | Alpine Linux Virt   | `https://dl-cdn.alpinelinux.org/alpine/latest-stable/`       | SHA256 (`.iso.sha256`)     |
-| **[`arch.sh`](arch.sh)**           | Arch Linux Live     | `https://geo.mirror.pkgbuild.com/iso/latest/`                | SHA256 (`sha256sums.txt`)  |
-| **[`debian.sh`](debian.sh)**       | Debian GNU/Linux    | `https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/` | SHA256 (`SHA256SUMS`)      |
-| **[`devuan.sh`](devuan.sh)**       | Devuan GNU+Linux    | `https://files.devuan.org/devuan_daedalus/installer-iso/`    | SHA256 (`SHA256SUMS.txt`)  |
-| **[`dragonfly.sh`](dragonfly.sh)** | DragonFly BSD       | `https://mirror-master.dragonflybsd.org/iso-images/`         | MD5 (`md5.txt`)            |
-| **[`fedora.sh`](fedora.sh)**       | Fedora Server       | `https://fedoraproject.org/server/download`                  | SHA256 (`CHECKSUM`)        |
-| **[`freebsd.sh`](freebsd.sh)**     | FreeBSD             | `https://download.freebsd.org/releases/amd64/amd64/`         | SHA256 (`CHECKSUM.SHA256`) |
-| **[`netbsd.sh`](netbsd.sh)**       | NetBSD              | `https://cdn.netbsd.org/pub/NetBSD/`                         | SHA512 (`SHA512`)          |
-| **[`openbsd.sh`](openbsd.sh)**     | OpenBSD             | `https://cdn.openbsd.org/pub/OpenBSD/`                       | SHA256 (`SHA256`)          |
-| **[`void.sh`](void.sh)**           | Void Linux Base     | `https://repo-default.voidlinux.org/live/current/`           | SHA256 (`sha256sum.txt`)   |
+1. Consulta os espelhos oficiais via HTTP/HTTPS e resolve dinamicamente a versão estável mais recente.
+2. Seleciona o destino adequado (`/zroot/vm/.iso` no FreeBSD bhyve, `/var/lib/libvirt/images` no Linux libvirt ou `$PWD` com `-l`).
+3. Baixa a imagem e valida sua integridade criptográfica (`SHA256`, `SHA512` ou `MD5`).
 
 ---
 
-## ⚙️ Opções Universais da CLI
+## 📂 Sistemas Operacionais Suportados (`download.sh`)
 
-Todos os scripts compartilham a mesma interface de linha de comando:
+| Alvo (`<sistema>`) | Sistema Operacional | Espelho Oficial                                              | Validação de Integridade   |
+| :----------------- | :------------------ | :----------------------------------------------------------- | :------------------------- |
+| `alpine`           | Alpine Linux Virt   | `https://dl-cdn.alpinelinux.org/alpine/latest-stable/`       | SHA256 (`.iso.sha256`)     |
+| `arch`             | Arch Linux Live     | `https://geo.mirror.pkgbuild.com/iso/latest/`                | SHA256 (`sha256sums.txt`)  |
+| `debian`           | Debian GNU/Linux    | `https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/` | SHA256 (`SHA256SUMS`)      |
+| `devuan`           | Devuan GNU+Linux    | `https://files.devuan.org/devuan_daedalus/installer-iso/`    | SHA256 (`SHA256SUMS.txt`)  |
+| `dragonfly`        | DragonFly BSD       | `https://mirror-master.dragonflybsd.org/iso-images/`         | MD5 (`md5.txt`)            |
+| `fedora`           | Fedora Server       | `https://fedoraproject.org/server/download`                  | SHA256 (`CHECKSUM`)        |
+| `freebsd`          | FreeBSD             | `https://download.freebsd.org/releases/amd64/amd64/`         | SHA256 (`CHECKSUM.SHA256`) |
+| `netbsd`           | NetBSD              | `https://cdn.netbsd.org/pub/NetBSD/`                         | SHA512 (`SHA512`)          |
+| `openbsd`          | OpenBSD             | `https://cdn.openbsd.org/pub/OpenBSD/`                       | SHA256 (`SHA256`)          |
+| `void`             | Void Linux Base     | `https://repo-default.voidlinux.org/live/current/`           | SHA256 (`sha256sum.txt`)   |
+
+---
+
+## ⚙️ Opções da CLI
 
 | Flag                 | Descrição                                                                          |
 | :------------------- | :--------------------------------------------------------------------------------- |
@@ -42,50 +39,17 @@ Todos os scripts compartilham a mesma interface de linha de comando:
 | `-l`, `--local`      | Força download no diretório atual `$PWD` (ideal para pendrives e mídia física)     |
 | `-d`, `--datastore`  | Salva no datastore do hypervisor (`/zroot/vm/.iso` no FreeBSD ou libvirt no Linux) |
 | `-o`, `--output DIR` | Define um diretório de destino customizado                                         |
+| `list`               | Lista todos os identificadores de sistemas suportados                              |
 | `-h`, `--help`       | Exibe a ajuda da linha de comando                                                  |
 
 ---
 
 ## 🚀 Exemplos de Uso
 
-### 1. Testar resolução e links remotos (Dry-Run)
-
-Validar se o espelho e a versão mais recente estão acessíveis:
-
 ```sh
-./Setup/common/iso/alpine.sh -n
-./Setup/common/iso/arch.sh -n
-./Setup/common/iso/debian.sh -n
-./Setup/common/iso/devuan.sh -n
-./Setup/common/iso/dragonfly.sh -n
-./Setup/common/iso/fedora.sh -n
-./Setup/common/iso/freebsd.sh -n
-./Setup/common/iso/netbsd.sh -n
-./Setup/common/iso/openbsd.sh -n
-./Setup/common/iso/void.sh -n
-```
-
-### 2. Baixar localmente para criação de Pendrive Bootável (`-l`)
-
-Baixar diretamente no diretório atual sem tocar nos discos de VM:
-
-```sh
-cd /mnt/pendrive || cd /tmp
-~/Documents/Environment/Setup/common/iso/freebsd.sh -l
-```
-
-### 3. Provisionamento para Máquinas Virtuais (Bhyve / KVM)
-
-Salvar automaticamente em `/zroot/vm/.iso` se existir no FreeBSD:
-
-```sh
-./Setup/common/iso/debian.sh
-```
-
-### 4. Execução Remota via GitHub (Zero-Clone)
-
-Baixar Debian mais recente sem clonar o repositório Setup:
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/iso/debian.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/iso/debian.sh) | sh -s -- -l
+sh common/iso/download.sh list
+sh common/iso/download.sh -n freebsd
+sh common/iso/download.sh -n debian
+sh common/iso/download.sh -l freebsd
+sh common/iso/download.sh debian
 ```

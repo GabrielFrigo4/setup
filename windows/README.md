@@ -8,8 +8,8 @@
 
 Reúne o ferramental de provisionamento para Windows, dividido em dois ambientes essenciais:
 
-- **`native/`**: Ferramentas nativas do Windows (gerenciadores de pacotes Winget/Scoop/Choco, suite de engenharia reversa, editores, temas e módulos).
-- **`msys2/`**: Subsistema UNIX nativo UCRT64 (toolchains GCC, Clang/LLVM, linguagens e bibliotecas sem virtualização).
+- **`native/`**: Pacotes declarativos via Winget (`winget.json`) e Scoop idempotente, engenharia reversa, atalhos PowerShell, Hyper-V e registro do Windows.
+- **`msys2/`**: Subsistema UNIX nativo UCRT64 (7 receitas temáticas padronizadas com `core/ui.sh`).
 
 > ℹ️ **Ambiente WSL2:** Como o WSL2 executa um kernel Linux real, as receitas para distribuições WSL residem em [`../linux/wsl/`](../linux/wsl/README.md).
 
@@ -17,13 +17,13 @@ Reúne o ferramental de provisionamento para Windows, dividido em dois ambientes
 
 ## 📂 Contextos Operacionais
 
-| Contexto                          | Tipo                | Descrição                                                                     |
-| :-------------------------------- | :------------------ | :---------------------------------------------------------------------------- |
-| **[`native/`](native/README.md)** | Ferramentas Nativas | Pacotes via Winget/Scoop, suite de engenharia reversa, temas e módulos        |
-| **[`msys2/`](msys2/README.md)**   | Subsistema UCRT64   | 7 receitas temáticas de compilação GNU/LLVM, linguagens e bibliotecas nativas |
+| Contexto                          | Tipo                | Descrição                                                                           |
+| :-------------------------------- | :------------------ | :---------------------------------------------------------------------------------- |
+| **[`native/`](native/README.md)** | Ferramentas Nativas | Manifesto `winget.json`, Scoop, engenharia reversa, registro, Hyper-V e `setup.ps1` |
+| **[`msys2/`](msys2/README.md)**   | Subsistema UCRT64   | 7 receitas temáticas de compilação GNU/LLVM, linguagens e bibliotecas nativas       |
 
 ---
 
 ## 🚀 Como Navegar
 
-Para acessar as ferramentas nativas de desenvolvimento e segurança no Windows, acesse [`native/`](native/README.md).
+Para acessar as ferramentas nativas de desenvolvimento, pacotes e segurança no Windows, acesse [`native/`](native/README.md).

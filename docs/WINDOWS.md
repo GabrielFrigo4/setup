@@ -20,9 +20,8 @@ A camada nativa provê softwares portáteis e ferramentas de sistema integradas 
 
 ### A. Gerenciadores de Pacotes
 
-- **Winget (Windows Package Manager):** Gerenciador primário oficial ([`pkg/winget.cmd`](../windows/native/pkg/winget.cmd)) para navegadores, IDEs e utilitários de sistema.
-- **Scoop:** Gerenciador voltado para ferramentas de linha de comando portáteis instaladas no espaço do usuário sem privilégios de Administrador ([`pkg/scoop.cmd`](../windows/native/pkg/scoop.cmd)).
-- **Chocolatey:** Contingência para pacotes legados ([`pkg/choco.cmd`](../windows/native/pkg/choco.cmd)).
+- **Winget (Windows Package Manager):** Gerenciador primário oficial com manifesto declarativo [`pkg/winget.json`](../windows/native/pkg/winget.json) importado via [`pkg/winget.cmd`](../windows/native/pkg/winget.cmd) (`winget import`).
+- **Scoop:** Gerenciador idempotente voltado para ferramentas de linha de comando portáteis instaladas no espaço do usuário sem privilégios de Administrador ([`pkg/scoop.cmd`](../windows/native/pkg/scoop.cmd)).
 
 ### B. Suite de Engenharia Reversa e Análise de Binários
 
@@ -36,7 +35,7 @@ A pasta [`security/`](../windows/native/security/) concentra ferramentas essenci
 
 ### C. Configuração e Automações PowerShell
 
-- **[`setup.ps1`](../windows/native/setup.ps1):** Instalação de módulos essenciais (`PSWindowsUpdate`, `Terminal-Icons`, `NerdFonts`) e criação de atalhos de inicialização rápida para o **Emacs Daemon** (`emacsclientw.exe`).
+- **[`setup.ps1`](../windows/native/setup.ps1):** Instalação de módulos essenciais (`PSWindowsUpdate`, `Terminal-Icons`, `NerdFonts`), ajuste IANA do WinNAT e criação de atalhos em `Start Menu\Programs\Custom` para o **Emacs Daemon** e **Ollama**.
 
 ### D. Gerenciamento Python Moderno (Astral `uv`)
 
@@ -44,7 +43,8 @@ No Windows nativo, o **`uv`** é instalado como ferramenta central de execução
 
 - **Instalação via Winget:** `winget install --id=astral-sh.uv --accept-package-agreements --accept-source-agreements`
 - **Instalação via PowerShell:** `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
-- **Automação:** Configurado na receita [`windows/native/dev-tools.cmd`](../windows/native/dev-tools.cmd).
+- **Automação Nativa (`uv` + Ferramentas):** Configurado na receita [`windows/native/dev-tools.cmd`](../windows/native/dev-tools.cmd).
+- **Stack Python Completa (TUI/GUI/Visão/Docs/Ollama):** Provisionada em [`windows/native/languages/python.cmd`](../windows/native/languages/python.cmd) e no subsistema UCRT64 via [`windows/msys2/languages.sh`](../windows/msys2/languages.sh).
 
 ### E. Modern Shader Toolchains & Vulkan SDK
 
@@ -74,10 +74,12 @@ O **MSYS2 UCRT64** provê um ambiente de desenvolvimento POSIX completo que comp
 
 ---
 
-## 🔧 3. Tweaks de Registro e Sistema (`.scripts/windows/`)
+## 🔧 3. Tweaks de Registro e Sistema (`windows/native/`)
 
 Para garantir a melhor experiência no terminal e compatibilidade com padrões globais:
 
-- **[`registry/utf8.reg`](../.scripts/windows/registry/utf8.reg):** Força o Prompt de Comando (CMD) a usar a página de código UTF-8 (`chcp 65001`) por padrão.
-- **[`registry/altgr2alt.reg`](../.scripts/windows/registry/altgr2alt.reg):** Mapeamento do teclado para transformar a tecla AltGr em Alt esquerdo, facilitando atalhos em editores como Emacs e Vim.
-- **[`hyper-v.cmd`](../.scripts/windows/hyper-v.cmd):** Ativação e configuração do hypervisor Hyper-V e subsistema de virtualização da Microsoft.
+- **[`registry/utf8.reg`](../windows/native/registry/utf8.reg):** Força o Prompt de Comando (CMD) a usar a página de código UTF-8 (`chcp 65001`) por padrão.
+- **[`registry/altgr2alt.reg`](../windows/native/registry/altgr2alt.reg):** Mapeamento do teclado para transformar a tecla AltGr em Alt esquerdo, facilitando atalhos em editores como Emacs e Vim.
+- **[`registry/emacs.reg`](../windows/native/registry/emacs.reg):** Associa arquivos `.el` e adiciona ação para abrir com `emacsclientw.exe`.
+- **[`registry/gcc.reg`](../windows/native/registry/gcc.reg):** Configura variáveis de ambiente de inclusão/bibliotecas MSYS2.
+- **[`hyper-v.cmd`](../windows/native/hyper-v.cmd):** Ativação e configuração do hypervisor Hyper-V e subsistema de virtualização da Microsoft.

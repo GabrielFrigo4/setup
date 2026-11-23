@@ -1,25 +1,29 @@
-# 🏗️ Arquitetura do Bootstrap & Livro de Receitas (Cookbook)
+# 🏗️ Arquitetura do Bootstrap & Clone Soberano
 
-Este documento descreve a filosofia, a estrutura modular e a padronização das receitas de provisionamento no repositório **Configuration**.
-
----
-
-## 🎯 Filosofia: O Modelo "Cookbook"
-
-O `Configuration` adota o modelo de **Livro de Receitas (Cookbook)**:
-
-1. **Zero Dependência de Clone:** Diferente do `Vault` ou do `Shell`, o usuário **não precisa clonar** este repositório para utilizá-lo. Ele é consumido diretamente via **GitHub**:
-    - Navegando e copiando/colando trechos específicos;
-    - Baixando arquivos declarativos puros (`.json`, `.toml`, `.yaml`);
-    - Executando receitas isoladas pontualmente via terminal.
-2. **Modularidade Radical (Sem Monólitos):** Nenhum script deve tentar instalar 50 ferramentas diferentes de uma só vez. Cada receita é atômica, autoexplicativa e executa uma única função com excelência.
-3. **Clean Host:** Compiladores de projeto, bancos de dados e runtimes pesados pertencem a containers (Docker, Incus, FreeBSD Jails). O host só recebe os drivers, a interface gráfica (GNOME no Fedora, KDE no FreeBSD) e ferramentas essenciais de análise/sistema.
+Este documento descreve o modelo operacional de **Clone Soberano**, os módulos de fundação em `core/` e a orquestração em camadas de [`setup.sh`](../setup.sh).
 
 ---
 
-## 📐 Template Canônico de Receitas (`RECIPE TEMPLATE`)
+## 🎯 Filosofia: Clone Soberano (`bootstrap.sh`)
 
-Para garantir uniformidade e previsibilidade, todo script de configuração segue rigorosamente esta estrutura com a resolução atômica de `ELEVATE`:
+O **Setup** adota um bootstrap em 1 linha com clone persistente local:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap.sh | sh -s -- --profile=base
+```
+
+1. **Clonagem & Atualização Determinística:** [`bootstrap.sh`](../bootstrap.sh) garante a presença de `git`, clona ou atualiza o repositório em `${SETUP_DIR:-${XDG_DATA_HOME:-${HOME}/.local/share}/setup}`, aplica `chmod 0755` via [`core/perms.sh`](../core/perms.sh) e transfere execução para [`setup.sh`](../setup.sh) com todos os módulos `core/` disponíveis offline.
+2. **4 Camadas de Orquestração (`setup.sh`):**
+    - **`base`:** Clean Host portátil (elevação `nopass`, CLI core, VCS tools, fontes e base portátil do SO).
+    - **`desktop`:** Bundles completos de desktop (`fedora-desktop`, `arch-desktop`, `debian-desktop`, `freebsd-desktop`).
+    - **`virtualization`:** Containers e hypervisors (`incus`/`podman` no Linux; `jails`/`bastille`/`bhyve`/`podman` no FreeBSD).
+    - **`dev-host` & `host` (Opt-In):** Toolchains no host (`--profile=dev-host`) e quirks físicos isolados em `hosts/` (`--profile=host`), além de `server`, `doctor`, `audit` e `test`.
+
+---
+
+## 📐 Template Canônico de Receitas (`core/` + POSIX `sh`)
+
+Toda receita utiliza o cabeçalho oficial de 64 hífens e carrega as bibliotecas `core/`:
 
 ```sh
 #!/usr/bin/env sh
@@ -28,54 +32,27 @@ Para garantir uniformidade e previsibilidade, todo script de configuração segu
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [Nome]: Iniciando configuração..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+. "${_setup_root}/core/elevate.sh"
 
-ELEVATE=""
-if [ "$(id -u)" -ne 0 ]; then
-	if command -v doas > "/dev/null" 2>&1; then
-		ELEVATE="doas"
-	elif command -v sudo > "/dev/null" 2>&1; then
-		ELEVATE="sudo"
-	fi
-fi
+_ui_step "Configurando [Nome]..."
 
-echo "✅ [Nome]: Configurado com sucesso!"
+_ui_ok "[Nome] configurado com sucesso!"
 ```
 
-### 🔍 Mecânica da Resolução de Elevação (`ELEVATE`)
+### 🔍 Módulos em [`core/`](../core/README.md)
 
-- **Isolamento via Subshell:** A expressão `$( ... )` avalia o ambiente sem vazar variáveis auxiliares ou poluir o escopo do script.
-- **Detecção Imediata de Root:** Se `id -u` for `0` (`root`), a primeira cláusula encerra em curto-circuito e `ELEVATE` torna-se `""`.
-- **Precedência POSIX com Chaves (`{ ...; }`):** Evita que o fallback para `sudo` seja executado indevidamente caso `doas` esteja presente (ambos os operadores `&&` e `||` têm a mesma precedência em POSIX).
-- **Detecção Silenciosa:** Utiliza `command -v` com redirecionamento citado `> "/dev/null" 2>&1`.
-- **Soberania do Usuário:** Prioriza `doas` sobre `sudo`, mas degrada para execução sem privilégios caso nenhum esteja instalado.
-
----
-
-## 📂 Organização das Receitas por Categorias
-
-### 🌐 O Paradigma do `common/` vs Pastas Específicas
-
-- **`common/` (Despachante Multi-OS Universal):** Camada canônica de provimento multiplataforma. Toda ferramenta suportada em mais de um SO (`pkg`, `dnf`, `apt`, `pacman`, `winget`) DEVE residir em `common/<categoria>/<ferramenta>.sh` com cascata unificada.
-- **`linux/`, `freebsd/`, `windows/` (Específicos de SO):** Reservados estritamente para idiossincrasias inerentes (ex: dconf/GNOME, Jails, Linuxulator, sysctl BSD, registro do Windows).
-
-As receitas são categorizadas por funcionalidade:
-
-- **`ai/`**: Servidores de inferência local (Ollama) e bibliotecas Python.
-- **`system/`**: Configurações essenciais de usuário, privilégios (`doas`, `sudo`), kernel e sysctl.
-- **`desktop/`**: Ambientes de interface gráfica (GNOME no Fedora, KDE Plasma no FreeBSD) e fontes.
-- **`containers/`**: Virtualização leve de sistema (Docker, Incus, FreeBSD Bastille Jails).
-- **`security/`**: Ferramentas de análise, engenharia reversa e captura de pacotes (Wireshark universal, LLDB, Valgrind).
-- **`emulation/`**: Camadas de compatibilidade (Linuxlator no FreeBSD, Wine/Winetricks).
-- **`devices/`**: Roteamento de áudio/microfone para Android via RTP, webcams e drivers FUSE.
-- **`network/`**: Configurações de Wi-Fi nativo e Wifibox (drivers Wi-Fi Linux no FreeBSD).
-- **`tools/`**: Utilitários modernos de terminal (eza, bat, ripgrep, mandoc) e IDEs (Antigravity).
-- **`apps/`**: Aplicativos desktop focados (leitor de ePub Arianna, navegadores TUI).
+- **[`core/detect.sh`](../core/detect.sh):** Exporta `DETECTED_OS`, `DETECTED_DISTRO`, `DETECTED_PKG_MGR` e `DETECTED_CONSOLE_FONT`.
+- **[`core/elevate.sh`](../core/elevate.sh):** Resolve `ELEVATE` (`doas > sudo`) com segurança sob `set -eu` quando executado como `root`.
+- **[`core/pkg.sh`](../core/pkg.sh):** Expõe `_pkg_update` e `_pkg_install` com flags longas (`--yes`, `--assumeyes`, `--needed --noconfirm`, `winget.exe install --id ... --accept-*`).
+- **[`core/perms.sh`](../core/perms.sh):** Auto-cura permissões `0755` em `setup.sh`, `bootstrap.sh`, `core/*.sh`, `hosts/*.sh`, `.githooks/*` e `.scripts/audit/*.py`.
+- **[`core/ui.sh`](../core/ui.sh):** Biblioteca semântica `_ui_step`, `_ui_sub`, `_ui_ok`, `_ui_warn`, `_ui_err`, `_ui_info` e `_ui_banner`.
 
 ---
 
-## 📜 Regras de Manutenção
+## 📂 Organização das Receitas por Camadas
 
-1. **Nomenclatura:** Todos os scripts de receita devem adotar letras minúsculas com hífens (`kebab-case`). Exemplo: `wireshark.sh`, `reverse-engineering.cmd`.
-2. **Shebang Obrigatório:** `#!/usr/bin/env sh` em 100% dos scripts de shell UNIX.
-3. **Permissões em 4 Dígitos:** Use sempre `chmod 0755` para scripts/pastas, `chmod 0644` para arquivos de configuração e `chmod 0440` para autorizações do sistema (`doas.conf`, `sudoers.d/*`).
+- **`common/` (Despachante Multi-OS Universal):** Ferramentas multiplataforma na cascata `pkg -> dnf -> apt -> pacman -> winget.exe` (`cli/`, `editors/`, `fonts/`, `graphics/`, `iso/download.sh`, `languages/`, `linters/`, `media/`, `office/`, `security/`, `system/`, `wasm/`, `web/`).
+- **`hosts/` (Quirks de Hardware Opt-In):** Particularidades físicas isoladas por máquina (`vostro3520-freebsd.sh`).
+- **`linux/`, `freebsd/`, `windows/` (Específicos de SO):** Configurações exclusivas por sistema operacional e ambiente nativo/MSYS2.

@@ -4,11 +4,14 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [MSYS2 Editors]: Instalando Emacs e Micro (UCRT64)..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+
+_ui_step "Instalando Emacs e Micro (MSYS2 UCRT64)..."
 
 pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-emacs \
 	mingw-w64-ucrt-x86_64-emacs-pdf-tools-server \
 	mingw-w64-ucrt-x86_64-micro
 
-echo "✅ [MSYS2 Editors]: Editores instalados com sucesso!"
+_ui_ok "Editores MSYS2 instalados com sucesso!"

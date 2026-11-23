@@ -28,19 +28,20 @@ fi
 ${ELEVATE} systemctl mask --now fwupd fwupd.socket 2> "/dev/null" || true
 ${ELEVATE} rm -rf /var/cache/fwupd/
 
-MODELOS_DIR="${HOME}/Modelos"
-mkdir -p "${MODELOS_DIR}"
+_templates_dir="$(xdg-user-dir TEMPLATES 2> "/dev/null" || echo "${HOME}/Templates")"
+[ -n "${_templates_dir}" ] || _templates_dir="${HOME}/Templates"
+mkdir -p "${_templates_dir}"
 
-touch "${MODELOS_DIR}/Empty"
-touch "${MODELOS_DIR}/Text.txt"
-touch "${MODELOS_DIR}/Markdown.md"
+touch "${_templates_dir}/Empty"
+touch "${_templates_dir}/Text.txt"
+touch "${_templates_dir}/Markdown.md"
 
-cat << 'EOF' > "${MODELOS_DIR}/Shell.sh"
+cat << 'EOF' > "${_templates_dir}/Shell.sh"
 #!/usr/bin/env sh
 set -eu
 
 EOF
-chmod 0755 "${MODELOS_DIR}/Shell.sh"
+chmod 0755 "${_templates_dir}/Shell.sh"
 
 _console_recipe="${_setup_root}/linux/common/system/console.sh"
 if [ -f "${_console_recipe}" ]; then

@@ -1,8 +1,8 @@
 # 🔒 The Vault
 
-O **[Vault](https://github.com/GabrielFrigo4/vault)** é o repositório privado da **Tríade de Produtividade**, responsável pelo gerenciamento de credenciais confidenciais, chaves SSH/PuTTY, tokens de autenticação, mapeamento de servidores e credenciais de rede.
+O **[Vault](https://github.com/GabrielFrigo4/vault)** é o repositório privado do **Quarteto de Produtividade**, responsável pelo gerenciamento de credenciais confidenciais, chaves SSH/PuTTY, tokens de autenticação, mapeamento de servidores e credenciais de rede.
 
-Sempre que um script de setup, configuração de Git ou ferramenta de terminal precisar de segredos, os dados serão lidos a partir do Vault local (`~/.vault`).
+Sempre que o **Shell** ou qualquer ferramenta integrada precisar de segredos, os dados são resolvidos dinamicamente a partir do caminho canônico `${VAULT_DIR:-${XDG_DATA_HOME:-${HOME}/.local/share}/vault}` (`~/.local/share/vault`, com fallback em `~/.config/vault` e `~/.vault`).
 
 ---
 
@@ -11,14 +11,14 @@ Sempre que um script de setup, configuração de Git ou ferramenta de terminal p
 Em ambientes UNIX (Linux, FreeBSD, macOS, WSL2):
 
 ```sh
-git clone "[https://github.com/GabrielFrigo4/vault](https://github.com/GabrielFrigo4/vault)" "${HOME}/.vault"
-chmod 0700 "${HOME}/.vault"
+git clone https://github.com/GabrielFrigo4/vault "${XDG_DATA_HOME:-${HOME}/.local/share}/vault"
+chmod 0700 "${XDG_DATA_HOME:-${HOME}/.local/share}/vault"
 ```
 
 No Windows Nativo (Prompt de Comando ou PowerShell):
 
 ```sh
-git clone "[https://github.com/GabrielFrigo4/vault](https://github.com/GabrielFrigo4/vault)" "%USERPROFILE%\.vault"
+git clone https://github.com/GabrielFrigo4/vault "%USERPROFILE%\.local\share\vault"
 ```
 
 > [!IMPORTANT]
@@ -51,12 +51,10 @@ O Vault provê carregadores nativos para todos os ambientes do ecossistema:
 | **`vault.ps1 -Register`** | Injeção permanente no Registro do Windows |
 
 > [!NOTE]
-> **Filtro Universal de Exclusão de Templates:** Todos os loaders do Vault implementam exclusão estrita de arquivos que contenham `template` ou `example` no nome (ex: `template.env`, `example.env`). Isso garante que tokens e placeholders fictícios de exemplo nunca sejam injetados no ambiente de terminal, protegendo ferramentas como `git` e `gh`.
+> **Filtro Universal de Exclusão de Templates:** Todos os loaders do Vault implementam exclusão estrita de arquivos que contenham `template` ou `example` no nome (ex: `template.env`, `example.env`). Isso garante que tokens e placeholders fictícios nunca sejam injetados no ambiente de terminal.
 
 ---
 
 ## 🔗 Integração com o Universal Shell
 
-O **Universal Shell** detecta o diretório `~/.vault` automaticamente a cada nova sessão via `core/vault.sh`. Não é necessário fazer `source` manual em cada script — o ambiente carrega as variáveis de forma silenciosa e instantânea.
-
-Em máquinas limpas recém-provisionadas ou ambientes anônimos onde o Vault não estiver clonado, o ecossistema opera normalmente em modo anônimo (degradação graciosa).
+O **Universal Shell** detecta o cofre automaticamente via `core/vault.sh` na cascata de resolução XDG (`~/.local/share/vault` $\rightarrow$ `~/.config/vault` $\rightarrow$ `~/.vault` $\rightarrow$ `/usr/local/share/vault`). Em máquinas recém-provisionadas sem o Vault, o ecossistema opera normalmente em modo anônimo (degradação graciosa).

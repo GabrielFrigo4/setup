@@ -24,16 +24,9 @@ Esta pasta centraliza receitas universais para bibliotecas de janelas e multimí
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Provisionar suite de modelagem e animação 3D Blender:
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/blender.sh | sh
-```
-
-Provisionar bibliotecas de janelas e multimídia (GLFW e SDL3):
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/graphics/windowing.sh | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/graphics/blender.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/graphics/windowing.sh"
 ```

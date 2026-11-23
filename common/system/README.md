@@ -20,22 +20,10 @@ Esta pasta concentra receitas de ajuste de políticas administrativas (como regr
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Configurar elevação sem senha (`nopass`):
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/nopass.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/nopass.sh) | sh
-```
-
-Configurar persistência de autenticação (`persist`):
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/persist.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/persist.sh) | sh
-```
-
-Aplicar modo estrito (`strict`):
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/strict.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/system/strict.sh) | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/system/nopass.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/system/persist.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/system/strict.sh"
 ```

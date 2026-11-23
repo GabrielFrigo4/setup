@@ -2,77 +2,46 @@
 name: universal-setup
 description: >-
     Comprehensive guide and operational runbook for extending, refactoring, and auditing the Universal Setup repository.
-    Use when creating new system recipes, managing package managers (dnf, apt, pkg, pacman, winget),
-    configuring containers (Incus, Podman, Jails), hypervisors, and enforcing Clean Host standards.
+    Use when creating new system recipes, managing package managers (pkg, dnf, apt, pacman, winget),
+    isolating hardware quirks in hosts/, configuring containers (Incus, Podman, Jails, Bhyve), and enforcing Clean Host standards.
 ---
 
 # Universal Setup — Development & Infrastructure Runbook
 
-Este guia detalha o fluxo operacional para estender, refatorar e auditar o repositório **Universal Setup Environment** (`Setup`), garantindo aderência rigorosa aos 22 Princípios de Engenharia UNIX + Clean Code.
+Este guia orienta a evolução e auditoria do repositório **Setup** sob o modelo **Clone Soberano (`bootstrap.sh`) + Clean Host + Separação `hosts/`**.
 
 ---
 
-## 1. Mapeamento de Camadas (Onde colocar cada receita)
+## 1. Mapeamento de Camadas
 
-Antes de escrever qualquer código, posicione a receita no diretório correto:
-
-| Camada                    | Diretório  | Papel & Responsabilidade                                                  | Exemplos                                          |
-| :------------------------ | :--------- | :------------------------------------------------------------------------ | :------------------------------------------------ |
-| **Multiplataforma**       | `common/`  | Receitas universais compartilhadas entre Linux, FreeBSD, macOS e Windows. | Fontes, linters, extensões                        |
-| **Linux Base & Server**   | `linux/`   | Receitas para Fedora, Arch, Debian, WSL2, servidores e containers.        | `fedora/desktop/gnome.sh`, `container/podman.sh`  |
-| **FreeBSD Base & Server** | `freebsd/` | Receitas para FreeBSD nativo, KDE Plasma 6 Wayland, Jails e BastilleBSD.  | `desktop/system/system.sh`, `container/jails.sh`  |
-| **Windows & MSYS2**       | `windows/` | Ferramentas nativas do Windows (Winget, registry) e toolchains MSYS2.     | `native/reverse-engineering.cmd`, `msys2/base.sh` |
-
----
-
-## 2. Invariantes Arquiteturais Inegociáveis
-
-1. **Idempotência Absoluta:**
-    - Toda receita DEVE poder ser reexecutada sem efeitos colaterais destrutivos, sem falhas de "arquivo já existe" e sem duplicar entradas em arquivos de configuração.
-2. **Template Canônico de Receitas:**
-    - Shebang `#!/usr/bin/env sh`, cabeçalho compacto de 3 linhas e modo defensivo `set -eu`.
-3. **Dispatch Leve vs Isolamento por Distro:**
-    - Use dispatch universal (`if command -v pkg ...`) em receitas de infraestrutura comum.
-    - Isole receitas gráficas complexas em subpastas de distros (`fedora/`, `arch/`, `debian/`).
-4. **Flags Longas e Descritivas:**
-    - `--assumeyes`, `--yes`, `--needed`, `--noconfirm`, `--global`.
-5. **Zero Comentários Narrativos:**
-    - O código deve ser autoexplicativo. Separe blocos lógicos com linhas em branco.
-6. **Limites de Tamanho de Script:**
-    - Piso: >= 8 linhas.
-    - Teto: <= 128 linhas.
+| Camada                        | Diretório  | Papel & Responsabilidade                                                 | Exemplos                                                |
+| :---------------------------- | :--------- | :----------------------------------------------------------------------- | :------------------------------------------------------ |
+| **Núcleo do Orquestrador**    | `core/`    | Bibliotecas internas (`detect`, `elevate`, `pkg`, `perms`, `ui`)         | `core/pkg.sh`, `core/ui.sh`                             |
+| **Hardware Opt-In**           | `hosts/`   | Quirks físicos isolados por máquina (GPU, NIC, Wi-Fi, áudio, ACPI)       | `hosts/vostro3520-freebsd.sh`                           |
+| **Multiplataforma**           | `common/`  | Receitas universais em cascata `pkg -> dnf -> apt -> pacman -> winget`   | `common/cli/core.sh`, `common/iso/download.sh`          |
+| **Linux Base & Server**       | `linux/`   | Receitas portáteis para Fedora, Arch, Debian, WSL2, Ubuntu e containers  | `linux/desktop/fedora/desktop/gnome.sh`, `podman.sh`    |
+| **FreeBSD Base & Hypervisor** | `freebsd/` | FreeBSD portátil, KDE Plasma 6 Wayland, Jails, Bastille, Podman e Bhyve  | `freebsd/desktop/system/system.sh`, `bhyve.sh`          |
+| **Windows & MSYS2**           | `windows/` | `winget.json`, `scoop.cmd`, `setup.ps1`, registro/Hyper-V e MSYS2 UCRT64 | `windows/native/security/ghidra.cmd`, `msys2/system.sh` |
 
 ---
 
-## 3. Consoles Virtuais TTY (Fontes de 512 Glifos & Cursor Estático)
+## 2. Invariantes Arquiteturais
 
-Em estações de trabalho e servidores, o provisionamento de consoles virtuais (TTY) deve assegurar legibilidade em telas de alta densidade e estabilidade visual:
-
-1. **Seleção de Fonte Canônica & Escalonamento Dinâmico:**
-    - Família **Spleen** bitmap: `spleen-8x16` para $< 1080$p (HD 720p/768p), `spleen-12x24` para Full HD (1080p), `spleen-16x32` para 1440p (2K/QHD), e `spleen-32x64` para $\ge 2160$p (4K UHD) [ou `spleen-16x32` sob `SPLEEN_DENSE=1`], atingindo paridade simétrica de $160 \times 45$ caracteres nos 3 primeiros patamares.
-    - **Neutralidade de Init no Linux:** Escalonamento dinâmico via `vconsole-autofont` com suporte a Systemd (`systemd-vconsole-setup.service.d/autofont.conf`), Devuan SysVinit (`/etc/init.d/`), OpenRC (`/etc/init.d/` + `rc-update`) e regra universal `udev/eudev` (`90-vconsole-autofont.rules`), sincronizando `/etc/vconsole.conf` e `/etc/default/console-setup` (`setupcon`).
-    - **FreeBSD & OpenBSD:** Serviço `vt_autofont` no FreeBSD (`/usr/local/etc/rc.d/`) e suporte in-kernel `rasops(9)` no OpenBSD.
-2. **Invariante de 512 Glifos & Deslocamento de Atributos:**
-    - Fontes Unicode como Spleen contêm 512 glifos, ativando `vc_hi_font_mask = 0x0100` no kernel Linux (`vt.c`).
-    - O bit 8 é apropriado pelo índice do caractere, deslocando o foreground para os bits 9–11 e o background para os bits 13–15.
-3. **Cursor Estático sem Corrupção de Cor (Prevenção de Ciano/Verde):**
-    - Flags automáticas do kernel (`CUR_ALWAYS_BG` / `CUR_INVERT_FG_BG`) utilizam máscaras rígidas de 256 glifos (`0x7000`), corrompendo o background para ciano.
-    - O padrão canônico adota `CUR_SW` exclusivo (16) com máscara XOR calibrada para 512 glifos (`p2 = 238` / `0xee`), invertendo o fundo para branco sólido (`7`) e o texto para preto (`0`) sem tinturas.
-    - **Kernel Boot:** `vt.cur_default=0xee10` (decimal `60944`) no GRUB e `grubby`.
-    - **Persistência sysfs:** `/etc/tmpfiles.d/console-cursor.conf` (`w /sys/module/vt/parameters/cur_default ... 60944` e arrays RGB `default_red`, `default_grn`, `default_blu`).
-    - **Paleta Hardware 16-Color de Alto Contraste (Linux `fbcon`):** Reprograma os 16 registradores DAC do console Linux (`\033]P0...` a `\033]PF...` em `/etc/issue` e VTs ativos, além de `vt.default_{red,grn,blu}` no sysfs) substituindo o azul VGA ilegível (`#0000aa`) por azul celeste (`#569cd6` / `#7dcfff`) e o cinza escuro (`#555555`) por `#858585` sobre fundo `#000000`.
-    - **Login Prompt:** `/etc/issue` configurado com `\033%G\033[?16;238;0c` + sequência de paleta `\033]P...`.
-    - **FreeBSD:** `allscreens_flags` sincronizado dinamicamente via `vt_autofont` (cursor inerentemente estático e paleta legível nativa no driver `vt(4)`).
-    - **Sino de Console (Bell) Silencioso:** Desativado permanentemente via `kern.vt.enable_bell=0` (`/etc/sysctl.conf`) no FreeBSD e `set bell-style none` em `/etc/inputrc`.
+1. **Clone Soberano (`bootstrap.sh`):** Bootstrap em `~/.local/share/setup` (`$SETUP_DIR`) com auto-cura de permissões (`core/perms.sh`) e despacho via `setup.sh`.
+2. **Idempotência & Clean-Break:** Receitas reexecutáveis sem duplicações ou shims legados; hardware específico nunca vaza para `freebsd/` ou `linux/`.
+3. **Orçamento & Estilo POSIX:** Shebang `#!/usr/bin/env sh`, `set -eu`, UI semântica via `core/ui.sh` (`_ui_step`/`_ui_ok`), zero comentários narrativos, `8..128` linhas (teto `256`).
+4. **Escapes ANSI & Quoting:** Sempre use `[ -t 1 ] && echo -n $'\e...'` ou `\x1b` (nunca `\033`/`\001` octais), `"${VAR}"` e redirecionamento `> "/dev/null" 2>&1`.
+5. **Consoles Virtuais TTY (Spleen & Cursor Estático):**
+    - Escalonamento bitmap Spleen: `spleen-8x16` (`<1080p`), `spleen-12x24` (`1080p`), `spleen-16x32` (`1440p`), `spleen-32x64` (`>=2160p`).
+    - Linux `fbcon`: `vt.cur_default=0xee10` (`60944`), `/etc/issue` com `\x1b%G\x1b[?16;238;0c`, paleta DAC `\x1b]P0`..`\x1b]PF` e init neutro (`systemd`, `udev`, `OpenRC`, `SysVinit`).
+    - FreeBSD: serviço `vt_autofont` em `/usr/local/etc/rc.d/` e `kern.vt.enable_bell=0`.
 
 ---
 
-## 4. Checklist de Validação Obrigatório
+## 3. Quality Gates Obrigatórios
 
 ```sh
+make format
+make ci
 git diff --check
-
-python3 .scripts/audit/all.py
-
-./.githooks/pre-commit
 ```

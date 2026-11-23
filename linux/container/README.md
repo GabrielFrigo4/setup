@@ -6,7 +6,7 @@
 
 ## 🎯 Finalidade
 
-Esta pasta centraliza os provisionamentos de containers no Linux em perfeita simetria com o ecossistema FreeBSD Jails ([`../../freebsd/container/`](../../freebsd/container/README.md)):
+Esta pasta centraliza os provisionamentos de containers no Linux em simetria com o ecossistema FreeBSD ([`../../freebsd/container/`](../../freebsd/container/README.md)):
 
 - **Containers de Sistema (Incus / LXC):** Ambientes completos com systemd e kernel compartilhado para desenvolvimento isolado (Clean Host).
 - **Containers de Aplicação (Podman & Docker):** Engines OCI rootless e daemonless para microserviços e desenvolvimento web.
@@ -23,16 +23,9 @@ Esta pasta centraliza os provisionamentos de containers no Linux em perfeita sim
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Provisionar Incus (Containers de Sistema):
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/incus.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/incus.sh) | sh
-```
-
-Provisionar Podman (Containers de Aplicação):
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/podman.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/linux/container/podman.sh) | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/linux/container/incus.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/linux/container/podman.sh"
 ```

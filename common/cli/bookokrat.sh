@@ -17,7 +17,7 @@ _ui_step "Instalando Bookokrat (leitor TUI de PDF, EPUB e DjVu)..."
 
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes textproc/bookokrat
-elif command -v curl > "/dev/null" 2>&1 && command -v tar > "/dev/null" 2>&1; then
+elif [ "$(uname -s)" = "Linux" ] && command -v curl > "/dev/null" 2>&1 && command -v tar > "/dev/null" 2>&1; then
 	_version="v0.3.13"
 	_arch="$(uname -m)"
 	case "${_arch}" in

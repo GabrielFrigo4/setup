@@ -1,52 +1,27 @@
-# 🌿 Version Control Systems (Git & Got)
+# 🌿 Version Control Systems (Git, Got & Git-Crypt)
 
-> Receitas universais em POSIX Shell para configuração declarativa de controle de versão.
+> Receitas universais em POSIX Shell para instalação de ferramentas de controle de versão e criptografia de repositórios.
 
 ---
 
 ## 🎯 Finalidade
 
-Esta pasta fornece scripts de configuração global em POSIX Shell para o **Git** (padrão universal) e para o **Game of Trees (Got)** (VCS nativo do ecossistema OpenBSD/FreeBSD).
-
-Os scripts aplicam boas práticas recomendadas (branch padrão `main`, autocrlf adequado ao SO, merge sem rebase acidental) e consomem credenciais de autor (`GIT_AUTHOR_NAME` e `GIT_AUTHOR_EMAIL`) exportadas pelo **Vault** se estiverem disponíveis no ambiente.
-
-> ℹ️ **Automações Windows (CMD):** As receitas equivalentes para Windows residem em [`../../windows/native/`](../../windows/native/README.md).
+Esta pasta centraliza a instalação multiplataforma de clientes e ferramentas de controle de versão (`git`, `gh`, `git-lfs`, `got`) e criptografia transparente (`git-crypt`).
 
 ---
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo                        | Plataforma                            | Descrição                                                 |
-| :----------------------------- | :------------------------------------ | :-------------------------------------------------------- |
-| [`tools.sh`](tools.sh)         | Linux / FreeBSD / macOS / WSL / MSYS2 | Instalação de Git, GitHub CLI (gh), git-lfs e Got         |
-| [`git.sh`](git.sh)             | Linux / FreeBSD / macOS / WSL / MSYS2 | Configura Git globalmente com variáveis do ambiente/Vault |
-| [`got.sh`](got.sh)             | FreeBSD / OpenBSD / Linux             | Gera `~/.gotconfig` com dados do autor do Vault           |
-| [`git-crypt.sh`](git-crypt.sh) | Linux / FreeBSD / macOS / Windows     | Instalação multiplataforma da ferramenta de criptografia  |
+| Arquivo                        | Plataforma                            | Descrição                                               |
+| :----------------------------- | :------------------------------------ | :------------------------------------------------------ |
+| [`tools.sh`](tools.sh)         | Linux / FreeBSD / macOS / WSL / MSYS2 | Instalação de Git, GitHub CLI (`gh`), `git-lfs` e `got` |
+| [`git-crypt.sh`](git-crypt.sh) | Linux / FreeBSD / macOS / Windows     | Instalação multiplataforma da ferramenta `git-crypt`    |
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Instalar ferramentas de controle de versão (`git`, `gh`, `git-lfs`, `got`):
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/tools.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/tools.sh) | sh
-```
-
-Configurar Git no UNIX:
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git.sh) | sh
-```
-
-Configurar Got no UNIX:
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/got.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/got.sh) | sh
-```
-
-Instalar `git-crypt` no UNIX:
-
-```sh
-curl -fsSL [https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git-crypt.sh](https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/vcs/git-crypt.sh) | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/vcs/tools.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/vcs/git-crypt.sh"
 ```

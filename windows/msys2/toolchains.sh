@@ -4,7 +4,10 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [MSYS2 Toolchains]: Instalando GCC, Clang, LLVM, NASM e AVR (UCRT64)..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+
+_ui_step "Instalando GCC, Clang, LLVM, NASM e AVR (MSYS2 UCRT64)..."
 
 pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-toolchain \
@@ -26,4 +29,4 @@ pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-nasm \
 	mingw-w64-ucrt-x86_64-asm-lsp
 
-echo "✅ [MSYS2 Toolchains]: Compiladores e ferramentas de build instalados com sucesso!"
+_ui_ok "Compiladores e ferramentas de build MSYS2 instalados com sucesso!"

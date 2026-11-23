@@ -1,28 +1,28 @@
-# 😈 FreeBSD — Catálogo de Receitas (Cookbook)
+# 😈 FreeBSD — Catálogo de Receitas
 
-> Diretório raiz de provisionamento para o sistema operacional FreeBSD, organizado por contexto operacional.
+> Diretório raiz de provisionamento portátil para o sistema operacional FreeBSD, organizado por contexto operacional.
 
 ---
 
 ## 🎯 Finalidade
 
-Reúne o ferramental de provisionamento para FreeBSD seguindo a especificação POSIX e o `sh` nativo, dividido por contexto:
+Reúne o ferramental de provisionamento portátil para FreeBSD seguindo a especificação POSIX e o `sh` nativo, dividido por contexto (com quirks de hardware pessoal isolados em [`../hosts/`](../hosts/README.md)):
 
-- **`common/`**: Infraestrutura base universal (elevação `doas`, otimizações de kernel e ferramentas CLI essenciais).
-- **`desktop/`**: Estação de trabalho pessoal com interface KDE Plasma 6 Wayland, aceleração de áudio, rede e ports.
-- **`server/`**: Máquina virtual servidora FreeBSD sob KVM/QEMU com QEMU Guest Agent e scripts de conexão.
-- **`container/`**: Subsistema nativo de FreeBSD Jails e automação BastilleBSD.
+- **`common/`**: Infraestrutura base universal (elevação `doas`, otimizações portáteis de kernel e ferramentas CLI essenciais).
+- **`desktop/`**: Estação de trabalho portátil com KDE Plasma 6 Wayland, console `vt_autofont`, `sndiod`, dispositivos e ports.
+- **`server/`**: Máquina virtual servidora FreeBSD sob KVM/QEMU com QEMU Guest Agent.
+- **`container/`**: Subsistema nativo de FreeBSD Jails, BastilleBSD, hypervisor Bhyve e Podman nativo.
 
 ---
 
 ## 📂 Contextos Operacionais
 
-| Contexto                                | Tipo                  | Descrição                                                                                    |
-| :-------------------------------------- | :-------------------- | :------------------------------------------------------------------------------------------- |
-| **[`common/`](common/README.md)**       | Infraestrutura Base   | Elevação `doas` (0440), parâmetros de kernel `/etc/sysctl.conf` e ferramentas CLI essenciais |
-| **[`desktop/`](desktop/README.md)**     | Estação de Trabalho   | Ambiente KDE Plasma, dispositivos de áudio/vídeo, Wi-Fi e ports                              |
-| **[`server/`](server/README.md)**       | Servidor em VM        | Guest Agent para KVM e scripts de conexão SSH/SCP dinâmicos                                  |
-| **[`container/`](container/README.md)** | Containers de Sistema | Subsistema nativo de Jails e orquestrador BastilleBSD                                        |
+| Contexto                                | Tipo                    | Descrição                                                                             |
+| :-------------------------------------- | :---------------------- | :------------------------------------------------------------------------------------ |
+| **[`common/`](common/README.md)**       | Infraestrutura Base     | Elevação `doas` (`0440`), parâmetros portáteis de kernel e ferramentas CLI essenciais |
+| **[`desktop/`](desktop/README.md)**     | Estação de Trabalho     | Ambiente KDE Plasma 6, console Spleen, dispositivos, Wi-Fi e ports                    |
+| **[`server/`](server/README.md)**       | Servidor em VM          | Guest Agent para KVM e elevação persistente                                           |
+| **[`container/`](container/README.md)** | Containers & Hypervisor | Jails nativas, BastilleBSD, Bhyve com hardening PF parametrizado e Podman OCI         |
 
 ---
 

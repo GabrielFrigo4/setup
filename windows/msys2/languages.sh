@@ -4,7 +4,10 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [MSYS2 Languages]: Instalando runtimes de Python, Lua e Rust..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+
+_ui_step "Instalando runtimes de Python, Lua e Rust (MSYS2 UCRT64)..."
 
 pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-python \
@@ -21,6 +24,14 @@ pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-python-pywin32 \
 	mingw-w64-ucrt-x86_64-python-psutil \
 	mingw-w64-ucrt-x86_64-python-zstandard \
+	mingw-w64-ucrt-x86_64-python-pyqt6 \
+	mingw-w64-ucrt-x86_64-python-numpy \
+	mingw-w64-ucrt-x86_64-python-pillow \
+	mingw-w64-ucrt-x86_64-opencv \
+	mingw-w64-ucrt-x86_64-python-opencv \
+	mingw-w64-ucrt-x86_64-python-rich \
+	mingw-w64-ucrt-x86_64-python-docx \
+	mingw-w64-ucrt-x86_64-python-tqdm \
 	mingw-w64-ucrt-x86_64-lua \
 	mingw-w64-ucrt-x86_64-luajit \
 	mingw-w64-ucrt-x86_64-lua-luarocks \
@@ -40,7 +51,9 @@ python -m pip install --break-system-packages \
 	unix-ar \
 	mako \
 	colored-traceback \
-	weasyprint 2> "/dev/null" || true
+	weasyprint \
+	textual \
+	ollama 2> "/dev/null" || true
 
 luarocks install lua-cjson 2> "/dev/null" || true
 luarocks install luafilesystem 2> "/dev/null" || true
@@ -51,4 +64,4 @@ luarocks install penlight 2> "/dev/null" || true
 
 rustup default stable 2> "/dev/null" || true
 
-echo "✅ [MSYS2 Languages]: Ambientes de linguagem configurados com sucesso!"
+_ui_ok "Ambientes de linguagem MSYS2 configurados com sucesso!"

@@ -20,10 +20,9 @@ Permite compilar localmente ferramentas de pixel art e animação (Aseprite e Li
 | [`aseprite.cmd`](aseprite.cmd)       | Script Batch CMD   | Windows     | Baixa Skia m102 pré-compilado, clona o repo e compila via Ninja/CMake |
 | [`libresprite.cmd`](libresprite.cmd) | Script Batch CMD   | Windows     | Script de build automatizado do LibreSprite para Windows              |
 | [`libresprite.sh`](libresprite.sh)   | Script Shell POSIX | Linux / BSD | Script de build com dependências nativas para sistemas UNIX           |
-| [`ewm.sh`](ewm.sh)                   | Script Shell POSIX | Linux / BSD | Script de build e instalação do módulo nativo EWM via Cargo           |
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
+## 🚀 Como Executar
 
-No Windows, abra o terminal do **Visual Studio Developer Command Prompt** (`VsDevEnv x64`) e execute os comandos descritos em [`aseprite.cmd`](aseprite.cmd) para gerar o binário em sua máquina.
+No Windows, abra o terminal do **Visual Studio Developer Command Prompt** (`VsDevEnv x64`) e execute [`aseprite.cmd`](aseprite.cmd) ou [`libresprite.cmd`](libresprite.cmd) a partir do clone local. No Linux/FreeBSD, execute `sh .scripts/build/libresprite.sh`.

@@ -4,7 +4,10 @@
 # ----------------------------------------------------------------
 set -eu
 
-echo "📦 [MSYS2 Graphics]: Instalando GTK, Qt, Raylib, SDL2, SDL3 e Vulkan..."
+_setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
+. "${_setup_root}/core/ui.sh"
+
+_ui_step "Instalando GTK, Qt, Raylib, SDL2, SDL3 e Vulkan (MSYS2 UCRT64)..."
 
 pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-glib2 \
@@ -33,4 +36,4 @@ pacman --needed --noconfirm -S \
 	mingw-w64-ucrt-x86_64-miniaudio \
 	mingw-w64-ucrt-x86_64-stb
 
-echo "✅ [MSYS2 Graphics]: Bibliotecas gráficas e multimídia instaladas com sucesso!"
+_ui_ok "Bibliotecas gráficas e multimídia MSYS2 instaladas com sucesso!"

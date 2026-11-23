@@ -1,50 +1,41 @@
 # 🗺️ Roadmap & Status — Universal Setup
 
 > **Status:** 🟢 **100% Operacional & Estável — Zero Pendências Ativas**
-> Arquitetura modular `core/`, elevação antifrágil, paridade multiplataforma (Linux, FreeBSD, Windows) e receitas idempotentes foram integralmente concluídas.
+> Arquitetura **Clone Soberano (`bootstrap.sh`) + Clean Host + Separação `hosts/`**, biblioteca `core/pkg.sh`, unificação declarativa no Windows (`winget.json`) e receitas portáteis foram integralmente concluídas.
 
 ---
 
 ## 📊 Matriz de Maturidade
 
-| Área                        |   Status    | Cobertura / Estado                                                                                                                     |
-| :-------------------------- | :---------: | :------------------------------------------------------------------------------------------------------------------------------------- |
-| **Linux Provisioning**      | 🟢 Estável  | Paridade Debian, Arch, Fedora, Void e Alpine com receitas idempotentes                                                                 |
-| **FreeBSD Provisioning**    | 🟢 Estável  | Pacotes `pkg -y`, DRM `drm-66-kmod`, áudio OSS, Bhyve e tunables de kernel                                                             |
-| **Windows Provisioning**    | 🟢 Estável  | Receitas nativas integradas via Winget e delegação ao motor do Shell                                                                   |
-| **Console & TTY**           | 🟢 Estável  | Fontes KMS Terminus 16x32, teclados ABNT2/US e locale soberano UTF-8                                                                   |
-| **Servidores Ubuntu**       | 🟢 Estável  | Baseline minimalista de servidor com apt-clone, tmux e full-upgrade                                                                    |
-| **Orquestrador Central**    | 🟢 Estável  | `setup.sh` desacoplado em receitas atômicas e modulares em `core/`                                                                     |
-| **Compositores Wayland**    | 🟢 Estável  | Suite Wayland (`sway`, `river`, `labwc`, `cage`, `wayfire`, `niri`, `hikari`, `weston`), `wofi`, `fuzzel`, `seatd`, `foot`             |
-| **Ecossistema X11 / Xorg**  | 🟢 Estável  | Servidor Xorg, `xinit`, WMs (`openbox`, `cwm`, `fvwm3`/`fvwm`, `fluxbox`, `icewm`, `jwm`, `pekwm`), `20-tearfree.conf` e `30-tap.conf` |
-| **Mídia & Streaming**       | 🟢 Estável  | `mpv`, `vlc` e `yt-dlp` provisionados de forma cross-platform                                                                          |
-| **Toolchain Rust & EWM**    | 🟢 Estável  | Compilação e setup de `libewm_core.so` e `ewm` Elisp via Smithay / Rust                                                                |
-| **Mouse no Console**        | 🟢 Estável  | Suporte a `gpm` (Linux) e `moused` ABNT2 acelerado (FreeBSD)                                                                           |
-| **Segurança & Privilégios** | 🟢 Estável  | Detecção automática antifrágil de `sudo`/`doas` em `core/elevate.sh`                                                                   |
-| **Emissão Visual TUI**      | 🟢 Estável  | Biblioteca semântica canônica `core/ui.sh` (`_ui_*`) integrada                                                                         |
-| **Quality Gates**           | 🟢 Aprovado | Linters de monólitos, nanos, sintaxe POSIX e réguas 100% aprovados                                                                     |
+| Área                             |   Status    | Cobertura / Estado                                                                                                      |
+| :------------------------------- | :---------: | :---------------------------------------------------------------------------------------------------------------------- |
+| **Clone Soberano**               | 🟢 Estável  | `bootstrap.sh` clona/atualiza em `~/.local/share/setup`, aplica `0755` e dispara `setup.sh`                             |
+| **Módulos Core (`core/`)**       | 🟢 Estável  | `detect.sh`, `elevate.sh`, `pkg.sh` (`_pkg_update`/`_pkg_install`), `perms.sh` e `ui.sh` (`_ui_*`)                      |
+| **Orquestrador (`setup.sh`)**    | 🟢 Estável  | 4 camadas e perfis reais (`base`, `desktop`, `virtualization`, `dev-host`, `host`, `server`, `doctor`, `audit`, `test`) |
+| **Hardware Isolado (`hosts/`)**  | 🟢 Estável  | Quirks físicos opt-in em `hosts/vostro3520-freebsd.sh` com regra Intel Alder Lake `< 15.2` / `>= 15.2`                  |
+| **Linux Provisioning**           | 🟢 Estável  | Paridade Fedora Workstation, Arch Linux, Debian GNU/Linux, servidor Ubuntu e instâncias WSL2 (Fedora, Arch, Debian)     |
+| **FreeBSD Provisioning**         | 🟢 Estável  | Base portátil (`system.sh`, `sysctl.sh`, `vt_autofont`), KDE Plasma 6 Wayland, Jails, Bastille, Podman e Bhyve PF       |
+| **Windows & MSYS2**              | 🟢 Estável  | `winget.json` declarativo, `scoop.cmd` idempotente, `setup.ps1`, `registry/`, `hyper-v.cmd` e 7 receitas UCRT64 `_ui_*` |
+| **ISOs Oficiais (`common/iso`)** | 🟢 Estável  | Motor único `download.sh` com dispatch tabular e verificação criptográfica para 10 sistemas operacionais                |
+| **Stack Python & LibreOffice**   | 🟢 Estável  | `common/languages/python.sh`, `python.cmd`, `common/office/office.sh` (`pkg -> dnf -> apt -> pacman -> winget`)         |
+| **Quality Gates & Doctor**       | 🟢 Aprovado | 9/9 auditores aprovados (incluindo `links.py`, `comments.py`, `skills.py`) e `doctor.sh` multiplataforma                |
 
 ---
 
 ## 🛡️ Atributos Entregues
 
-- **Zero Pendências:** Sistema de provisionamento modular, idempotente e resiliente em 7 plataformas.
-- **Blindagem de GPU Intel Alder Lake (FreeBSD 15.1):** Downgrade seletivo para `drm-66-kmod` com `pkg lock`, desativação de deep sleep e alocação de tunables IPC SHM e ZFS ARC no `/boot/loader.conf`.
-- **Diagnóstico Técnico & Runbook FreeBSD:** Absorção integral da arquitetura LinuxKPI e matriz comparativa 15.0 / 15.1 / 15.2 / 16.0 em `docs/BSD.md`.
-- **Ecossistema X11 Estendido:** Suporte multiplataforma resiliente a WMs X11 (`fvwm3`/`fvwm`, `openbox`, `cwm`, `fluxbox`, `icewm`, `jwm`, `pekwm`), `picom`, `xcompmgr`, `xsettingsd`, `wmctrl`, `rofi`, `dmenu`, `gnome-keyring`, `libsecret`, ícones Adwaita/Breeze, `20-tearfree.conf` (`OutputClass`), `30-tap.conf` (`libinput`) e auto-unlock PAM.
-- **Clean-Break em Editores:** Idempotência estrita antes de clonagem em `editors.sh`, além de inclusão de `libtool` e `cmake` para compilação do `vterm`.
-- **Tipografia, Dicionários & Typesetting:** Dicionários Hunspell bilíngues (`portuguese/hunspell`, `textproc/en-hunspell`), suporte a `typst` e `texlive-plain-generic`.
-- **Tétrade de Micro-Compositores Wayland:** Receitas idempotentes para `sway`, `river`, `labwc`, `cage`, `seatd`, `foot` e `wlr-randr` em Linux e FreeBSD.
-- **Players de Mídia Headless & Desktop:** `mpv`, `vlc` e `yt-dlp` provisionados de forma cross-platform.
-- **Tipografia Terminus Console & TTF:** Suporte integrado a `terminus-fonts`, `terminus-fonts-console` e `terminus-ttf`.
-- **Toolchain Rust & Headers C p/ EWM:** Instalação modular de `cargo`, `libinput`, `libxkbcommon`, `pixman`, `mesa-libgbm` e `hwdata`.
-- **Mouse & Teclado no Console Kernel (Raw TTY):** Configuração de `gpm` no Linux e `moused` ABNT2 acelerado no FreeBSD.
-- **Paridade Cross-Platform Winget:** Suporte a navegadores headless/desktop no Windows via Winget (`Mozilla.Firefox`, `Hibbiki.Chromium`).
-- **Sincronização:** Total aderência aos 22 Princípios de Engenharia UNIX do Universal Environment.
+- **Modelo Clone Soberano + Clean Host:** Substituição definitiva do acoplamento antigo por `bootstrap.sh` (`~/.local/share/setup`) e orquestração em camadas em `setup.sh`.
+- **Portabilidade FreeBSD & Regra `< 15.2`:** Remoção de quirks pessoais de `system.sh` e `sysctl.sh` para `hosts/vostro3520-freebsd.sh`, mantendo `"syslogd_flags=-ss"` e blindagem Intel Alder Lake automática por versão (`freebsd-version -u`).
+- **Hardening PF Parametrizado no Bhyve:** Regras defensivas (`pflog`, `<bruteforce>`, `<lan_nets>`, `if-bound`, `syncookies adaptive`, `urpf-failed`, `graphics_listen="127.0.0.1"`) preservadas com autodetecção segura de `WIRED_IF`, `WIFI_IF`, `ZFS_POOL`, `VM_NET` e `JAIL_NET`.
+- **Unificação Windows & MSYS2:** Manifesto declarativo `windows/native/pkg/winget.json` via `winget import`, `scoop.cmd` idempotente, atalhos PowerShell em `Start Menu\Programs\Custom`, consolidação de `.reg`/`hyper-v.cmd` em `windows/native/` e padronização `_ui_*` nos 7 scripts `windows/msys2/`.
+- **Clean-Break de Fósseis & Redundâncias:** Expurgo de receitas obsoletas de banco de dados no host, frameworks individuais de editores, `choco.cmd`, scripts de servidor/conexão antigos e consolidação de 10 scripts ISO em `common/iso/download.sh`.
+- **Documentação Sincronizada:** Atualização integral de READMEs, `docs/`, regras e skills com zero links quebrados e zero URLs Markdown dentro de blocos de código.
 
 ---
 
 ## 📌 Backlog & Próximos Passos
+
+- Monitorar estabilização upstream do `drm-612-kmod` no FreeBSD 15.2-RELEASE para validação contínua do ramo `>= 15.2` em `hosts/vostro3520-freebsd.sh`.
 
 ---
 

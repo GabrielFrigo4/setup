@@ -10,18 +10,38 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 
 _ui_step "Provisionando suite LibreOffice e integração desktop..."
 
+_install_libreoffice_win() {
+	if command -v soffice.exe > "/dev/null" 2>&1 || [ -f "/c/Program Files/LibreOffice/program/soffice.exe" ] || [ -f "/c/Program Files (x86)/LibreOffice/program/soffice.exe" ]; then
+		_ui_ok "LibreOffice já está instalado no Windows."
+		exit 0
+	fi
+	if command -v winget.exe > "/dev/null" 2>&1; then
+		winget.exe install --id TheDocumentFoundation.LibreOffice --accept-package-agreements --accept-source-agreements
+		_ui_ok "LibreOffice instalado via Winget!"
+		exit 0
+	fi
+	_ui_err "Winget não encontrado para instalar o LibreOffice no Windows."
+	exit 1
+}
+
 ### --------------------------------
 ### 1. INSTALACAO DO PACOTE
 ### --------------------------------
-if command -v dnf > "/dev/null" 2>&1; then
+if command -v pkg > "/dev/null" 2>&1; then
+	${ELEVATE} pkg install --yes editors/libreoffice textproc/hunspell textproc/en-hunspell portuguese/hunspell
+elif command -v dnf > "/dev/null" 2>&1; then
 	${ELEVATE} dnf install --assumeyes libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-math libreoffice-base libreoffice-gtk3 libreoffice-gtk4 hunspell hunspell-en hunspell-pt
 elif command -v apt-get > "/dev/null" 2>&1; then
 	${ELEVATE} apt-get update -qq
 	${ELEVATE} apt-get install --yes libreoffice libreoffice-gtk3 libreoffice-gtk4 hunspell hunspell-en-us hunspell-pt-br
 elif command -v pacman > "/dev/null" 2>&1; then
-	${ELEVATE} pacman -S --needed --noconfirm libreoffice-fresh hunspell hunspell-en_us hunspell-pt-br
-elif command -v pkg > "/dev/null" 2>&1; then
-	${ELEVATE} pkg install -y editors/libreoffice textproc/hunspell textproc/en-hunspell portuguese/hunspell
+	if [ -n "${MSYSTEM-}" ]; then
+		_install_libreoffice_win
+	else
+		${ELEVATE} pacman -S --needed --noconfirm libreoffice-fresh hunspell hunspell-en_us hunspell-pt-br
+	fi
+elif command -v winget.exe > "/dev/null" 2>&1; then
+	_install_libreoffice_win
 fi
 
 ### --------------------------------

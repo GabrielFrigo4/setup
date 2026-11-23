@@ -18,10 +18,8 @@ Esta pasta centraliza o provisionamento do servidor de inferência local **Ollam
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Execute diretamente no terminal:
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/ai/ollama.sh | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/ai/ollama.sh"
 ```

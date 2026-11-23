@@ -1,6 +1,6 @@
-# 🏛️ A Arquitetura da Tríade de Produtividade
+# 🏛️ A Arquitetura do Quarteto de Produtividade
 
-Este documento formaliza a arquitetura e as fronteiras de responsabilidade entre os 3 repositórios que compõem o ambiente de trabalho e desenvolvimento unificado.
+Este documento formaliza a arquitetura e as fronteiras de responsabilidade entre os 4 repositórios centrais que compõem o ambiente de trabalho e desenvolvimento unificado (acompanhados pela **Suíte de Editores** em `Emacs`, `Helix`, `NeoVim` e `Vim`).
 
 ---
 
@@ -8,22 +8,23 @@ Este documento formaliza a arquitetura e as fronteiras de responsabilidade entre
 
 ```mermaid
 flowchart TD
-    subgraph TRIAD ["🏛️ A Tríade de Produtividade"]
-        CONF["⚙️ Configuration (Público)<br/>• Bootstrap do Host (SO)<br/>• Dotfiles Estáticos (Editores, Terminais)<br/>• Linters (.clang-format, prettier)<br/>• Documentação Arquitetural"]
-        SHELL["🐚 Shell (Público)<br/>• Motor Interativo do Terminal<br/>• Prompts Rápidos (Bash, Zsh)<br/>• Aliases e Funções (Library)<br/>• Contextos (Desktop, Server, WSL)"]
-        VAULT["🔐 Vault (Privado: ~/.vault)<br/>• Chaves SSH / PuTTY<br/>• Variáveis .env de Credenciais<br/>• Senhas Wi-Fi / Mapeamento Hosts<br/>• Loaders Multi-Shell (sh, ps1, nu, cmd)"]
+    subgraph QUARTET ["🏛️ O Quarteto de Produtividade"]
+        SETUP["📦 Setup (Público)<br/>• Clone Soberano via bootstrap.sh<br/>• Base Clean Host, Drivers & Containers<br/>• Quirks Opt-In isolados em hosts/<br/>• Documentação Arquitetural"]
+        SHELL["🐚 Shell (Público)<br/>• Motor Interativo do Terminal<br/>• Prompts Rápidos (&lt; 64ms)<br/>• Aliases e Funções (Library)<br/>• Contextos (Desktop, Server, WSL)"]
+        VAULT["🔐 Vault (Privado: ~/.local/share/vault)<br/>• Chaves SSH / PuTTY<br/>• Variáveis .env de Credenciais<br/>• Senhas Wi-Fi / Mapeamento Hosts<br/>• Loaders Multi-Shell (sh, ps1, nu, cmd)"]
+        PROFILE["🎨 Profile (Público: ~/.config/profile)<br/>• Dotfiles Declarativos de Usuário<br/>• Linters, Formatadores & Terminais<br/>• Skills Portáteis de IA"]
     end
 
     subgraph HOST ["💻 Sistema Operacional Host (Clean Host)"]
         GUI["🖥️ Desktop Wayland (GNOME / KDE)"]
-        IDEs["📝 Editores & GUI Apps (Helix, VSCode, Zed)"]
+        APPS["📝 Editores & GUI Apps"]
         TERM["📟 Emuladores de Terminal (Konsole, Windows Terminal)"]
-        HYPER["📦 Hypervisor / Containers (Incus, Docker, Jails, KVM)"]
+        HYPER["📦 Hypervisor / Containers (Incus, Podman, Jails, Bhyve)"]
     end
 
-    CONF -->|provisiona| HOST
-    CONF -->|configura| IDEs
-    CONF -->|configura| TERM
+    SETUP -->|provisiona| HOST
+    PROFILE -->|configura| APPS
+    PROFILE -->|configura| TERM
 
     SHELL -->|executa em| TERM
     SHELL -.->|consome segredos se disponível| VAULT
@@ -36,32 +37,25 @@ flowchart TD
 
 ## 📋 Matriz de Responsabilidades
 
-| Aspecto                 | `Configuration`                                           | `Shell`                                      | `Vault`                                            |
-| :---------------------- | :-------------------------------------------------------- | :------------------------------------------- | :------------------------------------------------- |
-| **Visibilidade**        | Público (GitHub)                                          | Público (GitHub)                             | **Privado** (GitHub/Local)                         |
-| **Natureza**            | **Cookbook / Catálogo de Receitas** e Dotfiles Estáticos  | Motor Dinâmico (Runtime e Linha de Comando)  | Dados Sensíveis e Carregadores Atômicos            |
-| **Local de Instalação** | **Zero-Clone** (Acesso direto pelo GitHub / Cópia & Cola) | `/usr/local/share/shell` ou `~/.shell`       | `${HOME}/.vault`                                   |
-| **Público-Alvo**        | Consulta web e setup pontual de softwares                 | Nova sessão aberta de terminal               | Injeção de credenciais sob demanda                 |
-| **Tolerância a Falhas** | Receitas idempotentes e atômicas                          | Degrada graciosamente se o Vault não existir | Audita permissões (`0600`/`0700`) e protege chaves |
+| Aspecto                 | `Setup`                                                                 | `Shell`                                            | `Vault`                                             | `Profile`                                       |
+| :---------------------- | :---------------------------------------------------------------------- | :------------------------------------------------- | :-------------------------------------------------- | :---------------------------------------------- |
+| **Visibilidade**        | Público (GitHub)                                                        | Público (GitHub)                                   | **Privado** (GitHub/Local)                          | Público (GitHub)                                |
+| **Natureza**            | Provisionamento de SO, Drivers, Containers e Quirks `hosts/`            | Motor Dinâmico (Runtime e Linha de Comando)        | Dados Sensíveis e Loaders Multi-Shell               | Dotfiles declarativos de usuário e skills de IA |
+| **Local de Instalação** | `~/.local/share/setup` (Clone Soberano via `bootstrap.sh`)              | `/usr/local/share/shell` ou `~/.local/share/shell` | `~/.local/share/vault` (XDG Data)                   | `~/.config/profile` ou `~/.local/share/profile` |
+| **Público-Alvo**        | Provisionamento idempotente de sistema                                  | Nova sessão aberta de terminal                     | Injeção silenciosa de credenciais                   | Sincronização de dotfiles e editores no `$HOME` |
+| **Tolerância a Falhas** | Receitas idempotentes com detecção via `core/detect.sh` e `core/pkg.sh` | Degrada graciosamente sem o Vault                  | Audita permissões (`0600`/`0700`) via `vault-perms` | Symlinks declarativos com auto-cura             |
 
 ---
 
 ## 🔄 Fluxo de Boot e Integração
 
-1. **Instalação do SO e Aplicação de Receitas (`Setup`):**
-    - O usuário instala o sistema base (Fedora, FreeBSD ou Windows).
-    - Acessa o repositório pelo GitHub e executa as receitas atômicas desejadas (ex: `linux/desktop/fedora/desktop/gnome.sh`, `freebsd/desktop/system/system.sh`).
-    - O sistema ganha utilitários essenciais, drivers, ZFS, interface gráfica e containers.
-
-2. **Instalação dos Dotfiles de Softwares (`Profile`):**
-    - Os arquivos declarativos de editores e ferramentas (`editors/`, `tools/`) são aplicados no host.
-
-3. **Clonagem dos Repositórios Ativos:**
-    - O `Shell` é clonado para `/usr/local/share/shell` e instalado via `sh install.sh --context desktop`.
-    - O `Vault` é clonado em `~/.vault` e protegido com permissões restritas.
-
-4. **Sessão de Terminal Interativa:**
-    - O terminal inicia carregando `Shell/core/environment.sh`.
-    - O Shell detecta o SO e contexto, e verifica se `~/.vault/vault.sh` existe.
-    - O Vault exporta variáveis de ambiente de forma silenciosa.
-    - O tema e o prompt são renderizados em menos de 64ms.
+1. **Provisionamento do SO via Clone Soberano (`Setup`):**
+    - O usuário executa `curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap.sh | sh -s -- --profile=base` (ou desktop/virtualization/host).
+    - O bootstrap clona `Setup` em `~/.local/share/setup` e executa `setup.sh` localmente com todos os módulos em `core/`.
+    - O sistema recebe base portátil, ZFS, interface gráfica Wayland e camada de containers/hypervisors.
+2. **Clonagem dos Repositórios Residentes (`Shell`, `Vault`, `Profile`):**
+    - O **Shell** é clonado em `/usr/local/share/shell` e instalado via `sh install.sh --context desktop`.
+    - O **Vault** é clonado em `~/.local/share/vault` e protegido com permissões `0700`/`0600`.
+    - O **Profile** é clonado em `~/.config/profile` e sincroniza dotfiles, formatadores e skills de IA.
+3. **Sessão de Terminal Interativa:**
+    - O terminal carrega `Shell/core/environment.sh`, que resolve dinamicamente o Vault (`~/.local/share/vault/vault.sh`), exporta chaves/variáveis em silêncio e renderiza o prompt em menos de 64ms.

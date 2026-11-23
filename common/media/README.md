@@ -19,10 +19,8 @@ Esta pasta centraliza a instalação de ferramentas essenciais de multimídia: *
 
 ---
 
-## 🚀 Como Usar via GitHub (Zero-Clone)
-
-Execute diretamente no terminal:
+## 🚀 Como Executar (Clone Soberano)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/media/cli.sh | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/media/cli.sh"
 ```
