@@ -56,13 +56,11 @@ O [Ollama](https://ollama.com) é o servidor de inferência local que expõe uma
 
 ### Receita Automatizada Universal (Multi-OS)
 
-Para instalar o Ollama e o SDK Python com um comando cross-platform:
+Execute a receita a partir do Clone Soberano provisionado pelo [`bootstrap.sh`](BOOTSTRAP.md) (pois [`../common/ai/ollama.sh`](../common/ai/ollama.sh) carrega `core/ui.sh` e `core/elevate.sh` relativos à árvore local e configura a rotação em `/usr/local/etc/newsyslog.conf.d/ollama.conf` no FreeBSD):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/common/ai/ollama.sh | sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/ai/ollama.sh"
 ```
-
-Também disponível no catálogo local: [`../common/ai/ollama.sh`](../common/ai/ollama.sh).
 
 ### Instalação Manual por Plataforma
 
@@ -85,11 +83,11 @@ Baixe o instalador oficial em [ollama.com/download](https://ollama.com/download/
 ### Configuração de Serviço (FreeBSD)
 
 ```sh
-sudo sysrc ollama_enable="YES"
-sudo sysrc ollama_user="$(id -un)"
-sudo sysrc ollama_use_vulkan="1"
+doas sysrc ollama_enable="YES"
+doas sysrc ollama_user="$(id -un)"
+doas sysrc ollama_use_vulkan="1"
 
-sudo service ollama start
+doas service ollama start
 ```
 
 ### Configuração de Serviço (Linux — systemd)

@@ -7,18 +7,18 @@
 
 ## 📊 Matriz de Maturidade
 
-| Área                             |   Status    | Cobertura / Estado                                                                                                      |
-| :------------------------------- | :---------: | :---------------------------------------------------------------------------------------------------------------------- |
-| **Clone Soberano**               | 🟢 Estável  | `bootstrap.sh` clona/atualiza em `~/.local/share/setup`, aplica `0755` e dispara `setup.sh`                             |
-| **Módulos Core (`core/`)**       | 🟢 Estável  | `detect.sh`, `elevate.sh`, `pkg.sh` (`_pkg_update`/`_pkg_install`), `perms.sh` e `ui.sh` (`_ui_*`)                      |
-| **Orquestrador (`setup.sh`)**    | 🟢 Estável  | 4 camadas e perfis reais (`base`, `desktop`, `virtualization`, `dev-host`, `host`, `server`, `doctor`, `audit`, `test`) |
-| **Hardware Isolado (`hosts/`)**  | 🟢 Estável  | Quirks físicos opt-in em `hosts/vostro3520-freebsd.sh` com regra Intel Alder Lake `< 15.2` / `>= 15.2`                  |
-| **Linux Provisioning**           | 🟢 Estável  | Paridade Fedora Workstation, Arch Linux, Debian GNU/Linux, servidor Ubuntu e instâncias WSL2 (Fedora, Arch, Debian)     |
-| **FreeBSD Provisioning**         | 🟢 Estável  | Base portátil (`system.sh`, `sysctl.sh`, `vt_autofont`), KDE Plasma 6 Wayland, Jails, Bastille, Podman e Bhyve PF       |
-| **Windows & MSYS2**              | 🟢 Estável  | `winget.json` declarativo, `scoop.cmd` idempotente, `setup.ps1`, `registry/`, `hyper-v.cmd` e 7 receitas UCRT64 `_ui_*` |
-| **ISOs Oficiais (`common/iso`)** | 🟢 Estável  | Motor único `download.sh` com dispatch tabular e verificação criptográfica para 10 sistemas operacionais                |
-| **Stack Python & LibreOffice**   | 🟢 Estável  | `common/languages/python.sh`, `python.cmd`, `common/office/office.sh` (`pkg -> dnf -> apt -> pacman -> winget`)         |
-| **Quality Gates & Doctor**       | 🟢 Aprovado | 9/9 auditores aprovados (incluindo `links.py`, `comments.py`, `skills.py`) e `doctor.sh` multiplataforma                |
+| Área                             |   Status    | Cobertura / Estado                                                                                                         |
+| :------------------------------- | :---------: | :------------------------------------------------------------------------------------------------------------------------- |
+| **Clone Soberano**               | 🟢 Estável  | `bootstrap.sh` clona/atualiza em `~/.local/share/setup`, aplica `0755` e dispara `setup.sh`                                |
+| **Módulos Core (`core/`)**       | 🟢 Estável  | `detect.sh`, `elevate.sh`, `pkg.sh` (`_pkg_update`/`_pkg_install`), `perms.sh` e `ui.sh` (`_ui_*`)                         |
+| **Orquestrador (`setup.sh`)**    | 🟢 Estável  | 4 camadas e perfis reais (`base`, `desktop`, `virtualization`, `dev-host`, `host`, `server`, `doctor`, `audit`, `test`)    |
+| **Hardware Isolado (`hosts/`)**  | 🟢 Estável  | Quirks físicos opt-in em `hosts/vostro3520-freebsd.sh` (Intel Alder Lake `< 15.2` / `>= 15.2`, `net-auto-switch`/`rtsold`) |
+| **Linux Provisioning**           | 🟢 Estável  | Paridade Fedora Workstation, Arch Linux, Debian GNU/Linux, servidor Ubuntu e instâncias WSL2 (Fedora, Arch, Debian)        |
+| **FreeBSD Provisioning**         | 🟢 Estável  | Base portátil (`system.sh`, `sysctl.sh`, `vt_autofont`), KDE Plasma 6 Wayland, `ly.sh`, Jails, Bastille, Podman e Bhyve PF |
+| **Windows & MSYS2**              | 🟢 Estável  | `winget.json` declarativo, `scoop.cmd` idempotente, `setup.ps1`, `registry/`, `hyper-v.cmd` e 7 receitas UCRT64 `_ui_*`    |
+| **ISOs Oficiais (`common/iso`)** | 🟢 Estável  | Motor único `download.sh` com dispatch tabular e verificação criptográfica para 10 sistemas operacionais                   |
+| **Stack Python & LibreOffice**   | 🟢 Estável  | `common/languages/python.sh`, `python.cmd`, `common/office/office.sh` (`pkg -> dnf -> apt -> pacman -> winget`)            |
+| **Quality Gates & Doctor**       | 🟢 Aprovado | 9/9 auditores aprovados (incluindo `links.py`, `comments.py`, `skills.py`) e `doctor.sh` multiplataforma                   |
 
 ---
 

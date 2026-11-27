@@ -36,6 +36,13 @@ Este guia orienta a evolução e auditoria do repositório **Setup** sob o model
     - Linux `fbcon`: `vt.cur_default=0xee10` (`60944`), `/etc/issue` com `\x1b%G\x1b[?16;238;0c`, paleta DAC `\x1b]P0`..`\x1b]PF` e init neutro (`systemd`, `udev`, `OpenRC`, `SysVinit`).
     - FreeBSD: serviço `vt_autofont` em `/usr/local/etc/rc.d/` e `kern.vt.enable_bell=0`.
 
+### Armadilhas Conhecidas (FreeBSD & Auditores)
+
+- **Rede FreeBSD (`rtsol` / `rtsold` / `devd`):** `ifconfig_<if>_ipv6="inet6 accept_rtadv"` trava o boot sem cabo via `rtsol` síncrono; `rtsold` força `IFF_UP` em toda interface passada via argv (gerencie `rtsold` só na interface ativa com `inet6 auto_linklocal` e `background_dhclient="YES"`). `devd -d` falha com `Device busy` se `devd` estiver ativo (`/dev/devctl` exclusivo).
+- **Console `vt(4)` (`teken`) & `ly`:** `vt(4)` aceita apenas SGR 8/16/256 cores (`ly` requer `full_color = false`); `/etc/gettytab` exige continuação real `\<newline>` (`cgetent(3)`); evite `kill -HUP 1` ao ajustar `/etc/ttys` em sessão Wayland ativa.
+- **Higiene FreeBSD:** ZVOL de swap com `org.freebsd:swap=on` já é montado pelo ZFS (não duplicar no `/etc/fstab`); edições em `/etc/login.conf` exigem `cap_mkdb /etc/login.conf`; serviços ruidosos (`ly`, `ollama`) devem registrar rotação em `/usr/local/etc/newsyslog.conf.d/`.
+- **Auditores & Portabilidade BSD:** `comments.py` e `syntax.py` validam inclusive heredocs em `.sh` (zero comentários `#` e `"/dev/null"` sempre com aspas); prefira escrita atômica `mktemp` + `cp` em vez de `sed -i`.
+
 ---
 
 ## 3. Quality Gates Obrigatórios

@@ -20,9 +20,9 @@ Como limitamos ao máximo o uso de comandos administrativos diretos no host grá
 
 - **Caminho do Agente no FreeBSD:**
     ```text
-    /usr/local/libexec/polkit-kde-authentication-agent-1
+    /usr/local/lib/libexec/polkit-kde-authentication-agent-1
     ```
-    _(Diferente do Linux, onde fica em `/usr/lib/...`, no FreeBSD softwares de terceiros residem estritamente em `/usr/local/`)_.
+    _(Diferente do Linux, onde fica em `/usr/lib/...` ou `/usr/libexec/...`, no FreeBSD o KDE Plasma 6 instala o agente sob `/usr/local/lib/libexec/`)_.
 - **pkexec:** Para rodar aplicações gráficas de manutenção de disco ou partições com segurança, utilize `pkexec` para invocar a janela de autorização nativa do KDE.
 
 ---
@@ -39,8 +39,9 @@ O repositório **[Shell](https://github.com/GabrielFrigo4/shell)** traz integra�
 
 ## 🚀 Como Executar
 
-Para instalar e configurar o ambiente KDE Plasma no FreeBSD:
+Para instalar e configurar o ambiente KDE Plasma 6 e o gerenciador de login Ly no FreeBSD (a receita `gui/kde.sh` também aplica override XDG `Hidden=true` em `DiscoverNotifier` para evitar consumo contínuo de CPU pelo `packagekitd`, pareando com `gui/ly.sh` em `ttyv1`):
 
 ```sh
-sh freebsd/desktop/gui/kde.sh
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/freebsd/desktop/gui/kde.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/freebsd/desktop/gui/ly.sh"
 ```

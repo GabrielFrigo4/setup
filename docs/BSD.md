@@ -65,7 +65,7 @@ Seguindo a simetria do repositório, as receitas portáteis do FreeBSD residem e
 
 - **[`common/`](../freebsd/common/README.md):** `system/sysctl.sh` (parâmetros portáteis de kernel, descritores e IPC SHM). Elevação `common/system/nopass.sh`, ferramentas de terminal e compiladores residem em [`common/`](../common/README.md).
 - **[`container/`](../freebsd/container/README.md):** `jails.sh` (Jails nativas), `bastille.sh` (BastilleBSD), `bhyve.sh` (hypervisor + PF hardening parametrizado) e `podman.sh` (Podman OCI nativo).
-- **[`desktop/`](../freebsd/desktop/README.md):** `system/system.sh` portátil (grupos, `vt_autofont`, `sndiod`, `syslogd_flags=-ss`), `gui/kde.sh` (KDE Plasma 6), `ports/ports.sh` e `emulation/compat.sh` (Wireshark universal em [`common/security/`](../common/security/README.md)).
+- **[`desktop/`](../freebsd/desktop/README.md):** `system/system.sh` portátil (grupos, `vt_autofont`, `sndiod`, `syslogd_flags=-ss`), `gui/kde.sh` (KDE Plasma 6), `gui/ly.sh` (Ly TUI em `vt(4)`), `ports/ports.sh` e `emulation/compat.sh` (Wireshark universal em [`common/security/`](../common/security/README.md)).
 - **[`server/`](../freebsd/server/README.md):** `system/guest.sh` (QEMU Guest Agent para VM KVM).
 - **[`hosts/`](../hosts/README.md):** `vostro3520-freebsd.sh` (opt-in para Intel Alder Lake DRM `< 15.2` / `>= 15.2`, `re0`, `rtw880`, áudio e ACPI).
 
@@ -182,7 +182,7 @@ Para restabelecer estabilidade imediata e determinística em hardware Intel Alde
     sysctl vfs.zfs.arc.max vfs.zfs.arc.min kern.maxfiles kern.ipc.shmmax
     sysctl compat.linuxkpi.i915_enable_psr compat.linuxkpi.i915_enable_psr2_sel_fetch compat.linuxkpi.i915_enable_fbc compat.linuxkpi.i915_enable_dc compat.linuxkpi.i915_enable_guc
     dmesg | grep -iE "drmn0|guc|huc"
-    sudo vm list
+    doas vm list
     vainfo
     ```
 
@@ -192,17 +192,17 @@ Para restabelecer estabilidade imediata e determinística em hardware Intel Alde
 
 - **Prevenção de Esgotamento de Buffers de Transmissão:** A varredura contínua de redes em background (_background scan_) do driver `rtw88` acarreta congestionamento na fila durante mudanças de estado `AUTH`, culminando no erro `dhclient: send_packet: No buffer space available`. Desativa-se o roaming em background no `/etc/rc.conf`:
     ```sh
-    sysrc ifconfig_wlan0="WPA DHCP -bgscan powersave"
+    sysrc ifconfig_wlan0="WPA DHCP -bgscan"
     ```
-- **Isolamento Dinâmico de Interfaces Ethernet e Wi-Fi:** O daemon `devd` desativa a interface de rádio `wlan0` no evento `LINK_UP` do cabo Ethernet (`re0`) e a reativa no evento `LINK_DOWN`, eliminando contenção de recursos na camada `LinuxKPI`.
+- **Isolamento Dinâmico de Interfaces Ethernet e Wi-Fi:** O daemon `devd` desativa a interface de rádio `wlan0` no evento `LINK_UP` do cabo Ethernet (`re0`) e a reativa no evento `LINK_DOWN`, eliminando contenção de recursos na camada `LinuxKPI`. As interfaces usam `inet6 auto_linklocal` e `background_dhclient="YES"`, enquanto `/usr/local/sbin/net-auto-switch` gerencia uma instância dedicada de `rtsold -i -F -m` apenas na interface ativa (evitando o travamento síncrono do `rtsol` no boot sem cabo e impedindo que o `rtsold` reative a interface inativa).
 - **Avisos Não-Críticos no Console Virtual:** Entradas como `rtw880: lkpi_iv_newstate: error 95 during state transition` e `pulseaudio: Failed to load module "module-x11-xsmp"` refletem mensagens informativas do handshake WPA e da ausência de sessão X11 sob compositores Wayland nativos, não guardando correlação com falhas de GPU.
 
 #### E. Sanitização da Lista de Módulos de Kernel (`kld_list`)
 
-A declaração no `/etc/rc.conf` segue a hierarquia determinística de carregamento:
+A declaração no `/etc/rc.conf` utiliza nomes curtos canônicos dos módulos (preferidos sobre caminhos absolutos `/boot/modules/*.ko`) seguindo a hierarquia determinística de carregamento:
 
 ```text
-/boot/modules/i915kms.ko /boot/kernel/cuse.ko /boot/kernel/fusefs.ko /boot/kernel/ext2fs.ko vmm nmdm
+cuse ext2fs vmm nmdm i915kms fusefs
 ```
 
 ---
@@ -217,4 +217,5 @@ No FreeBSD, a gestão de consoles virtuais e telas de texto segue diretrizes est
 - **Resolução Nativa Soberana (Sem Limite Artificial de GOP):** O ecossistema opera estritamente na maior resolução nativa suportada pelo painel (Full HD, 2K, 4K UHD) detectada dinamicamente pelo bootloader UEFI e mantida pelo driver KMS. Não utilizamos a diretiva de truncamento de resolução (`efi_max_resolution="1080p"` no `/boot/loader.conf`), pois a adequação ergonômica em telas HiDPI/4K é realizada diretamente na camada tipográfica (escalonando o glifo da fonte bitmap `spleen` para `16x32` ou `32x64`), preservando a fidelidade nativa do hardware.
 - **Invariante do Cursor Estático no `vt(4)`:** O driver moderno `vt(4)` desenha o cursor como um bloco invertido estático diretamente no framebuffer (`sys/dev/vt/vt_core.c`). O kernel do FreeBSD não possui temporizador de pisque no `vt(4)`, tornando o cursor estático por concepção arquitetural. Parâmetros legados de cursor como `vidcontrol -c` pertenciam ao arcaico `sc(4)` dos anos 90 e são obsoletos/incompatíveis com `vt(4)` (rejeitados com erro de ioctl).
 - **Silenciamento do Alerta Sonoro (`kern.vt.enable_bell=0`):** A campainha de sistema do console virtual `vt(4)` é desabilitada globalmente via `sysctl kern.vt.enable_bell=0` (persistido em `/etc/sysctl.conf`), eliminando bipes acústicos durante autocompletação ou limites de buffer.
+- **Gerenciador de Login TUI Ly (`gui/ly.sh`):** Como o emulador de terminal `teken` do `vt(4)` suporta apenas 8/16/256 cores SGR (sem truecolor 24-bit `38;2;R;G;B`), [`freebsd/desktop/gui/ly.sh`](../freebsd/desktop/gui/ly.sh) fixa `full_color = false`, `start_cmd = null`, `x_vt = 9`, entradas limpas em `/etc/gettytab` (`ly_wrapper`) e `/etc/ttys` (`ttyv1`), além de rotação em `/usr/local/etc/newsyslog.conf.d/ly.conf`.
 - **Invariante do Modo Monousuário (_Single-User Mode_):** Ao inicializar em modo monousuário (`boot -s`), o kernel e o `/sbin/init` executam **incondicionalmente o `sh` estático da base**, ignorando shells configurados no `/etc/passwd` ou `shell_target`. O sistema de arquivos raiz (`/`) está montado em modo somente-leitura (`ro`), `/usr/local` não está montado e os subsistemas PAM e `login` não entram em execução, garantindo que o operador nunca sofra _lock out_.
