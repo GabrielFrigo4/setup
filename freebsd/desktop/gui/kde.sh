@@ -32,15 +32,25 @@ ${ELEVATE} pkg install -y \
 [ "$(sysrc -n dbus_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc dbus_enable="YES" > "/dev/null" 2>&1 || true
 [ "$(sysrc -n seatd_enable 2> "/dev/null" || true)" != "YES" ] && ${ELEVATE} sysrc seatd_enable="YES" > "/dev/null" 2>&1 || true
 
+pkg info -e gimp > "/dev/null" 2>&1 && pkg info -e gimp3-app > "/dev/null" 2>&1 && ${ELEVATE} pkg delete --yes gimp > "/dev/null" 2>&1 || true
+[ -d "/usr/local/etc/pulse" ] && { ${ELEVATE} mkdir -p "/usr/local/etc/pulse/default.pa.d"; ${ELEVATE} chmod 0755 "/usr/local/etc/pulse/default.pa.d"; } || true
+
 ### --------------------------------
 ### DESATIVACAO DO BALOO INDEXER
 ### --------------------------------
-_ui_sub "Desativando indexador de arquivos Baloo..."
+_ui_sub "Desativando indexador de arquivos Baloo e DiscoverNotifier..."
 
 TARGET_USER="${DOAS_USER:-${SUDO_USER:-$(id -un)}}"
 TARGET_HOME="$(getent passwd "${TARGET_USER}" 2> "/dev/null" | cut -d: -f6 || echo "${HOME}")"
 
 if [ -n "${TARGET_HOME}" ] && [ -d "${TARGET_HOME}" ]; then
+	mkdir -p "${TARGET_HOME}/.config/autostart"
+	cat <<- "EOF" > "${TARGET_HOME}/.config/autostart/org.kde.discover.notifier.desktop"
+		[Desktop Entry]
+		Hidden=true
+	EOF
+	chown "${TARGET_USER}" "${TARGET_HOME}/.config/autostart/org.kde.discover.notifier.desktop" 2> "/dev/null" || true
+	chmod 0644 "${TARGET_HOME}/.config/autostart/org.kde.discover.notifier.desktop" 2> "/dev/null" || true
 	_baloo_cfg="${TARGET_HOME}/.config/baloofilerc"
 	[ -d "${TARGET_HOME}/.config" ] || mkdir -p "${TARGET_HOME}/.config"
 	if [ -f "${_baloo_cfg}" ]; then

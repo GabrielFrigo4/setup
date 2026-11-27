@@ -108,7 +108,15 @@ if zpool list -H -o name zroot > "/dev/null" 2>&1 && ! zfs list -H -o name zroot
 fi
 
 if [ -e "/dev/zvol/zroot/swap" ]; then
-	if ! grep -q "/dev/zvol/zroot/swap" "/etc/fstab" 2> "/dev/null"; then
+	if [ "$(zfs get -H -o value org.freebsd:swap zroot/swap 2> "/dev/null" || true)" = "on" ]; then
+		if grep -q "/dev/zvol/zroot/swap" "/etc/fstab" 2> "/dev/null"; then
+			_tmp="$(mktemp "/tmp/fstab.XXXXXX")"
+			grep -v "/dev/zvol/zroot/swap" "/etc/fstab" > "${_tmp}" || true
+			${ELEVATE} cp "${_tmp}" "/etc/fstab"
+			${ELEVATE} chmod 0644 "/etc/fstab"
+			rm -f "${_tmp}"
+		fi
+	elif ! grep -q "/dev/zvol/zroot/swap" "/etc/fstab" 2> "/dev/null"; then
 		printf "/dev/zvol/zroot/swap\tnone\tswap\tsw\t0\t0\n" | ${ELEVATE} tee -a "/etc/fstab" > "/dev/null"
 	fi
 	swapinfo 2> "/dev/null" | grep -q "/dev/zvol/zroot/swap" || ${ELEVATE} swapon /dev/zvol/zroot/swap 2> "/dev/null" || true

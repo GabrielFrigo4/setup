@@ -33,7 +33,7 @@ for _sr in \
 	"moused_nondefault_enable=YES" \
 	"moused_flags=-A 1.5,1.5 -a 1.2" \
 	"keyrate=fast" \
-	"background_dhclient=NO" \
+	"background_dhclient=YES" \
 	"defaultroute_delay=5" \
 	"keymap=br.kbd" \
 	"powerd_enable=YES" \
@@ -84,6 +84,12 @@ for _sc in "kern.coredump=0" "kern.vt.enable_bell=0"; do
 	${ELEVATE} sysctl "${_sc}" > "/dev/null" 2>&1 || true
 	grep -qxF "${_sc}" "/etc/sysctl.conf" 2> "/dev/null" || echo "${_sc}" | ${ELEVATE} tee -a "/etc/sysctl.conf" > "/dev/null"
 done
+
+if [ -f "/etc/login.conf" ] && { [ ! -f "/etc/login.conf.db" ] || [ "/etc/login.conf" -nt "/etc/login.conf.db" ]; }; then
+	${ELEVATE} cap_mkdb "/etc/login.conf" > "/dev/null" 2>&1 || true
+fi
+
+${ELEVATE} rm -f "/usr/local/etc/cron.d/battery-shutdown" "/var/log/battery-shutdown" "/root/.battery_data" 2> "/dev/null" || true
 
 mkdir -p "${HOME}/Workspace"
 

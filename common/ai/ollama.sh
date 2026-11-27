@@ -8,7 +8,20 @@ _setup_root="$(cd "$(dirname "$0")/../.." && pwd)"
 . "${_setup_root}/core/ui.sh"
 . "${_setup_root}/core/elevate.sh"
 
+_setup_freebsd_logrotate() {
+	if [ "$(uname -s)" = "FreeBSD" ]; then
+		_ol_user="$(sysrc -n ollama_user 2> "/dev/null" || echo "nobody")"
+		_ol_log="$(sysrc -n ollama_log 2> "/dev/null" || echo "/var/log/ollama-${_ol_user}.log")"
+		[ -n "${_ol_user}" ] || _ol_user="nobody"
+		[ -n "${_ol_log}" ] || _ol_log="/var/log/ollama-${_ol_user}.log"
+		${ELEVATE} mkdir -p "/usr/local/etc/newsyslog.conf.d"
+		printf "%s\t%s:wheel\t640\t5\t2048\t*\tJNC\n" "${_ol_log}" "${_ol_user}" | ${ELEVATE} tee "/usr/local/etc/newsyslog.conf.d/ollama.conf" > "/dev/null"
+		${ELEVATE} chmod 0644 "/usr/local/etc/newsyslog.conf.d/ollama.conf"
+	fi
+}
+
 if command -v ollama > "/dev/null" 2>&1; then
+	_setup_freebsd_logrotate
 	_ui_ok "Ollama já está instalado."
 	exit 0
 fi
@@ -18,6 +31,7 @@ _ui_step "Instalando Ollama e biblioteca Python..."
 if command -v pkg > "/dev/null" 2>&1; then
 	${ELEVATE} pkg install --yes misc/ollama
 	${ELEVATE} sysrc ollama_enable="YES" > "/dev/null" 2>&1 || true
+	_setup_freebsd_logrotate
 	${ELEVATE} service ollama start > "/dev/null" 2>&1 || true
 	if command -v pip > "/dev/null" 2>&1; then
 		pip install ollama > "/dev/null" 2>&1 || true

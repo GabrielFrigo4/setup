@@ -12,8 +12,15 @@ _ui_step "Aplicando ajustes de hardware para Dell Vostro 3520 (FreeBSD)..."
 
 _set_kv() {
 	_f="$1"; _k="$2"; _v="$3"; _q="${4:-}"
-	if grep -q "^[[:space:]]*${_k}=" "${_f}" 2> "/dev/null"; then ${ELEVATE} sed -i '' "s|^[[:space:]]*${_k}=.*|${_k}=${_q}${_v}${_q}|" "${_f}" 2> "/dev/null" || true
-	else echo "${_k}=${_q}${_v}${_q}" | ${ELEVATE} tee -a "${_f}" > "/dev/null"; fi
+	if grep -q "^[[:space:]]*${_k}=" "${_f}" 2> "/dev/null"; then
+		_tmp="$(mktemp "/tmp/vostro_kv.XXXXXX")"
+		sed "s|^[[:space:]]*${_k}=.*|${_k}=${_q}${_v}${_q}|" "${_f}" > "${_tmp}"
+		${ELEVATE} cp "${_tmp}" "${_f}"
+		${ELEVATE} chmod 0644 "${_f}"
+		rm -f "${_tmp}"
+	else
+		echo "${_k}=${_q}${_v}${_q}" | ${ELEVATE} tee -a "${_f}" > "/dev/null"
+	fi
 }
 ### --------------------------------
 ### INTEL ALDER LAKE DRM
@@ -57,27 +64,49 @@ fi
 ### --------------------------------
 pkg info -e realtek-re-kmod > "/dev/null" 2>&1 || ${ELEVATE} pkg install --yes net/realtek-re-kmod 2> "/dev/null" || true
 pkg info -x "^wifi-firmware-rtw88-kmod" > "/dev/null" 2>&1 || ${ELEVATE} pkg install --yes wifi-firmware-rtw88-kmod-rtw8821c 2> "/dev/null" || true
-for _sr in "ifconfig_re0=DHCP" "ifconfig_re0_ipv6=inet6 accept_rtadv" "wlans_rtw880=wlan0" \
-	"create_args_wlan0=country BR regdomain FCC" "wpa_supplicant_enable=YES" "ifconfig_wlan0=WPA DHCP -bgscan" "net_isolation_enable=YES"; do
+for _sr in "ifconfig_re0=DHCP" "ifconfig_re0_ipv6=inet6 auto_linklocal" "wlans_rtw880=wlan0" \
+	"create_args_wlan0=country BR regdomain FCC" "wpa_supplicant_enable=YES" "ifconfig_wlan0=WPA DHCP -bgscan" \
+	"ifconfig_wlan0_ipv6=inet6 auto_linklocal" "rtsold_enable=NO" "background_dhclient=YES" "net_isolation_enable=YES"; do
 	${ELEVATE} sysrc "${_sr}" > "/dev/null" 2>&1 || true
 done
-${ELEVATE} sysrc -x ifconfig_ue0 > "/dev/null" 2>&1 || true
+${ELEVATE} sysrc -x ifconfig_ue0 rtsold_flags > "/dev/null" 2>&1 || true
 
 cat <<- "EOF" | ${ELEVATE} tee "/usr/local/sbin/net-auto-switch" > "/dev/null"
 	#!/usr/bin/env sh
 	set -eu
 	_act="${1:-auto}"
 	_wired_up() { ifconfig re0 2> "/dev/null" | grep -q "status: active"; }
-	if [ "${_act}" = "wired" ] || { [ "${_act}" = "auto" ] && _wired_up; }; then
-		service dhclient stop wlan0 > "/dev/null" 2>&1 || true; ifconfig wlan0 down > "/dev/null" 2>&1 || true
+	_stop_rtsold() { service rtsold onestop > "/dev/null" 2>&1 || pkill -x rtsold > "/dev/null" 2>&1 || true; }
+	_switch_wired() {
+		_stop_rtsold
+		service dhclient stop wlan0 > "/dev/null" 2>&1 || true
+		resolvconf -d wlan0 > "/dev/null" 2>&1 || true
+		resolvconf -d wlan0:slaac > "/dev/null" 2>&1 || true
+		ifconfig wlan0 inet6 -accept_rtadv ifdisabled > "/dev/null" 2>&1 || true
+		ifconfig wlan0 down > "/dev/null" 2>&1 || true
+		ifconfig re0 inet6 -ifdisabled accept_rtadv > "/dev/null" 2>&1 || true
 		ifconfig re0 2> "/dev/null" | grep -q "inet " || service dhclient quietstart re0 > "/dev/null" 2>&1 || true
-	elif [ "${_act}" = "wifi" ]; then
-		sleep 2
+		/usr/sbin/rtsold -i -F -m -p "/var/run/rtsold.pid" re0 > "/dev/null" 2>&1 || true
+	}
+	_switch_wifi() {
+		[ "${1:-0}" -eq 1 ] && sleep 2
 		if ! _wired_up; then
-			service dhclient stop re0 > "/dev/null" 2>&1 || true; ifconfig re0 inet 0.0.0.0 > "/dev/null" 2>&1 || true; ifconfig wlan0 up > "/dev/null" 2>&1 || true
+			_stop_rtsold
+			service dhclient stop re0 > "/dev/null" 2>&1 || true
+			resolvconf -d re0 > "/dev/null" 2>&1 || true
+			resolvconf -d re0:slaac > "/dev/null" 2>&1 || true
+			ifconfig re0 inet 0.0.0.0 > "/dev/null" 2>&1 || true
+			ifconfig re0 inet6 -accept_rtadv ifdisabled > "/dev/null" 2>&1 || true
+			ifconfig wlan0 inet6 -ifdisabled accept_rtadv up > "/dev/null" 2>&1 || true
 			pgrep -f "wpa_supplicant.*wlan0" > "/dev/null" 2>&1 && wpa_cli -i wlan0 reconfigure > "/dev/null" 2>&1 || service wpa_supplicant restart wlan0 > "/dev/null" 2>&1 || true
+			/usr/sbin/rtsold -i -F -m -p "/var/run/rtsold.pid" wlan0 > "/dev/null" 2>&1 || true
 		fi
-	fi
+	}
+	case "${_act}" in
+		wired) _switch_wired ;;
+		wifi) _switch_wifi 1 ;;
+		auto|*) if _wired_up; then _switch_wired; else _switch_wifi 0; fi ;;
+	esac
 EOF
 ${ELEVATE} chmod 0755 "/usr/local/sbin/net-auto-switch"
 
@@ -96,8 +125,8 @@ ${ELEVATE} chmod 0755 "/usr/local/etc/rc.d/net_isolation"
 
 ${ELEVATE} mkdir -p "/usr/local/etc/devd"
 cat <<- "EOF" | ${ELEVATE} tee "/usr/local/etc/devd/ethernet-wifi-isolation.conf" > "/dev/null"
-	notify 100 { match "system" "IFNET"; match "subsystem" "re[0-9]+"; match "type" "LINK_UP"; action "/usr/local/sbin/net-auto-switch wired"; };
-	notify 100 { match "system" "IFNET"; match "subsystem" "re[0-9]+"; match "type" "LINK_DOWN"; action "/usr/local/sbin/net-auto-switch wifi"; };
+	notify 100 { match "system" "IFNET"; match "subsystem" "re[0-9]+"; match "type" "LINK_UP"; action "/usr/local/sbin/net-auto-switch wired &"; };
+	notify 100 { match "system" "IFNET"; match "subsystem" "re[0-9]+"; match "type" "LINK_DOWN"; action "/usr/local/sbin/net-auto-switch wifi &"; };
 EOF
 ${ELEVATE} chmod 0644 "/usr/local/etc/devd/ethernet-wifi-isolation.conf"
 
