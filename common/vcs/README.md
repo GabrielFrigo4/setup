@@ -12,10 +12,11 @@ Esta pasta centraliza a instalação multiplataforma de clientes e ferramentas d
 
 ## 📂 Catálogo de Arquivos
 
-| Arquivo                        | Plataforma                            | Descrição                                               |
-| :----------------------------- | :------------------------------------ | :------------------------------------------------------ |
-| [`tools.sh`](tools.sh)         | Linux / FreeBSD / macOS / WSL / MSYS2 | Instalação de Git, GitHub CLI (`gh`), `git-lfs` e `got` |
-| [`git-crypt.sh`](git-crypt.sh) | Linux / FreeBSD / macOS / Windows     | Instalação multiplataforma da ferramenta `git-crypt`    |
+| Arquivo                        | Plataforma                            | Descrição                                                              |
+| :----------------------------- | :------------------------------------ | :--------------------------------------------------------------------- |
+| [`tools.sh`](tools.sh)         | Linux / FreeBSD / macOS / WSL / MSYS2 | Instalação de Git, GitHub CLI (`gh`), `git-lfs` e `got`                |
+| [`git-crypt.sh`](git-crypt.sh) | Linux / FreeBSD / macOS / Windows     | Instalação multiplataforma da ferramenta `git-crypt`                   |
+| [`workspace.sh`](workspace.sh) | Linux / FreeBSD / macOS / WSL / MSYS2 | Cria `~/Workspace`, clona os 6 repositórios hub e executa `make clone` |
 
 ---
 
@@ -24,4 +25,5 @@ Esta pasta centraliza a instalação multiplataforma de clientes e ferramentas d
 ```sh
 sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/vcs/tools.sh"
 sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/vcs/git-crypt.sh"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/common/vcs/workspace.sh"
 ```

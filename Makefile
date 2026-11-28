@@ -7,7 +7,7 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Setup Provisioning
 # ----------------------------------------------------------------
 
-.PHONY: help hooks audit test format prettier fix-banners doctor ci clean
+.PHONY: help hooks audit test format prettier fix-banners doctor workspace ci clean
 
 ### ================================
 ### HELP & DOCUMENTATION
@@ -29,6 +29,7 @@ help:
 	cmd "ci"             "Executa suite completa de CI local"; \
 	sec "Diagnóstico & Limpeza:"; \
 	cmd "doctor"         "Executa diagnóstico de saúde e sanity check pós-boot do sistema"; \
+	cmd "workspace"      "Cria ~/Workspace e clona repositórios hub com make clone"; \
 	cmd "clean"          "Remove artefatos temporários, caches e ambientes virtuais (.venv)"; \
 	echo ""
 
@@ -84,6 +85,9 @@ fix-banners:
 
 doctor:
 	sh .scripts/audit/doctor.sh
+
+workspace:
+	sh common/vcs/workspace.sh
 
 ci: test audit
 	echo "🚀 Setup 100% aprovado no CI local!"

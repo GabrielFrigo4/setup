@@ -27,13 +27,13 @@ for _arg in "$@"; do
 		--dry-run) _dry_run=1 ;;
 		--profile=*) _profile="${_arg#*=}" ;;
 		--host=*) HOST_PROFILE="${_arg#*=}" ;;
-		base|desktop|fedora-desktop|arch-desktop|debian-desktop|freebsd-desktop|virtualization|dev-host|host|server|doctor) _profile="${_arg}" ;;
+		base|desktop|fedora-desktop|arch-desktop|debian-desktop|freebsd-desktop|virtualization|dev-host|workspace|host|server|doctor) _profile="${_arg}" ;;
 		audit) PYTHONPYCACHEPREFIX="${PYTHONPYCACHEPREFIX:-${HOME}/.cache/pycache}" PYTHONDONTWRITEBYTECODE=1 python3 "${_repo_root}/.scripts/audit/all.py"; exit 0 ;;
 		test) find "${_repo_root}" -name "*.sh" -not -path "*/.git/*" -exec sh -n {} +; _ui_ok "Todas as receitas POSIX estão válidas!"; exit 0 ;;
 		--help|-h|help)
 			_ui_banner "Universal Setup Orchestrator"
 			_ui_info "Uso: $0 [perfil] [--dry-run] [--profile=<perfil>] [--host=<nome>]"
-			_ui_info "Perfis: base, desktop, fedora-desktop, arch-desktop, debian-desktop, freebsd-desktop, virtualization, dev-host, host, server, doctor, audit, test"
+			_ui_info "Perfis: base, desktop, fedora-desktop, arch-desktop, debian-desktop, freebsd-desktop, virtualization, dev-host, workspace, host, server, doctor, audit, test"
 			exit 0 ;;
 		*) _ui_err "Argumento desconhecido: ${_arg}"; exit 1 ;;
 	esac
@@ -61,11 +61,13 @@ if [ -z "${_profile}" ]; then
 	_ui_sub "5) host            (Quirks de hardware em hosts/ — Opt-In)"
 	_ui_sub "6) server          (Servidor Headless / Ubuntu)"
 	_ui_sub "7) doctor          (Diagnóstico multiplataforma)"
+	_ui_sub "8) workspace       (Cria ~/Workspace e clona repositórios hub)"
 	_ui_sub "q) Sair"
-	printf "Opção [1-7]: "; read -r _choice || _choice="q"
+	printf "Opção [1-8]: "; read -r _choice || _choice="q"
 	case "${_choice}" in
 		1) _profile="base" ;; 2) _profile="desktop" ;; 3) _profile="virtualization" ;;
-		4) _profile="dev-host" ;; 5) _profile="host" ;; 6) _profile="server" ;; 7) _profile="doctor" ;;
+		4) _profile="dev-host" ;; 5) _profile="host" ;; 6) _profile="server" ;;
+		7) _profile="doctor" ;; 8) _profile="workspace" ;;
 		*) _ui_info "Operação cancelada."; exit 0 ;;
 	esac
 fi
@@ -103,6 +105,7 @@ case "${_profile}" in
 		for _r in common/editors/install.sh common/languages/python.sh common/docs/typesetting.sh common/graphics/shaders.sh common/ai/ollama.sh common/linters/prettier.sh common/linters/ruff.sh common/linters/mermaid.sh; do
 			_run_recipe "${_repo_root}/${_r}"
 		done ;;
+	workspace) _run_recipe "${_repo_root}/common/vcs/workspace.sh" ;;
 	host)
 		_hid="${HOST_PROFILE:-$(hostname -s 2> "/dev/null" | tr '[:upper:]' '[:lower:]' || true)}"
 		if [ -n "${_hid}" ] && [ -f "${_repo_root}/hosts/${_hid}.sh" ]; then _run_recipe "${_repo_root}/hosts/${_hid}.sh"

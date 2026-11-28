@@ -35,6 +35,8 @@ SystemMaxUse=256M
 EOF
 ${ELEVATE} systemctl restart systemd-journald 2> "/dev/null" || true
 
+mkdir -p "${HOME}/Workspace"
+
 _console_recipe="${_setup_root}/linux/common/system/console.sh"
 if [ -f "${_console_recipe}" ]; then
 	sh "${_console_recipe}"

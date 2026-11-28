@@ -44,6 +44,7 @@ Reúne o ferramental de provisionamento nativo para estações de trabalho Windo
 | **`graphics/`**        | [`graphics/blender.cmd`](graphics/blender.cmd)       | Provisionamento do Blender 3D Suite via Winget                                              |
 | **`shaders.cmd`**      | [`shaders.cmd`](shaders.cmd)                         | Toolchains de shaders (Vulkan SDK, DXC, Slang via winget/vcpkg)                             |
 | **`setup.ps1`**        | [`setup.ps1`](setup.ps1)                             | Módulos PowerShell, WinNAT IANA e atalhos de inicialização rápida (Emacs & Ollama)          |
+| **`workspace.ps1`**    | [`workspace.ps1`](workspace.ps1)                     | Cria `~/Workspace`, clona os 6 repositórios hub e executa `make clone`                      |
 
 ---
 
@@ -55,4 +56,5 @@ Execute a partir do clone local em um terminal com privilégios de Administrador
 windows\native\pkg\winget.cmd
 windows\native\pkg\scoop.cmd
 powershell -ExecutionPolicy Bypass -File windows\native\setup.ps1
+powershell -ExecutionPolicy Bypass -File windows\native\workspace.ps1
 ```

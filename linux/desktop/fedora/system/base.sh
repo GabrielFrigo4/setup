@@ -43,6 +43,8 @@ set -eu
 EOF
 chmod 0755 "${_templates_dir}/Shell.sh"
 
+mkdir -p "${HOME}/Workspace"
+
 _console_recipe="${_setup_root}/linux/common/system/console.sh"
 if [ -f "${_console_recipe}" ]; then
 	sh "${_console_recipe}"
