@@ -31,7 +31,7 @@ git clone https://github.com/GabrielFrigo4/vault "%USERPROFILE%\.local\share\vau
 O Vault organiza os dados sensíveis em domínios claros:
 
 - **`config/*.env`** — Configurações de perfil e chaves de API (`git.env`, perfis gerais).
-- **`keys/*`** — Chaves criptográficas SSH (`.key`, `.pub`) e PuTTY (`.ppk`).
+- **`keys/ssh/*` e `keys/putty/*`** — Chaves criptográficas OpenSSH (`.key`, `.pub`) e PuTTY (`.ppk`).
 - **`network/*.env`** — Credenciais e senhas de redes Wi-Fi (`wifi.env`).
 - **`servers/*.env`** — Mapeamentos de IPs, portas e aliases de servidores remotos (`hosts.env`).
 - **`tokens/*`** — Tokens de autenticação de serviços (`authinfo`).
@@ -45,8 +45,10 @@ O Vault provê carregadores nativos para todos os ambientes do ecossistema:
 | Arquivo                   | Interpretador / Ambiente                  |
 | :------------------------ | :---------------------------------------- |
 | **`vault.sh`**            | POSIX `sh`, Bash, Zsh                     |
+| **`vault.fish`**          | Fish Shell                                |
 | **`vault.ps1`**           | PowerShell Core e Windows PowerShell      |
 | **`vault.cmd`**           | Prompt de Comando (CMD Batch)             |
+| **`vault.lua`**           | Clink / Lua (CMD Avançado)                |
 | **`vault.nu`**            | NuShell                                   |
 | **`vault.ps1 -Register`** | Injeção permanente no Registro do Windows |
 
@@ -57,4 +59,4 @@ O Vault provê carregadores nativos para todos os ambientes do ecossistema:
 
 ## 🔗 Integração com o Universal Shell
 
-O **Universal Shell** detecta o cofre automaticamente via `core/vault.sh` na cascata de resolução XDG (`~/.local/share/vault` $\rightarrow$ `~/.config/vault` $\rightarrow$ `~/.vault` $\rightarrow$ `/usr/local/share/vault`). Em máquinas recém-provisionadas sem o Vault, o ecossistema opera normalmente em modo anônimo (degradação graciosa).
+O **Universal Shell** detecta o cofre automaticamente via `core/vault.sh` na cascata de resolução XDG (`~/.local/share/vault` $\rightarrow$ `~/.config/vault` $\rightarrow$ `~/.vault`; caminhos globais `/usr/local/share/vault` são proibidos). Em máquinas recém-provisionadas sem o Vault, o ecossistema opera normalmente em modo anônimo (degradação graciosa).

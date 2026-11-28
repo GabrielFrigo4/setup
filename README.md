@@ -86,15 +86,34 @@ O **Setup** provê a fundação do sistema operacional com privilégios administ
 
 ---
 
-## 🚀 Bootstrap & Execução (Clone Soberano)
+## 🚀 Download, Clone & Bootstrap
 
-Instalação ou atualização completa via bootstrap de 1 linha:
+### 🗺️ Matriz de Caminhos Canônicos
+
+| Localização Canônica         | Escopo / Privilégios           | Status & Recomendação  | Casos de Uso & Contexto                                             |
+| :--------------------------- | :----------------------------- | :--------------------: | :------------------------------------------------------------------ |
+| **`~/.local/share/setup`**   | XDG Data (Rootless)            |   ⭐ **Recomendado**   | Padrão soberano (`$SETUP_DIR`) em Linux, FreeBSD, macOS e MSYS2.    |
+| **`~/.config/setup`**        | XDG Config (Rootless)          | 🔵 **Alternativa XDG** | Estações que concentram ferramentas administrativas em `~/.config`. |
+| **`~/.setup`**               | Home Direta (Clássico UNIX)    | ⚪ **Fallback Legado** | Sistemas mínimos sem variáveis XDG definidas.                       |
+| **`/usr/local/share/setup`** | Global / FHS (`root` / `sudo`) | 🟢 **Sistema Global**  | Workstations administradas multiusuário compartilhadas com `root`.  |
+
+### 📦 Instalação Rápida
+
+Via bootstrap automatizado de 1 linha (instala `git` se necessário, clona em `~/.local/share/setup` e dispara `setup.sh`):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/GabrielFrigo4/setup/main/bootstrap.sh | sh -s -- --profile=base
 ```
 
-Execução direta a partir do clone local (`~/.local/share/setup`):
+Via clone explícito com **`gh` (preferencial)** ou **Git HTTPS/SSH (fallback)**:
+
+```sh
+gh repo clone GabrielFrigo4/setup "${XDG_DATA_HOME:-${HOME}/.local/share}/setup" || \
+	git clone "https://github.com/GabrielFrigo4/setup.git" "${XDG_DATA_HOME:-${HOME}/.local/share}/setup"
+sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/setup.sh" --profile=base
+```
+
+Execução direta a partir do clone local (`~/.local/share/setup` ou pelo comando `setup` / `upstp` integrado ao **Universal Shell**):
 
 ```sh
 sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/setup.sh" --profile=base
@@ -104,6 +123,8 @@ sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/setup.sh" --profile=dev-host
 sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/setup.sh" --profile=host
 sh "${XDG_DATA_HOME:-${HOME}/.local/share}/setup/setup.sh" doctor
 ```
+
+> 💡 **Integração com o Shell (`upstp` & `setup`):** Quando o **Universal Shell** está ativo, `upstp` (`update-setup`) apenas atualiza o clone local via `git pull` sem executar receitas pesadas, enquanto `setup <perfil>` (ex: `setup doctor`, `setup base --dry-run`) aciona o orquestrador de qualquer diretório.
 
 ---
 
